@@ -1,7 +1,9 @@
 import db from "@/client/db"
 import type { TMappedSeasonEvent } from "@/src/EventFetcher/types"
 
-function mapSeasonEvents(event: TSeasonEvent): TMappedSeasonEvent {
+function mapSeasonEvents(
+    event: Awaited<ReturnType<typeof fetchEventsWithSessions>>[number],
+): TMappedSeasonEvent {
     const rest = {
         name: event.event_name,
         officialName: event.event_official_name,
@@ -210,6 +212,5 @@ export async function fetchEventsWithSessions(season: string) {
 }
 
 export async function getSeasonEvents(season: string) {
-    const events = (await fetchEventsWithSessions(season)).map(mapSeasonEvents)
-    return events
+    return (await fetchEventsWithSessions(season)).map(mapSeasonEvents)
 }

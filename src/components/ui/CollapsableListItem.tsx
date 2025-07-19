@@ -1,7 +1,8 @@
 "use client"
+import { getColor } from "@/src/colorScheme"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { type ComponentProps, createContext, useContext, useEffect, useMemo, useState } from "react"
-import { Pressable, StyleSheet, Text, View } from "react-native"
+import { Pressable, StyleSheet, View } from "react-native"
 import Animated, {
     Easing,
     useAnimatedStyle,
@@ -13,7 +14,6 @@ const styles = StyleSheet.create({
     container: {
         borderRadius: 4,
         borderWidth: 1,
-        borderColor: "var(--ring)",
         width: "100%",
         minHeight: 0,
     },
@@ -24,11 +24,9 @@ const styles = StyleSheet.create({
         paddingBlock: 4,
         paddingInline: 8,
     },
-    titleText: {
-        fontSize: 16,
-    },
     content: {
         padding: 4,
+        overflow: "hidden",
     },
 })
 
@@ -56,42 +54,65 @@ export const CollapsableListItem = (
 
     return (
         <CollapsableItemContext.Provider value={ctxValue}>
-            <View {...rest} style={StyleSheet.compose(styles.container, rest.style)}>
+            <View
+                {...rest}
+                style={StyleSheet.compose(
+                    {
+                        ...styles.container,
+                        borderColor: getColor("border"),
+                    },
+                    rest.style,
+                )}
+            >
                 {children}
             </View>
         </CollapsableItemContext.Provider>
     )
 }
 
+const getChevronStyle = (isCollapsed: boolean, isFocused: boolean) => {
+    if (!isFocused) {
+        return isCollapsed ? "chevron-down" : "chevron-up"
+    }
+    return isCollapsed ? "chevron-down-circle" : "chevron-up-circle"
+}
+
 export const ListItemTitle = (props: ComponentProps<typeof View>) => {
     const { children, style, ...rest } = props
 
     const { isCollapsed, setIsCollapsed } = useContext(CollapsableItemContext)
+    const [isPressed, setIsPressed] = useState(false)
 
     return (
         <View {...rest} style={StyleSheet.compose(styles.titleContainer, style)}>
-            <Text style={styles.titleText}>{children}</Text>
-            <Pressable onPress={() => setIsCollapsed(!isCollapsed)}>
-                <Ionicons name={isCollapsed ? "chevron-down" : "chevron-up"} size={16} />
+            <View>{children}</View>
+            <Pressable
+                onPressIn={() => setIsPressed(true)}
+                onPressOut={() => setIsPressed(false)}
+                onPress={() => setIsCollapsed(!isCollapsed)}
+            >
+                <Ionicons name={getChevronStyle(isCollapsed, isPressed)} size={32} />
             </Pressable>
         </View>
     )
 }
 
-export const ListItemContent = (props: ComponentProps<typeof View>) => {
-    const { children, style, ...rest } = props
+export const ListItemContent = (
+    props: ComponentProps<typeof View> & { expandedHeight: number },
+) => {
+    const { children, style, expandedHeight, ...rest } = props
 
     const { isCollapsed } = useContext(CollapsableItemContext)
 
-    const height = useSharedValue(isCollapsed ? 0 : 100)
+    const svHeight = useSharedValue(isCollapsed ? 0 : expandedHeight)
 
     const heightStyle = useAnimatedStyle(() => ({
-        height: withTiming(height.value, { duration: 300, easing: Easing.inOut(Easing.cubic) }),
+        height: withTiming(svHeight.value, { duration: 300, easing: Easing.inOut(Easing.cubic) }),
     }))
 
     useEffect(() => {
-        height.value = isCollapsed ? 0 : 100
-    }, [isCollapsed, height])
+        svHeight.value = isCollapsed ? 0 : expandedHeight
+    }, [isCollapsed, expandedHeight, svHeight])
 
     return (
         <Animated.View {...rest} style={[heightStyle, styles.content, style]}>

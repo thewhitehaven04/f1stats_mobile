@@ -1,9 +1,9 @@
 "use server"
 import db from "@/client/db"
-import React, { Suspense } from "react"
-import { Text } from "react-native"
-// import { SeasonEvent } from "@/src/components/SeasonEvent"
+import { SeasonEvent } from "@/src/components/SeasonEvent"
+import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import type { TMappedSeasonEvent } from "@/src/EventFetcher/types"
+import React, { Suspense } from "react"
 
 function mapSeasonEvents(
     event: Awaited<ReturnType<typeof getSeasonEvents>>[number],
@@ -214,56 +214,16 @@ export async function getSeasonEvents(season: string) {
 }
 
 export async function fetchEventsWithSessions(season: string): Promise<TMappedSeasonEvent[]> {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve([
-                {
-                    country: "AUS",
-                    dateStart: new Date(),
-                    format: "conventional",
-                    name: "Melbourne Grand Prix",
-                    officialName: "Melbourne Grand Prix",
-                    season: 2022,
-                    sessions: {
-                        fp1: {
-                            type: "Practice 1",
-                            dateStart: new Date(),
-                            dateEnd: new Date(),
-                        },
-                        fp2: {
-                            type: "Practice 1",
-                            dateStart: new Date(),
-                            dateEnd: new Date(),
-                        },
-                        fp3: {
-                            type: "Practice 1",
-                            dateStart: new Date(),
-                            dateEnd: new Date(),
-                        },
-                        quali: {
-                            type: "Practice 1",
-                            dateStart: new Date(),
-                            dateEnd: new Date(),
-                        },
-                        race: {
-                            type: "Practice 1",
-                            dateStart: new Date(),
-                            dateEnd: new Date(),
-                        },
-                    },
-                },
-            ])
-        }, 1000)
-    })
+    return (await getSeasonEvents(season)).map(mapSeasonEvents)
 }
 
 async function renderSeasonEventsAction({ season }: { season: string }) {
     const events = await fetchEventsWithSessions(season)
 
     return (
-        <Suspense fallback={<Text>Loading</Text>}>
-            {events.map((e) => (
-                <Text key={e.country}>{JSON.stringify(e)}</Text>
+        <Suspense fallback={<LoadingSpinner />}>
+            {events.map((evt) => (
+                <SeasonEvent key={evt.officialName} event={evt} />
             ))}
         </Suspense>
     )
