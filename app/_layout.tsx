@@ -30,6 +30,15 @@ export default function RootLayout() {
                         title: "Select season",
                     }}
                 />
+                <Stack.Screen
+                    name="season/[season]/event/[event]/session/[session]/results"
+                    options={({ route }) => ({
+                        title: `${route.params.event} - ${route.params.session} results`,
+                        contentStyle: {
+                            backgroundColor: getColor("background"),
+                        },
+                    })}
+                />
             </Stack>
         </GestureHandlerRootView>
     )

@@ -1,6 +1,4 @@
 import { getColor } from "@/src/colorScheme"
-import { Button } from "@/src/components/ui/Button"
-import { useRouter } from "expo-router"
 import type { ReactNode } from "react"
 import { StyleSheet, Text, View } from "react-native"
 
@@ -33,38 +31,24 @@ export const KeysetSeasonPagination = ({
     previous?: ReactNode
     current: string
     next?: ReactNode
-}) => {
-    const { dismiss } = useRouter()
-    const close = () => {
-        dismiss()
-    }
-
-    return (
+}) => (
+    <View style={{ ...styles.wrapper, backgroundColor: getColor("background") }}>
+        {previous ? (
+            previous
+        ) : (
+            <View style={{ width: 64 }}>
+                <Text>N/A</Text>
+            </View>
+        )}
         <View>
-            <View style={{ ...styles.wrapper, backgroundColor: getColor("background") }}>
-                {previous ? (
-                    previous
-                ) : (
-                    <View style={{ width: 64 }}>
-                        <Text>N/A</Text>
-                    </View>
-                )}
-                <View>
-                    <Text>{current}</Text>
-                </View>
-                {next ? (
-                    next
-                ) : (
-                    <View style={{ width: 64 }}>
-                        <Text>N/A</Text>
-                    </View>
-                )}
-            </View>
-            <View style={styles.footerLine}>
-                <Button onPress={close}>
-                    <Text>Go back</Text>
-                </Button>
-            </View>
+            <Text>{current}</Text>
         </View>
-    )
-}
+        {next ? (
+            next
+        ) : (
+            <View style={{ width: 64 }}>
+                <Text>N/A</Text>
+            </View>
+        )}
+    </View>
+)

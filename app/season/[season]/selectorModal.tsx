@@ -12,6 +12,9 @@ const modalStyleSheet = StyleSheet.create({
     wrapper: {
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
     },
     navButton: {
         display: "flex",
@@ -36,7 +39,7 @@ export default function SeasonSelectorModal() {
     return (
         <Animated.View entering={FadeIn} style={modalStyleSheet.wrapper}>
             <Link href="/" asChild>
-                <Pressable style={StyleSheet.absoluteFill} />
+                <Pressable style={{ width: "100%" }} />
             </Link>
             <Animated.View
                 style={{

@@ -6,11 +6,11 @@ import {
     ListItemContent,
     ListItemTitle,
 } from "@/src/components/ui/CollapsableListItem"
-import type { ISession, TMappedSeasonEvent } from "@/src/EventFetcher/types"
+import type { ISession, TMappedSeasonEvent } from "@/src/fetchers/events/types"
 import * as FontSizes from "@/src/fontSizes"
 import { format } from "date-fns"
 import { Link } from "expo-router"
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import CountryFlag from "react-native-country-flag"
 
 const seasonEventStyleSheet = StyleSheet.create({
@@ -56,25 +56,27 @@ export function SeasonEvent({ event }: { event: TMappedSeasonEvent }) {
             <ListItemContent style={seasonEventStyleSheet.contentWrapper} expandedHeight={290}>
                 {Object.values(event.sessions).map((s: ISession | null) =>
                     s ? (
-                        <TouchableHighlight key={s?.type}>
-                            <Link href={`/season/${event.season}/${s.type}`}>
-                                <Button>
-                                    <View style={seasonEventStyleSheet.sessionLink}>
-                                        <Text
-                                            style={{
-                                                ...seasonEventStyleSheet.sessionLinkFont,
-                                                fontWeight: "bold",
-                                            }}
-                                        >
-                                            {s.type}
-                                        </Text>
-                                        <Text style={seasonEventStyleSheet.sessionLinkFont}>
-                                            {format(s.dateStart, "MMM dd HH:mm")}
-                                        </Text>
-                                    </View>
-                                </Button>
-                            </Link>
-                        </TouchableHighlight>
+                        <Link
+                            key={s.type}
+                            href={`/season/${event.season}/event/${event.name}/session/${s.type}/results`}
+                            asChild
+                        >
+                            <Button>
+                                <View style={seasonEventStyleSheet.sessionLink}>
+                                    <Text
+                                        style={{
+                                            ...seasonEventStyleSheet.sessionLinkFont,
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        {s.type}
+                                    </Text>
+                                    <Text style={seasonEventStyleSheet.sessionLinkFont}>
+                                        {format(s.dateStart, "MMM dd HH:mm")}
+                                    </Text>
+                                </View>
+                            </Button>
+                        </Link>
                     ) : null,
                 )}
             </ListItemContent>

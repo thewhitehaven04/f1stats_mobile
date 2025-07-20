@@ -1,5 +1,5 @@
 "use client"
-import renderSeasonEventsAction from "@/src/actions/renderSeasonEventsAction"
+import renderSeasonEventsAction from "@/src/actions/render/seasonEvents"
 import { Button } from "@/src/components/ui/Button"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { Link, useLocalSearchParams } from "expo-router"
@@ -19,7 +19,7 @@ const style = StyleSheet.create({
     },
 })
 
-export default function Season() {
+export default function SeasonScreen() {
     const { season }: { season: string } = useLocalSearchParams()
 
     const seasonEvents = useMemo(() => renderSeasonEventsAction({ season }), [season])

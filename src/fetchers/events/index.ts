@@ -1,12 +1,8 @@
-"use server"
 import db from "@/client/db"
-import { SeasonEvent } from "@/src/components/SeasonEvent"
-import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
-import type { TMappedSeasonEvent } from "@/src/EventFetcher/types"
-import React, { Suspense } from "react"
+import type { TMappedSeasonEvent } from "@/src/fetchers/events/types"
 
 function mapSeasonEvents(
-    event: Awaited<ReturnType<typeof getSeasonEvents>>[number],
+    event: Awaited<ReturnType<typeof fetchEventsWithSessions>>[number],
 ): TMappedSeasonEvent {
     const rest = {
         name: event.event_name,
@@ -190,43 +186,31 @@ function mapSeasonEvents(
     throw new Error("Unknown event format")
 }
 
-export async function getSeasonEvents(season: string) {
-    return await db.events.findMany({
-        where: {
-            season_year: Number.parseInt(season),
-            event_format_name: {
-                not: "testing",
-            },
-        },
-        include: {
-            event_sessions: {
-                select: {
-                    session_type_id: true,
-                    start_time: true,
-                    end_time: true,
+async function fetchEventsWithSessions(season: string) {
+    return (
+        await db.events.findMany({
+            where: {
+                season_year: Number.parseInt(season),
+                event_format_name: {
+                    not: "testing",
                 },
             },
-        },
-        orderBy: {
-            date_start: "asc",
-        },
-    })
+            include: {
+                event_sessions: {
+                    select: {
+                        session_type_id: true,
+                        start_time: true,
+                        end_time: true,
+                    },
+                },
+            },
+            orderBy: {
+                date_start: "asc",
+            },
+        })
+    ).filter((e) => e.event_sessions.length > 0)
 }
 
-export async function fetchEventsWithSessions(season: string): Promise<TMappedSeasonEvent[]> {
-    return (await getSeasonEvents(season)).map(mapSeasonEvents)
+export async function getSeasonEvents(season: string) {
+    return (await fetchEventsWithSessions(season)).map(mapSeasonEvents)
 }
-
-async function renderSeasonEventsAction({ season }: { season: string }) {
-    const events = await fetchEventsWithSessions(season)
-
-    return (
-        <Suspense fallback={<LoadingSpinner />}>
-            {events.map((evt) => (
-                <SeasonEvent key={evt.officialName} event={evt} />
-            ))}
-        </Suspense>
-    )
-}
-
-export default renderSeasonEventsAction
