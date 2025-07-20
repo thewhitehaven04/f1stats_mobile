@@ -28,11 +28,11 @@ export default function Index() {
                 backgroundColor: getColor("background"),
             })}
         >
-            <Button variant="outline" size="large">
-                <Link href="/season/2025">
+            <Link href="/season/2024" asChild>
+                <Button variant="outline" size="large">
                     <Text style={rootStyleSheet.buttonTitle}>Start</Text>
-                </Link>
-            </Button>
+                </Button>
+            </Link>
             <Text style={rootStyleSheet.title}>F1Stats</Text>
         </View>
     )

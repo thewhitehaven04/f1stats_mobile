@@ -1,5 +1,6 @@
 "use client"
 import { alpha3ToAlpha2Map } from "@/src/alpha3toAlpha2map"
+import { Button } from "@/src/components/ui/Button"
 import {
     CollapsableListItem,
     ListItemContent,
@@ -30,14 +31,16 @@ const seasonEventStyleSheet = StyleSheet.create({
     sessionLink: {
         display: "flex",
         flexDirection: "row",
-        alignItems: "flex-start",
-        gap: 8,
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: 16,
     },
     contentWrapper: {
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
-        gap: 8,
+        gap: 16,
+        padding: 16,
     },
 })
 
@@ -50,19 +53,26 @@ export function SeasonEvent({ event }: { event: TMappedSeasonEvent }) {
                     <Text style={seasonEventStyleSheet.headerText}>{event.name}</Text>
                 </View>
             </ListItemTitle>
-            <ListItemContent style={seasonEventStyleSheet.contentWrapper} expandedHeight={140}>
+            <ListItemContent style={seasonEventStyleSheet.contentWrapper} expandedHeight={290}>
                 {Object.values(event.sessions).map((s: ISession | null) =>
                     s ? (
                         <TouchableHighlight key={s?.type}>
                             <Link href={`/season/${event.season}/${s.type}`}>
-                                <View style={seasonEventStyleSheet.sessionLink}>
-                                    <Text style={seasonEventStyleSheet.sessionLinkFont}>
-                                        {s.type}
-                                    </Text>
-                                    <Text style={seasonEventStyleSheet.sessionLinkFont}>
-                                        {format(s.dateStart, "dd/MM/yyyy HH:mm")}
-                                    </Text>
-                                </View>
+                                <Button>
+                                    <View style={seasonEventStyleSheet.sessionLink}>
+                                        <Text
+                                            style={{
+                                                ...seasonEventStyleSheet.sessionLinkFont,
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            {s.type}
+                                        </Text>
+                                        <Text style={seasonEventStyleSheet.sessionLinkFont}>
+                                            {format(s.dateStart, "MMM dd HH:mm")}
+                                        </Text>
+                                    </View>
+                                </Button>
                             </Link>
                         </TouchableHighlight>
                     ) : null,

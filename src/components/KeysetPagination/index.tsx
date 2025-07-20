@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     },
 })
 
-export const KeysetPagination = ({
+export const KeysetSeasonPagination = ({
     previous,
     current,
     next,
@@ -34,18 +34,34 @@ export const KeysetPagination = ({
     current: string
     next?: ReactNode
 }) => {
-    const router = useRouter()
+    const { dismiss } = useRouter()
+    const close = () => {
+        dismiss()
+    }
+
     return (
         <View>
             <View style={{ ...styles.wrapper, backgroundColor: getColor("background") }}>
-                {previous ? previous : <Text>N/A</Text>}
+                {previous ? (
+                    previous
+                ) : (
+                    <View style={{ width: 64 }}>
+                        <Text>N/A</Text>
+                    </View>
+                )}
                 <View>
                     <Text>{current}</Text>
                 </View>
-                {next ? next : <Text>N/A</Text>}
+                {next ? (
+                    next
+                ) : (
+                    <View style={{ width: 64 }}>
+                        <Text>N/A</Text>
+                    </View>
+                )}
             </View>
             <View style={styles.footerLine}>
-                <Button onPress={router.back}>
+                <Button onPress={close}>
                     <Text>Go back</Text>
                 </Button>
             </View>

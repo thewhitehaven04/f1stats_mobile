@@ -1,31 +1,36 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
-import Ionicons from "@expo/vector-icons/Ionicons"
-import { Drawer } from "expo-router/drawer"
+import Stack from "expo-router/build/layouts/Stack"
 import React from "react"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
+
+export const unstable_settings = {
+    initialRouteName: "index",
+}
 
 export default function RootLayout() {
     return (
         <GestureHandlerRootView>
-            <Drawer>
-                <Drawer.Screen
-                    options={{
-                        drawerIcon: ({ focused }) => (
-                            <Ionicons name={focused ? "home" : "home-outline"} size={24} />
-                        ),
-                    }}
-                />
-                <Drawer.Screen
-                    name="season/[season]"
+            <Stack>
+                <Stack.Screen name="index" />
+                <Stack.Screen
+                    name="season/[season]/index"
                     options={{
                         title: `Season calendar`,
-                        sceneStyle: {
+                        contentStyle: {
                             backgroundColor: getColor("background"),
                         },
                     }}
                 />
-            </Drawer>
+                <Stack.Screen
+                    name="season/[season]/selectorModal"
+                    options={{
+                        presentation: "containedTransparentModal",
+                        animation: "fade",
+                        title: "Select season",
+                    }}
+                />
+            </Stack>
         </GestureHandlerRootView>
     )
 }

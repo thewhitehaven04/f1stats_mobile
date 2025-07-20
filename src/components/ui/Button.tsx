@@ -1,5 +1,6 @@
+"use client"
 import { getColor } from "@/src/colorScheme"
-import type { ComponentProps } from "react"
+import { type ComponentProps } from "react"
 import { Pressable } from "react-native"
 
 export const Button = ({

@@ -1,23 +1,35 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
+import { useEffect } from "react"
 import { View } from "react-native"
-import { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
+import Animated, {
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withRepeat,
+    withTiming,
+} from "react-native-reanimated"
 
 export const LoadingSpinner = () => {
-    const rotateDeg = useSharedValue("0deg")
-
-    rotateDeg.value = withTiming(`${rotateDeg.value + 360}deg`, {
-        duration: 400,
-        easing: Easing.linear,
-    })
+    const rotateDeg = useSharedValue(0)
 
     const rotation = useAnimatedStyle(() => ({
         transform: [
             {
-                rotate: rotateDeg.value,
+                rotate: rotateDeg.value * 360 + "deg",
             },
         ],
     }))
+
+    useEffect(() => {
+        rotateDeg.value = withRepeat(
+            withTiming(1, {
+                duration: 1500,
+                easing: Easing.linear,
+            }),
+            -1,
+        )
+    }, [rotateDeg])
 
     return (
         <View
@@ -26,9 +38,11 @@ export const LoadingSpinner = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
+                width: "100%",
+                height: "100%",
             }}
         >
-            <View
+            <Animated.View
                 style={[
                     {
                         borderRadius: "50%",
@@ -36,9 +50,10 @@ export const LoadingSpinner = () => {
                         borderRightColor: getColor("accentForeground"),
                         borderTopColor: getColor("accent"),
                         borderBottomColor: getColor("accent"),
-                        borderWidth: 2,
-                        width: 40,
-                        height: 40,
+                        borderWidth: 4,
+                        width: 60,
+                        height: 60,
+                        boxShadow: `0px 0px 4px 1px ${getColor("muted")}`,
                     },
                     rotation,
                 ]}

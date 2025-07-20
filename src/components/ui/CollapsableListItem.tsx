@@ -1,7 +1,15 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
 import Ionicons from "@expo/vector-icons/Ionicons"
-import { type ComponentProps, createContext, useContext, useEffect, useMemo, useState } from "react"
+import {
+    type ComponentProps,
+    createContext,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react"
 import { Pressable, StyleSheet, View } from "react-native"
 import Animated, {
     Easing,
@@ -12,7 +20,7 @@ import Animated, {
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: 4,
+        borderRadius: 8,
         borderWidth: 1,
         width: "100%",
         minHeight: 0,
@@ -21,16 +29,17 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingBlock: 4,
-        paddingInline: 8,
+        padding: 8,
     },
     content: {
-        padding: 4,
         overflow: "hidden",
+        width: "100%",
     },
 })
 
 const noop = () => {}
+
+const COLLAPSE_TIMEOUT = 300
 
 const CollapsableItemContext = createContext<{
     setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>
@@ -77,21 +86,29 @@ const getChevronStyle = (isCollapsed: boolean, isFocused: boolean) => {
     return isCollapsed ? "chevron-down-circle" : "chevron-up-circle"
 }
 
-export const ListItemTitle = (props: ComponentProps<typeof View>) => {
-    const { children, style, ...rest } = props
+export const ListItemTitle = (
+    props: ComponentProps<typeof View> & { collapseTimeout?: number },
+) => {
+    const { children, style, collapseTimeout = COLLAPSE_TIMEOUT, ...rest } = props
 
     const { isCollapsed, setIsCollapsed } = useContext(CollapsableItemContext)
     const [isPressed, setIsPressed] = useState(false)
 
+    const collapseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     return (
         <View {...rest} style={StyleSheet.compose(styles.titleContainer, style)}>
             <View>{children}</View>
             <Pressable
                 onPressIn={() => setIsPressed(true)}
                 onPressOut={() => setIsPressed(false)}
-                onPress={() => setIsCollapsed(!isCollapsed)}
+                onPress={() => {
+                    collapseTimeoutRef.current = setTimeout(
+                        () => setIsCollapsed(!isCollapsed),
+                        isCollapsed ? collapseTimeout : 0,
+                    )
+                }}
             >
-                <Ionicons name={getChevronStyle(isCollapsed, isPressed)} size={32} />
+                <Ionicons name={getChevronStyle(isCollapsed, isPressed)} size={24} />
             </Pressable>
         </View>
     )
@@ -107,16 +124,19 @@ export const ListItemContent = (
     const svHeight = useSharedValue(isCollapsed ? 0 : expandedHeight)
 
     const heightStyle = useAnimatedStyle(() => ({
-        height: withTiming(svHeight.value, { duration: 300, easing: Easing.inOut(Easing.cubic) }),
+        height: withTiming(svHeight.value, {
+            duration: COLLAPSE_TIMEOUT,
+            easing: Easing.inOut(Easing.cubic),
+        }),
     }))
 
     useEffect(() => {
         svHeight.value = isCollapsed ? 0 : expandedHeight
     }, [isCollapsed, expandedHeight, svHeight])
 
-    return (
+    return !isCollapsed ? (
         <Animated.View {...rest} style={[heightStyle, styles.content, style]}>
             {children}
         </Animated.View>
-    )
+    ) : null
 }
