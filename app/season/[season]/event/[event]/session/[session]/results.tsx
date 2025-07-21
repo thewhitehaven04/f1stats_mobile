@@ -1,8 +1,21 @@
 "use client"
 import renderSeasonMetrics from "@/src/actions/render/sessionMetrics"
+import { getColor } from "@/src/colorScheme"
+import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { useLocalSearchParams } from "expo-router"
-import { useMemo } from "react"
-import { View } from "react-native"
+import { Suspense, useMemo } from "react"
+import { StyleSheet, View } from "react-native"
+
+const styleSheet = StyleSheet.create({
+    wrapper: {
+        paddingTop: 8,
+        paddingInline: 16,
+    },
+    card: {
+        borderRadius: 16,
+        borderWidth: 1,
+    },
+})
 
 export default function ResultsScreen() {
     const { season, session, event }: { season: string; session: string; event: string } =
@@ -17,5 +30,14 @@ export default function ResultsScreen() {
             }),
         [season, session, event],
     )
-    return <View style={{ paddingTop: 8, paddingInline: 16 }}>{sessionMetrics}</View>
+    return (
+        <View style={styleSheet.wrapper}>
+            <View style={{ ...styleSheet.card, borderColor: getColor("border") }}>
+                <Suspense fallback={<LoadingSpinner />}>{sessionMetrics}</Suspense>
+            </View>
+            <View style={{ ...styleSheet.card, borderColor: getColor("border") }}>
+                <Suspense fallback={<LoadingSpinner />}>{null}</Suspense>
+            </View>
+        </View>
+    )
 }
