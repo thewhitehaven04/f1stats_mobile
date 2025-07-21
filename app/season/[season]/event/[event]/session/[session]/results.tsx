@@ -1,15 +1,19 @@
 "use client"
 import renderSeasonMetrics from "@/src/actions/render/sessionMetrics"
+import renderSessionResults from "@/src/actions/render/sessionResults"
 import { getColor } from "@/src/colorScheme"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { useLocalSearchParams } from "expo-router"
 import { Suspense, useMemo } from "react"
-import { StyleSheet, View } from "react-native"
+import { ScrollView, StyleSheet, View } from "react-native"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
         paddingTop: 8,
         paddingInline: 16,
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 16,
     },
     card: {
         borderRadius: 16,
@@ -30,14 +34,23 @@ export default function ResultsScreen() {
             }),
         [season, session, event],
     )
+
+    const sessionResults = useMemo(
+        () =>
+            renderSessionResults({
+                season,
+                session: decodeURIComponent(session),
+                event: decodeURIComponent(event),
+            }),
+        [season, session, event],
+    )
+
     return (
-        <View style={styleSheet.wrapper}>
+        <ScrollView contentContainerStyle={styleSheet.wrapper}>
             <View style={{ ...styleSheet.card, borderColor: getColor("border") }}>
                 <Suspense fallback={<LoadingSpinner />}>{sessionMetrics}</Suspense>
             </View>
-            <View style={{ ...styleSheet.card, borderColor: getColor("border") }}>
-                <Suspense fallback={<LoadingSpinner />}>{null}</Suspense>
-            </View>
-        </View>
+            <Suspense fallback={<LoadingSpinner />}>{sessionResults}</Suspense>
+        </ScrollView>
     )
 }

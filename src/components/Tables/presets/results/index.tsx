@@ -1,4 +1,5 @@
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/src/components/Tables"
+"use client"
+import { Table, TableBody, TableHeader, TableRow, TextCell } from "@/src/components/Tables"
 import { SessionType } from "@/src/components/Tables/presets/results/mapper"
 import type { IPracticeData } from "@/src/components/Tables/presets/results/practice"
 import type { IExpandedQualifyingData } from "@/src/components/Tables/presets/results/qualifying"
@@ -19,7 +20,7 @@ export const ResultsTable = (
 ) => {
     const { getFlatHeaders, getRowModel } = useReactTable({
         ...props,
-        getRowCanExpand: (row) => props.sessionType === SessionType.PRACTICE,
+        getRowCanExpand: () => props.sessionType === SessionType.PRACTICE,
         getCoreRowModel: getCoreRowModel(),
     })
 
@@ -27,14 +28,14 @@ export const ResultsTable = (
         <Table>
             <TableHeader>
                 {getFlatHeaders().map((header) => (
-                    <TableCell key={header.id}>
+                    <TextCell key={header.column.id} style={{ width: header.getSize() }}>
                         {flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableCell>
+                    </TextCell>
                 ))}
             </TableHeader>
             <TableBody>
                 {getRowModel().rows.map((row) => (
-                    <TableRow key={row.id} onPress={() => console.log("expand")}>
+                    <TableRow key={row.id}>
                         {row
                             .getVisibleCells()
                             .map((cell) =>

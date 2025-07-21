@@ -1,3 +1,4 @@
+"use server"
 import dbClient from "@/client/db"
 
 export const fetchSessionResults = async (season: string, event: string, session: string) => {
