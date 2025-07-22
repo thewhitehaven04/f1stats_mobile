@@ -1,5 +1,6 @@
 import { TextCell } from "@/src/components/Tables"
 import { BASE_COLUMNS, type IBaseResultsData } from "@/src/components/Tables/presets/results/common"
+import type { RACE_COLUMNS } from "@/src/components/Tables/presets/results/mapper"
 import { formatTime } from "@/src/core/helpers"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Text } from "react-native"
@@ -7,6 +8,10 @@ import { Text } from "react-native"
 export interface IRaceData extends IBaseResultsData {
     time: number | null
     gap: number | null
+    child: {
+        rows: (string | null | number)[]
+        columns: typeof RACE_COLUMNS
+    }
 }
 
 export interface IExpandedRaceData {
@@ -22,14 +27,20 @@ export const RACE_RESULTS_COLUMNS = [
     raceHelper.accessor("time", {
         header: "Laptime",
         cell: (info) => (
-            <TextCell style={{ flexBasis: 120 }}>{formatTime(info.getValue() as number)}</TextCell>
+            <TextCell key="laptime" style={{ flexBasis: 160 }}>
+                {formatTime(info.getValue() as number)}
+            </TextCell>
         ),
+        size: 160,
     }),
     raceHelper.accessor("gap", {
         header: "Gap",
         cell: (info) => (
-            <TextCell style={{ flexBasis: 84 }}>{formatTime(info.getValue() as number)}</TextCell>
+            <TextCell key="gap" style={{ flexBasis: 84 }}>
+                {formatTime(info.getValue() as number)}
+            </TextCell>
         ),
+        size: 84,
     }),
 ]
 

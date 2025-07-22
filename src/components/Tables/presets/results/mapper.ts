@@ -1,9 +1,7 @@
 import type { IPracticeData } from "@/src/components/Tables/presets/results/practice"
-import type {
-    IExpandedQualifyingData,
-    IQualifyingData,
-} from "@/src/components/Tables/presets/results/qualifying"
-import type { IExpandedRaceData, IRaceData } from "@/src/components/Tables/presets/results/race"
+import type { IQualifyingData } from "@/src/components/Tables/presets/results/qualifying"
+import type { IRaceData } from "@/src/components/Tables/presets/results/race"
+import { formatTime } from "@/src/core/helpers"
 import type { TFetchSessionResults } from "@/src/fetchers/results"
 
 export const SessionType = Object.freeze({
@@ -11,6 +9,9 @@ export const SessionType = Object.freeze({
     QUALIFYING: "Qualifying",
     RACE: "Race",
 })
+
+export const RACE_COLUMNS = ["Grid", "Gap", "Status"] as const
+export const QUALIFYING_COLUMNS = ["Q1", "Q2", "Q3"] as const
 
 export function sessionResultsToTableRows(
     sessionResults: TFetchSessionResults,
@@ -38,8 +39,13 @@ export function sessionResultsToTableRows(
                         ? result.practice_session_results.laptime
                         : 0,
                     gap: result.practice_session_results ? result.practice_session_results.gap : 0,
-                } satisfies IPracticeData
-            }),
+                    child: {
+                        columns: [],
+                        rows: [],
+                    },
+                }
+            }) satisfies IPracticeData[],
+            expandedColumns: [],
             sessionType: SessionType.PRACTICE,
         }
     }
@@ -67,15 +73,21 @@ export function sessionResultsToTableRows(
                           }
                         : null,
                     time:
-                        (result.qualifying_session_results?.q1_laptime &&
-                            result.qualifying_session_results.q2_laptime &&
-                            result.qualifying_session_results.q3_laptime) ??
+                        result.qualifying_session_results?.q3_laptime ??
+                        result.qualifying_session_results?.q2_laptime ??
+                        result.qualifying_session_results?.q1_laptime ??
                         null,
-                    q1Time: result.qualifying_session_results?.q1_laptime || null,
-                    q2Time: result.qualifying_session_results?.q2_laptime || null,
-                    q3Time: result.qualifying_session_results?.q3_laptime || null,
-                } satisfies IQualifyingData & IExpandedQualifyingData
-            }),
+
+                    child: {
+                        columns: QUALIFYING_COLUMNS,
+                        rows: [
+                            formatTime(result.qualifying_session_results?.q1_laptime),
+                            formatTime(result.qualifying_session_results?.q2_laptime),
+                            formatTime(result.qualifying_session_results?.q3_laptime),
+                        ],
+                    },
+                }
+            }) satisfies IQualifyingData[],
             sessionType: SessionType.QUALIFYING,
         }
     }
@@ -101,11 +113,16 @@ export function sessionResultsToTableRows(
                     time: result.race_session_results
                         ? result.race_session_results.total_time
                         : null,
-                    status: result.race_session_results?.result_status || null,
-                    gridPosition: result.race_session_results?.grid_position || null,
-                    points: result.race_session_results?.points || null,
-                } satisfies IRaceData & IExpandedRaceData
-            }),
+                    child: {
+                        rows: [
+                            result.race_session_results?.grid_position ?? null,
+                            result.race_session_results?.points ?? null,
+                            result.race_session_results?.result_status ?? null,
+                        ],
+                        columns: RACE_COLUMNS,
+                    },
+                }
+            }) satisfies IRaceData[],
             sessionType: SessionType.RACE,
         }
     }

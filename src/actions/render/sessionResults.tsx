@@ -25,13 +25,14 @@ async function renderSessionResults({
 }) {
     const results = await fetchSessionResults(season, event, session)
 
-    const { rows, sessionType } = sessionResultsToTableRows(results.data, results.type)
+    const { rows, sessionType, ...rest } = sessionResultsToTableRows(results.data, results.type)
 
     return (
         <ResultsTable
             columns={SESSION_TYPE_COLUMN_MAP[sessionType]}
-            data={rows}
+            rows={rows}
             sessionType={sessionType}
+            {...rest}
         />
     )
 }

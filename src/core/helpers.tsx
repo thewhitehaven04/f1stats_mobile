@@ -1,4 +1,5 @@
-export const formatTime = (time_s: number) => {
+export const formatTime = (time_s: number | null | undefined) => {
+    if (!time_s) return "N/A"
     const hours = Math.floor(time_s / 3600)
     const minutes = Math.floor((time_s % 3600) / 60)
     const seconds = Math.floor(time_s % 60).toString()

@@ -16,6 +16,7 @@ const styleSheet = StyleSheet.create({
         gap: 16,
     },
     card: {
+        width: "100%",
         borderRadius: 16,
         borderWidth: 1,
     },
