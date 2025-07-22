@@ -1,4 +1,6 @@
+import { TextCell } from "@/src/components/Tables"
 import { BASE_COLUMNS, type IBaseResultsData } from "@/src/components/Tables/presets/results/common"
+import { formatTime } from "@/src/core/helpers"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Text } from "react-native"
 
@@ -19,11 +21,15 @@ export const RACE_RESULTS_COLUMNS = [
     ...BASE_COLUMNS,
     raceHelper.accessor("time", {
         header: "Laptime",
-        cell: (info) => <Text>{info.getValue()}</Text>,
+        cell: (info) => (
+            <TextCell style={{ flexBasis: 120 }}>{formatTime(info.getValue() as number)}</TextCell>
+        ),
     }),
     raceHelper.accessor("gap", {
         header: "Gap",
-        cell: (info) => <Text>{info.getValue()}</Text>,
+        cell: (info) => (
+            <TextCell style={{ flexBasis: 84 }}>{formatTime(info.getValue() as number)}</TextCell>
+        ),
     }),
 ]
 

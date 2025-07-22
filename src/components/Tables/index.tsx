@@ -5,8 +5,11 @@ import type { ComponentProps } from "react"
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
 
 const styleSheet = StyleSheet.create({
+    scrollWrapper: {
+        width: "100%",
+    },
     wrapper: {
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: getColor("border"),
         borderRadius: 16,
         overflow: "hidden",
@@ -21,12 +24,15 @@ const styleSheet = StyleSheet.create({
         fontSize: FontSizes.Body,
     },
     cell: {
-        borderStartWidth: 1,
-        borderEndWidth: 1,
-        height: 32,
+        borderStartWidth: 0.5,
+        borderEndWidth: 0.5,
+        height: 40,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        paddingBlock: 4,
+        paddingInline: 12,
+        flexGrow: 1,
     },
     body: {
         borderColor: getColor("border"),
@@ -37,7 +43,8 @@ const styleSheet = StyleSheet.create({
         gap: 0,
         justifyContent: "flex-start",
         alignItems: "center",
-        borderBottomWidth: 1,
+        borderTopWidth: 0.5,
+        borderBottomWidth: 0.5,
     },
     textCell: {
         fontSize: FontSizes.Body,
@@ -47,7 +54,7 @@ const styleSheet = StyleSheet.create({
 
 export const Table = ({ children, style, ...rest }: ComponentProps<typeof View>) => {
     return (
-        <ScrollView>
+        <ScrollView style={styleSheet.scrollWrapper}>
             <View style={StyleSheet.compose(styleSheet.wrapper, style)} {...rest}>
                 {children}
             </View>

@@ -10,13 +10,13 @@ const helper = createColumnHelper<IBaseResultsData>()
 
 export const BASE_COLUMNS = [
     helper.display({
-        cell: (info) => <TextCell style={{ width: 48 }}>{info.row.index + 1}</TextCell>,
+        cell: (info) => <TextCell style={{ flexBasis: 60 }}>{info.row.index + 1}</TextCell>,
         header: "Pos",
-        size: 48,
+        size: 60,
     }),
     helper.accessor("driver.abbreviation", {
-        cell: (info) => <TextCell style={{ width: 60 }}>{info.getValue()}</TextCell>,
+        cell: (info) => <TextCell style={{ flexBasis: 84 }}>{info.getValue()}</TextCell>,
         header: "Driver",
-        size: 60,
+        size: 84,
     }),
 ]

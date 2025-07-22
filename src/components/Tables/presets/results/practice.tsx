@@ -14,14 +14,14 @@ export const PRACTICE_RESULTS_COLUMNS = [
     ...BASE_COLUMNS,
     helper.accessor("time", {
         cell: (info) => (
-            <TextCell style={{ width: 120 }}>{formatTime(info.getValue() as number)}</TextCell>
+            <TextCell style={{ flexBasis: 120 }}>{formatTime(info.getValue() as number)}</TextCell>
         ),
         header: "Laptime",
         size: 120,
     }),
     helper.accessor("gap", {
-        cell: (info) => <TextCell style={{ width: 72 }}>{info.getValue()}</TextCell>,
+        cell: (info) => <TextCell style={{ flexBasis: 84 }}>{info.getValue()}</TextCell>,
         header: "Gap",
-        size: 72,
+        size: 84,
     }),
 ]

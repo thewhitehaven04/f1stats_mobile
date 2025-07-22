@@ -28,7 +28,7 @@ export const ResultsTable = (
         <Table>
             <TableHeader>
                 {getFlatHeaders().map((header) => (
-                    <TextCell key={header.column.id} style={{ width: header.getSize() }}>
+                    <TextCell key={header.column.id} style={{ flexBasis: header.getSize() }}>
                         {flexRender(header.column.columnDef.header, header.getContext())}
                     </TextCell>
                 ))}
