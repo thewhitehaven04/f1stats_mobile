@@ -1,5 +1,7 @@
 "use client"
+import { getColor } from "@/src/colorScheme"
 import { Table, TableBody, TableHeader, TableRow, TextCell } from "@/src/components/Tables"
+import { useDriverSelectionDispatch } from "@/src/components/Tables/presets/results/driverSelection"
 import { SessionType } from "@/src/components/Tables/presets/results/mapper"
 import type { IPracticeData } from "@/src/components/Tables/presets/results/practice"
 import { type IQualifyingData } from "@/src/components/Tables/presets/results/qualifying"
@@ -11,14 +13,9 @@ import {
     getExpandedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import { useEffect } from "react"
-import { Pressable } from "react-native"
-import Animated, {
-    Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
-} from "react-native-reanimated"
+import { Fragment, useMemo } from "react"
+import { Pressable, StyleSheet } from "react-native"
+import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated"
 
 type TResultsData =
     | {
@@ -37,6 +34,11 @@ type TResultsData =
           sessionType: typeof SessionType.QUALIFYING
       }
 
+const styleSheet = StyleSheet.create({
+    detailRow: { width: "100%", transformOrigin: "top" },
+    textCell: { flex: 1 },
+})
+
 const DetailsRow = ({
     headers,
     row,
@@ -46,35 +48,22 @@ const DetailsRow = ({
     row: string[]
     onPress: () => void
 }) => {
-    const svTranslate = useSharedValue(-100)
-    const svOpacity = useSharedValue(0)
-
-    useEffect(() => {
-        svTranslate.value = withTiming(0, {
-            duration: 300,
-            easing: Easing.inOut(Easing.quad),
-        })
-        svOpacity.value = withTiming(1, {
-            duration: 300,
-            easing: Easing.out(Easing.quad),
-        })
-    }, [svTranslate, svOpacity])
-
-    const scaleStyle = useAnimatedStyle(() => ({
-        opacity: svOpacity.value,
-        transform: [
-            {
-                translateY: `${svTranslate.value}%`,
-            },
-        ],
-    }))
+    const style = useMemo(
+        () => ({
+            ...styleSheet.textCell,
+            paddingBlock: 2,
+            paddingInline: 4,
+            height: 32,
+        }),
+        [],
+    )
 
     return (
-        <Animated.View style={[{ width: "100%", transformOrigin: "top", zIndex: -1 }, scaleStyle]}>
-            <Pressable onPress={onPress}>
+        <Animated.View style={styleSheet.detailRow} entering={FadeInUp} exiting={FadeOutUp}>
+            <Pressable onLongPress={onPress}>
                 <TableHeader>
                     {headers.map((header) => (
-                        <TextCell style={{ flex: 1 }} key={header}>
+                        <TextCell style={style} key={header}>
                             {header}
                         </TextCell>
                     ))}
@@ -82,7 +71,7 @@ const DetailsRow = ({
             </Pressable>
             <TableRow>
                 {row.map((text) => (
-                    <TextCell style={{ flex: 1 }} key={text}>
+                    <TextCell style={style} key={text}>
                         {text}
                     </TextCell>
                 ))}
@@ -92,30 +81,39 @@ const DetailsRow = ({
 }
 
 export const ResultsTable = (props: TResultsData) => {
+    const { updateDriverState } = useDriverSelectionDispatch()
     const { getFlatHeaders, getRowModel } = useReactTable({
         columns: props.columns,
         data: props.rows,
         getRowCanExpand: () => props.sessionType !== SessionType.PRACTICE,
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
+        onRowSelectionChange: updateDriverState,
+        getRowId: (row) => row.driver.id,
     })
+
+    const headers = getFlatHeaders()
+    const { rows } = getRowModel()
 
     return (
         <Table>
             <TableHeader>
-                {getFlatHeaders().map((header) => (
+                {headers.map((header) => (
                     <TextCell key={header.column.id} style={{ flexBasis: header.getSize() }}>
                         {flexRender(header.column.columnDef.header, header.getContext())}
                     </TextCell>
                 ))}
             </TableHeader>
             <TableBody style={{ position: "relative" }}>
-                {getRowModel().rows.map((row) => (
-                    <>
+                {rows.map((row) => (
+                    <Fragment key={row.id}>
                         <TableRow
-                            key={row.id}
                             onPress={row.getToggleExpandedHandler()}
-                            style={{ zIndex: 2 }}
+                            onLongPress={row.getToggleSelectedHandler()}
+                            style={{
+                                backgroundColor: getColor("background"),
+                                filter: row.getIsSelected() ? "brightness(0.95)" : "none",
+                            }}
                         >
                             {row
                                 .getVisibleCells()
@@ -123,14 +121,14 @@ export const ResultsTable = (props: TResultsData) => {
                                     flexRender(cell.column.columnDef.cell, cell.getContext()),
                                 )}
                         </TableRow>
-                        {row.getIsExpanded() && props.sessionType !== SessionType.PRACTICE && (
+                        {row.getIsExpanded() && (
                             <DetailsRow
                                 headers={row.original.child.columns}
                                 row={row.original.child.rows}
                                 onPress={row.getToggleExpandedHandler()}
                             />
                         )}
-                    </>
+                    </Fragment>
                 ))}
             </TableBody>
         </Table>
