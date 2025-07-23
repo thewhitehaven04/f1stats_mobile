@@ -2,21 +2,29 @@
 import renderSeasonMetrics from "@/src/actions/render/sessionMetrics"
 import renderSessionResults from "@/src/actions/render/sessionResults"
 import { getColor } from "@/src/colorScheme"
+import { ResultsSection } from "@/src/components/ResultSelection"
+import { DriverSelection } from "@/src/components/Tables/presets/results/driverSelection"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { useLocalSearchParams } from "expo-router"
 import { Suspense, useMemo } from "react"
-import { ScrollView, StyleSheet, View } from "react-native"
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+    },
+    scroll: {
         paddingTop: 8,
         paddingInline: 16,
         flexDirection: "column",
-        alignItems: "center",
+        alignItems: "stretch",
         gap: 16,
+        flexGrow: 1,
     },
     card: {
-        width: "100%",
         borderRadius: 16,
         borderWidth: 1,
     },
@@ -47,11 +55,16 @@ export default function ResultsScreen() {
     )
 
     return (
-        <ScrollView contentContainerStyle={styleSheet.wrapper}>
-            <View style={{ ...styleSheet.card, borderColor: getColor("border") }}>
-                <Suspense fallback={<LoadingSpinner />}>{sessionMetrics}</Suspense>
-            </View>
-            <Suspense fallback={<LoadingSpinner />}>{sessionResults}</Suspense>
-        </ScrollView>
+        <DriverSelection>
+            <SafeAreaView style={styleSheet.wrapper}>
+                <ScrollView contentContainerStyle={styleSheet.scroll}>
+                    <View style={{ ...styleSheet.card, borderColor: getColor("border") }}>
+                        <Suspense fallback={<LoadingSpinner />}>{sessionMetrics}</Suspense>
+                    </View>
+                    <Suspense fallback={<LoadingSpinner />}>{sessionResults}</Suspense>
+                </ScrollView>
+                <ResultsSection />
+            </SafeAreaView>
+        </DriverSelection>
     )
 }

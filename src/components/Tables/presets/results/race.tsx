@@ -49,14 +49,14 @@ const detailsHelper = createColumnHelper<IExpandedRaceData>()
 export const RACE_DETAILS_COLUMNS = [
     detailsHelper.accessor("gridPosition", {
         header: "Grid",
-        cell: (info) => <Text>{info.getValue()}</Text>,
+        cell: (info) => <Text key='gridPosition'>{info.getValue()}</Text>,
     }),
     detailsHelper.accessor("points", {
         header: "Points",
-        cell: (info) => <Text>{info.getValue()}</Text>,
+        cell: (info) => <Text key='points'>{info.getValue()}</Text>,
     }),
     detailsHelper.accessor("status", {
         header: "Info",
-        cell: (info) => <Text>{info.getValue()}</Text>,
+        cell: (info) => <Text key='status'>{info.getValue()}</Text>,
     }),
 ]

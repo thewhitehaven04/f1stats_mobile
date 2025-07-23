@@ -36,6 +36,7 @@ export default function RootLayout() {
                         title: `${route.params.event} - ${route.params.session} results`,
                         contentStyle: {
                             backgroundColor: getColor("background"),
+                            marginBottom: 0,
                         },
                     })}
                 />

@@ -2,17 +2,15 @@
 import { getColor } from "@/src/colorScheme"
 import * as FontSizes from "@/src/fontSizes"
 import type { ComponentProps } from "react"
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
+import { Pressable } from "react-native-gesture-handler"
 
 const styleSheet = StyleSheet.create({
-    scrollWrapper: {
-        width: "100%",
-    },
     wrapper: {
         borderWidth: 0.5,
         borderColor: getColor("border"),
         borderRadius: 16,
-        overflow: "hidden",
+        width: '100%',
     },
     header: {
         width: "100%",
@@ -31,7 +29,7 @@ const styleSheet = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "center",
         paddingBlock: 4,
-        paddingInline: 12,
+        paddingInline: 8,
         flexGrow: 1,
     },
     body: {
@@ -54,11 +52,9 @@ const styleSheet = StyleSheet.create({
 
 export const Table = ({ children, style, ...rest }: ComponentProps<typeof View>) => {
     return (
-        <ScrollView style={styleSheet.scrollWrapper}>
-            <View style={StyleSheet.compose(styleSheet.wrapper, style)} {...rest}>
-                {children}
-            </View>
-        </ScrollView>
+        <View style={StyleSheet.compose(styleSheet.wrapper, style)} {...rest}>
+            {children}
+        </View>
     )
 }
 
@@ -84,10 +80,25 @@ export const TableRow = ({
     children,
     style,
     onPress,
+    onLongPress,
     ...rest
-}: ComponentProps<typeof View> & { onPress?: ComponentProps<typeof Pressable>["onPress"] }) => {
+}: ComponentProps<typeof View> & {
+    onPress?: ComponentProps<typeof Pressable>["onPress"]
+    onLongPress?: ComponentProps<typeof Pressable>["onLongPress"]
+}) => {
     return onPress ? (
-        <Pressable onPress={onPress}>
+        <Pressable
+            style={({ pressed }) => ({
+                filter: pressed ? "brightness(0.95)" : "none",
+                transform: [
+                    {
+                        scaleY: pressed ? 0.95 : 1,
+                    },
+                ],
+            })}
+            onPress={onPress}
+            onLongPress={onLongPress}
+        >
             <View
                 style={StyleSheet.compose(
                     { ...styleSheet.row, borderColor: getColor("border") },
