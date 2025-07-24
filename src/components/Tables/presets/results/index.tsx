@@ -15,7 +15,6 @@ import {
 } from "@tanstack/react-table"
 import { Fragment, useMemo } from "react"
 import { Pressable, StyleSheet } from "react-native"
-import { ScrollView } from "react-native-gesture-handler"
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated"
 
 type TResultsData =
@@ -98,43 +97,41 @@ export const ResultsTable = (props: TResultsData) => {
     const { rows } = getRowModel()
 
     return (
-        <ScrollView horizontal style={styleSheet.scroll} contentContainerStyle={{ width: "100%", marginBottom: 16 }}>
-            <Table>
-                <TableHeader>
-                    {headers.map((header) => (
-                        <TextCell key={header.column.id} style={{ flexBasis: header.getSize() }}>
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                        </TextCell>
-                    ))}
-                </TableHeader>
-                <TableBody style={{ overflowX: "scroll" }}>
-                    {rows.map((row) => (
-                        <Fragment key={row.id}>
-                            <TableRow
+        <Table>
+            <TableHeader>
+                {headers.map((header) => (
+                    <TextCell key={header.column.id} style={{ flexBasis: header.getSize() }}>
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                    </TextCell>
+                ))}
+            </TableHeader>
+            <TableBody style={{ overflowX: "scroll" }}>
+                {rows.map((row) => (
+                    <Fragment key={row.id}>
+                        <TableRow
+                            onPress={row.getToggleExpandedHandler()}
+                            onLongPress={row.getToggleSelectedHandler()}
+                            style={{
+                                backgroundColor: getColor("background"),
+                                filter: row.getIsSelected() ? "brightness(0.95)" : "none",
+                            }}
+                        >
+                            {row
+                                .getVisibleCells()
+                                .map((cell) =>
+                                    flexRender(cell.column.columnDef.cell, cell.getContext()),
+                                )}
+                        </TableRow>
+                        {row.getIsExpanded() && (
+                            <DetailsRow
+                                headers={row.original.child.columns}
+                                row={row.original.child.rows}
                                 onPress={row.getToggleExpandedHandler()}
-                                onLongPress={row.getToggleSelectedHandler()}
-                                style={{
-                                    backgroundColor: getColor("background"),
-                                    filter: row.getIsSelected() ? "brightness(0.95)" : "none",
-                                }}
-                            >
-                                {row
-                                    .getVisibleCells()
-                                    .map((cell) =>
-                                        flexRender(cell.column.columnDef.cell, cell.getContext()),
-                                    )}
-                            </TableRow>
-                            {row.getIsExpanded() && (
-                                <DetailsRow
-                                    headers={row.original.child.columns}
-                                    row={row.original.child.rows}
-                                    onPress={row.getToggleExpandedHandler()}
-                                />
-                            )}
-                        </Fragment>
-                    ))}
-                </TableBody>
-            </Table>
-        </ScrollView>
+                            />
+                        )}
+                    </Fragment>
+                ))}
+            </TableBody>
+        </Table>
     )
 }

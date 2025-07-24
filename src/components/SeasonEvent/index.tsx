@@ -40,7 +40,7 @@ const seasonEventStyleSheet = StyleSheet.create({
         flexDirection: "column",
         alignItems: "flex-start",
         gap: 16,
-        padding: 16,
+        paddingInline: 16,
     },
 })
 
@@ -53,7 +53,11 @@ export function SeasonEvent({ event }: { event: TMappedSeasonEvent }) {
                     <Text style={seasonEventStyleSheet.headerText}>{event.name}</Text>
                 </View>
             </ListItemTitle>
-            <ListItemContent style={seasonEventStyleSheet.contentWrapper} expandedHeight={290}>
+            <ListItemContent
+                style={seasonEventStyleSheet.contentWrapper}
+                expandedHeight={290}
+                expandedPadding={16}
+            >
                 {Object.values(event.sessions).map((s: ISession | null) =>
                     s ? (
                         <Link

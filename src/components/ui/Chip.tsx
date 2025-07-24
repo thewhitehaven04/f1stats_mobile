@@ -22,7 +22,7 @@ export const Chip = ({
     return (
         <Pressable onPress={onPress}>
             <Animated.View
-                entering={FadeIn.springify(0.1)}
+                entering={FadeIn}
                 exiting={FadeOut}
                 style={StyleSheet.compose(
                     {

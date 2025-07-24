@@ -7,6 +7,7 @@ import { PRACTICE_RESULTS_COLUMNS } from "@/src/components/Tables/presets/result
 import { QUALIFYING_COLUMNS_RESULTS } from "@/src/components/Tables/presets/results/qualifying"
 import { RACE_RESULTS_COLUMNS } from "@/src/components/Tables/presets/results/race"
 import { fetchSessionResults } from "@/src/fetchers/results"
+import { ScrollView } from "react-native"
 
 const SESSION_TYPE_COLUMN_MAP = Object.freeze({
     [SessionType.PRACTICE]: PRACTICE_RESULTS_COLUMNS,
@@ -28,12 +29,14 @@ async function renderSessionResults({
     const { rows, sessionType, ...rest } = sessionResultsToTableRows(results.data, results.type)
 
     return (
-        <ResultsTable
-            columns={SESSION_TYPE_COLUMN_MAP[sessionType]}
-            rows={rows}
-            sessionType={sessionType}
-            {...rest}
-        />
+        <ScrollView horizontal contentContainerStyle={{ width: "100%" }}>
+            <ResultsTable
+                columns={SESSION_TYPE_COLUMN_MAP[sessionType]}
+                rows={rows}
+                sessionType={sessionType}
+                {...rest}
+            />
+        </ScrollView>
     )
 }
 

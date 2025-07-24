@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 
 const noop = () => {}
 
-const COLLAPSE_TIMEOUT = 300
+const COLLAPSE_TIMEOUT = 400
 
 const CollapsableItemContext = createContext<{
     setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>
@@ -104,7 +104,7 @@ export const ListItemTitle = (
                 onPress={() => {
                     collapseTimeoutRef.current = setTimeout(
                         () => setIsCollapsed(!isCollapsed),
-                        isCollapsed ? collapseTimeout : 0,
+                        isCollapsed ? 0 : collapseTimeout,
                     )
                 }}
             >
@@ -114,20 +114,24 @@ export const ListItemTitle = (
     )
 }
 
+const animationProps = {
+    duration: COLLAPSE_TIMEOUT,
+    easing: Easing.out(Easing.cubic),
+}
+
 export const ListItemContent = (
-    props: ComponentProps<typeof View> & { expandedHeight: number },
+    props: ComponentProps<typeof View> & { expandedHeight: number; expandedPadding: number },
 ) => {
-    const { children, style, expandedHeight, ...rest } = props
+    const { children, style, expandedHeight, expandedPadding, ...rest } = props
 
     const { isCollapsed } = useContext(CollapsableItemContext)
 
     const svHeight = useSharedValue(isCollapsed ? 0 : expandedHeight)
+    const svPadding = useSharedValue(isCollapsed ? 0 : expandedPadding)
 
     const heightStyle = useAnimatedStyle(() => ({
-        height: withTiming(svHeight.value, {
-            duration: COLLAPSE_TIMEOUT,
-            easing: Easing.inOut(Easing.cubic),
-        }),
+        height: withTiming(svHeight.value, animationProps),
+        paddingBlock: withTiming(svPadding.value, animationProps),
     }))
 
     useEffect(() => {

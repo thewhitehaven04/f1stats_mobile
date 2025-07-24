@@ -25,22 +25,22 @@ const raceHelper = createColumnHelper<IRaceData>()
 export const RACE_RESULTS_COLUMNS = [
     ...BASE_COLUMNS,
     raceHelper.accessor("time", {
-        header: "Laptime",
+        header: "Total time",
         cell: (info) => (
-            <TextCell key="laptime" style={{ flexBasis: 160 }}>
+            <TextCell key="Total time" style={{ flexBasis: 144 }}>
                 {formatTime(info.getValue() as number)}
             </TextCell>
         ),
-        size: 160,
+        size: 144,
     }),
     raceHelper.accessor("gap", {
         header: "Gap",
         cell: (info) => (
-            <TextCell key="gap" style={{ flexBasis: 84 }}>
+            <TextCell key="gap" style={{ flexBasis: 96 }}>
                 {formatTime(info.getValue() as number)}
             </TextCell>
         ),
-        size: 84,
+        size: 96,
     }),
 ]
 
@@ -49,14 +49,14 @@ const detailsHelper = createColumnHelper<IExpandedRaceData>()
 export const RACE_DETAILS_COLUMNS = [
     detailsHelper.accessor("gridPosition", {
         header: "Grid",
-        cell: (info) => <Text key='gridPosition'>{info.getValue()}</Text>,
+        cell: (info) => <Text key="gridPosition">{info.getValue()}</Text>,
     }),
     detailsHelper.accessor("points", {
         header: "Points",
-        cell: (info) => <Text key='points'>{info.getValue()}</Text>,
+        cell: (info) => <Text key="points">{info.getValue()}</Text>,
     }),
     detailsHelper.accessor("status", {
         header: "Info",
-        cell: (info) => <Text key='status'>{info.getValue()}</Text>,
+        cell: (info) => <Text key="status">{info.getValue()}</Text>,
     }),
 ]

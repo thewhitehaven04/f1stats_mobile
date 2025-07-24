@@ -17,6 +17,8 @@ const styleSheet = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
     },
     headerTextCell: {
         fontSize: FontSizes.Body,
