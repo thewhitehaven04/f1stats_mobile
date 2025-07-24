@@ -1,5 +1,5 @@
 "use client"
-import { useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams } from "expo-router"
 import { View, Text } from "react-native"
 
 export default function LapsScreen() {
@@ -7,7 +7,7 @@ export default function LapsScreen() {
 
     return (
         <View>
-            <Text>test</Text>
+            <Text>{JSON.stringify(params)}</Text>
         </View>
     )
 }

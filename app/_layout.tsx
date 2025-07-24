@@ -2,12 +2,12 @@
 import { getColor } from "@/src/colorScheme"
 import Stack from "expo-router/build/layouts/Stack"
 import React from "react"
+import { SafeAreaView } from 'react-native'
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 export const unstable_settings = {
     initialRouteName: "index",
 }
-
 export default function RootLayout() {
     return (
         <GestureHandlerRootView>
@@ -36,7 +36,6 @@ export default function RootLayout() {
                         title: `${route.params.event} - ${route.params.session} results`,
                         contentStyle: {
                             backgroundColor: getColor("background"),
-                            marginBottom: 0,
                         },
                     })}
                 />
