@@ -7,7 +7,7 @@ import {
 import { Button } from "@/src/components/ui/Button"
 import { Chip } from "@/src/components/ui/Chip"
 import { Link, useLocalSearchParams } from "expo-router"
-import { StyleSheet, View, Text, ScrollView } from "react-native"
+import { StyleSheet, Text, ScrollView } from "react-native"
 import Animated, { SlideInDown, SlideOutDown } from "react-native-reanimated"
 
 const styleSheet = StyleSheet.create({
@@ -16,7 +16,7 @@ const styleSheet = StyleSheet.create({
         borderRadius: 16,
         borderWidth: 1,
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         alignItems: "baseline",
         gap: 8,
         paddingInline: 16,

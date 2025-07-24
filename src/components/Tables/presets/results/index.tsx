@@ -16,6 +16,7 @@ import {
 import { Fragment, useMemo } from "react"
 import { Pressable, StyleSheet } from "react-native"
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated"
+import * as Haptics from "expo-haptics"
 
 type TResultsData =
     | {
@@ -109,7 +110,10 @@ export const ResultsTable = (props: TResultsData) => {
                 {rows.map((row) => (
                     <Fragment key={row.id}>
                         <TableRow
-                            onPress={row.getToggleExpandedHandler()}
+                            onPress={() => { 
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid)
+                                return row.getToggleExpandedHandler() 
+                            }}
                             onLongPress={row.getToggleSelectedHandler()}
                             style={{
                                 backgroundColor: getColor("background"),

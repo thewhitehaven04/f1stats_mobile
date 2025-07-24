@@ -34,9 +34,6 @@ const styleSheet = StyleSheet.create({
         paddingInline: 8,
         flexGrow: 1,
     },
-    body: {
-        borderColor: getColor("border"),
-    },
     row: {
         display: "flex",
         flexDirection: "row",
@@ -126,7 +123,7 @@ export const TableRow = ({
 
 export const TableBody = ({ children, style, ...rest }: ComponentProps<typeof View>) => {
     return (
-        <View style={StyleSheet.compose(styleSheet.body, style)} {...rest}>
+        <View style={style} {...rest}>
             {children}
         </View>
     )
