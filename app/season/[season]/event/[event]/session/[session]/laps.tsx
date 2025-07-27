@@ -1,6 +1,6 @@
 "use client"
 import { useLocalSearchParams } from "expo-router"
-import { View, Text, StyleSheet, ScrollView } from "react-native"
+import { View, Text, StyleSheet, ScrollView, FlatList } from "react-native"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { ApiClient } from "@/src/client"
 import { getSessionLaptimesFilteredApiSeasonYearEventEventSessionSessionLapsPost } from "@/src/client/generated"
@@ -41,7 +41,7 @@ const styleSheet = StyleSheet.create({
         width: "100%",
         display: "flex",
         flexDirection: "row",
-        justifyContent: 'space-between',
+        justifyContent: "space-between",
         borderWidth: 1,
         borderRadius: 8,
     },
@@ -140,95 +140,92 @@ export default function LapsScreen() {
                     </Button>
                 )}
             </View>
-            <ScrollView key={selectedDriverIndex}>
-                <View style={styleSheet.lapList}>
-                    {selectedDriverData.map((driverData, index) => {
-                        const Compound = COLOR_MAP[driverData.compound_id as TCompound]
-
-                        return (
-                            <View
-                                key={driverData.id}
-                                style={{
-                                    ...styleSheet.cardWrapper,
-                                    borderColor: getColor("border"),
-                                }}
-                            >
-                                <View style={styleSheet.s1Column}>
-                                    <View>
-                                        <Text style={{ fontSize: FontSizes.Body }}>
-                                            Lap {index + 1}
-                                        </Text>
-                                    </View>
-                                    <View>
-                                        <Text style={styleSheet.timeText}>S1</Text>
-                                    </View>
-                                    <View>
-                                        <TrackMetric
-                                            value={formatTime(driverData.sector_1_time)}
-                                            isPersonalBest={driverData.is_personal_best_s1}
-                                            isSessionBest={driverData.is_best_s1}
-                                        />
-                                    </View>
-                                    <View>
-                                        <TrackMetric
-                                            value={driverData.speedtrap_1}
-                                            isSessionBest={driverData.is_best_st1}
-                                        />
-                                    </View>
+            <FlatList
+                data={selectedDriverData}
+                contentContainerStyle={styleSheet.lapList}
+                renderItem={({ item }) => {
+                    const Compound = COLOR_MAP[item.compound_id as TCompound]
+                    return (
+                        <View
+                            key={item.id}
+                            style={{
+                                ...styleSheet.cardWrapper,
+                                borderColor: getColor("border"),
+                            }}
+                        >
+                            <View style={styleSheet.s1Column}>
+                                <View>
+                                    <Text style={{ fontSize: FontSizes.Body }}>Lap 1</Text>
                                 </View>
-                                <View style={styleSheet.s2Column}>
-                                    <View>
-                                        <TrackMetric
-                                            value={formatTime(driverData.laptime)}
-                                            isPersonalBest={driverData.is_pb}
-                                            style={{
-                                                fontSize: FontSizes.Body,
-                                            }}
-                                        />
-                                    </View>
-                                    <View>
-                                        <Text style={styleSheet.timeText}>S2</Text>
-                                    </View>
-                                    <View>
-                                        <TrackMetric
-                                            value={formatTime(driverData.sector_2_time)}
-                                            isPersonalBest={driverData.is_personal_best_s2}
-                                            isSessionBest={driverData.is_best_s2}
-                                        />
-                                    </View>
-                                    <View>
-                                        <TrackMetric
-                                            value={driverData.speedtrap_2}
-                                            isSessionBest={driverData.is_best_st2}
-                                        />
-                                    </View>
+                                <View>
+                                    <Text style={styleSheet.timeText}>S1</Text>
                                 </View>
-                                <View style={styleSheet.s3Column}>
-                                    <View>
-                                        <Compound width={24} height={24} />
-                                    </View>
-                                    <View>
-                                        <Text style={styleSheet.timeText}>S3</Text>
-                                    </View>
-                                    <View>
-                                        <TrackMetric
-                                            value={formatTime(driverData.sector_3_time)}
-                                            isPersonalBest={driverData.is_personal_best_s3}
-                                            isSessionBest={driverData.is_best_s3}
-                                        />
-                                    </View>
-                                    <View>
-                                        <TrackMetric
-                                            value={driverData.speedtrap_fl}
-                                            isSessionBest={driverData.is_best_stfl}
-                                        />
-                                    </View>
+                                <View>
+                                    <TrackMetric
+                                        value={formatTime(item.sector_1_time)}
+                                        isPersonalBest={item.is_personal_best_s1}
+                                        isSessionBest={item.is_best_s1}
+                                    />
+                                </View>
+                                <View>
+                                    <TrackMetric
+                                        value={item.speedtrap_1}
+                                        isSessionBest={item.is_best_st1}
+                                    />
                                 </View>
                             </View>
-                        )
-                    })}
-                </View>
-            </ScrollView>
+                            <View style={styleSheet.s2Column}>
+                                <View>
+                                    <TrackMetric
+                                        value={formatTime(item.laptime)}
+                                        isPersonalBest={item.is_pb}
+                                        style={{
+                                            fontSize: FontSizes.Body,
+                                        }}
+                                    />
+                                </View>
+                                <View>
+                                    <Text style={styleSheet.timeText}>S2</Text>
+                                </View>
+                                <View>
+                                    <TrackMetric
+                                        value={formatTime(item.sector_2_time)}
+                                        isPersonalBest={item.is_personal_best_s2}
+                                        isSessionBest={item.is_best_s2}
+                                    />
+                                </View>
+                                <View>
+                                    <TrackMetric
+                                        value={item.speedtrap_2}
+                                        isSessionBest={item.is_best_st2}
+                                    />
+                                </View>
+                            </View>
+                            <View style={styleSheet.s3Column}>
+                                <View>
+                                    <Compound width={24} height={24} />
+                                </View>
+                                <View>
+                                    <Text style={styleSheet.timeText}>S3</Text>
+                                </View>
+                                <View>
+                                    <TrackMetric
+                                        value={formatTime(item.sector_3_time)}
+                                        isPersonalBest={item.is_personal_best_s3}
+                                        isSessionBest={item.is_best_s3}
+                                    />
+                                </View>
+                                <View>
+                                    <TrackMetric
+                                        value={item.speedtrap_fl}
+                                        isSessionBest={item.is_best_stfl}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    )
+                }}
+            />
         </Suspense>
     )
 }
