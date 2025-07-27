@@ -45,6 +45,8 @@ export const LapCard = (props: {
     lapNumber: number
     laptime: number | null
     s1: number | null
+    isPBS1: boolean,
+    isSBS1: boolean,
     s2: number | null
     s3: number | null
     st1: number | null

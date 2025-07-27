@@ -7,8 +7,12 @@ import { getSessionLaptimesFilteredApiSeasonYearEventEventSessionSessionLapsPost
 import { Suspense, useState } from "react"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { Button } from "@/src/components/ui/Button"
-import { LapCard } from "@/src/components/Tables/presets/laps"
 import Ionicons from "@expo/vector-icons/Ionicons"
+import { TyreCompound, type TCompound } from "@/src/components/ui/TyreCompound"
+import * as FontSizes from "@/src/fontSizes"
+import { TrackMetric } from "@/src/components/Laptime"
+import { getColor } from "@/src/colorScheme"
+import { formatTime } from "@/src/core/helpers"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -30,6 +34,37 @@ const styleSheet = StyleSheet.create({
         alignItems: "stretch",
         gap: 8,
         padding: 8,
+    },
+    cardWrapper: {
+        paddingBlock: 8,
+        paddingInline: 16,
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+        gap: 8,
+        borderWidth: 1,
+        borderRadius: 8,
+    },
+    driverText: {
+        fontSize: FontSizes.Title.sm,
+        fontWeight: "500",
+    },
+    dataRow: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "baseline",
+        justifyContent: "space-between",
+        width: "100%",
+    },
+    titleRow: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        gap: 16,
+    },
+    timeText: {
+        fontSize: FontSizes.Body,
     },
 })
 
@@ -95,21 +130,77 @@ export default function LapsScreen() {
                 )}
             </View>
             <View style={styleSheet.lapList}>
-                {selectedDriverData.map((driverData, index) => (
-                    <LapCard
+                {selectedDriverData.map((driverData) => (
+                    <View
                         key={driverData.id}
-                        isPersonalBest={driverData.is_pb}
-                        isSessionBest={false}
-                        lapNumber={index + 1}
-                        laptime={driverData.laptime}
-                        s1={driverData.sector_1_time}
-                        s2={driverData.sector_2_time}
-                        s3={driverData.sector_3_time}
-                        st1={driverData.speedtrap_1}
-                        st2={driverData.speedtrap_2}
-                        stFL={driverData.speedtrap_fl}
-                        compound={driverData.compound_id}
-                    />
+                        style={{ ...styleSheet.wrapper, borderColor: getColor("border") }}
+                    >
+                        <View style={styleSheet.titleRow}>
+                            <View>
+                                <TrackMetric
+                                    value={driverData.laptime}
+                                    isPersonalBest={driverData.is_pb}
+                                />
+                            </View>
+                            <View>
+                                <TyreCompound type={driverData.compound_id as TCompound} />
+                            </View>
+                        </View>
+                        <View style={styleSheet.dataRow}>
+                            <View>
+                                <Text style={styleSheet.timeText}>S1</Text>
+                            </View>
+                            <View>
+                                <Text style={styleSheet.timeText}>S2</Text>
+                            </View>
+                            <View>
+                                <Text style={styleSheet.timeText}>S3</Text>
+                            </View>
+                        </View>
+                        <View style={styleSheet.dataRow}>
+                            <View>
+                                <TrackMetric
+                                    value={formatTime(driverData.sector_1_time)}
+                                    isPersonalBest={driverData.is_personal_best_s1}
+                                    isSessionBest={driverData.is_best_s1}
+                                />
+                            </View>
+                            <View>
+                                <TrackMetric
+                                    value={formatTime(driverData.sector_2_time)}
+                                    isPersonalBest={driverData.is_personal_best_s2}
+                                    isSessionBest={driverData.is_best_s2}
+                                />
+                            </View>
+                            <View>
+                                <TrackMetric
+                                    value={formatTime(driverData.sector_3_time)}
+                                    isPersonalBest={driverData.is_personal_best_s3}
+                                    isSessionBest={driverData.is_best_s3}
+                                />
+                            </View>
+                        </View>
+                        <View style={styleSheet.dataRow}>
+                            <View>
+                                <TrackMetric
+                                    value={driverData.speedtrap_1}
+                                    isSessionBest={driverData.is_best_st1}
+                                />
+                            </View>
+                            <View>
+                                <TrackMetric
+                                    value={driverData.speedtrap_2}
+                                    isSessionBest={driverData.is_best_st2}
+                                />
+                            </View>
+                            <View>
+                                <TrackMetric
+                                    value={driverData.speedtrap_fl}
+                                    isSessionBest={driverData.is_best_stfl}
+                                />
+                            </View>
+                        </View>
+                    </View>
                 ))}
             </View>
         </Suspense>

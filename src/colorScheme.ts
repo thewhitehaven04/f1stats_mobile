@@ -32,6 +32,9 @@ const lightTheme = {
     sidebarPrimary: "#18181b",
     sidebarPrimaryForeground: "#fafafa",
     sidebarRing: "#9f9fa9",
+    nonPersonalBest: "#f8d30b",
+    sessionBest: "#aa3cdc",
+    personalBest: "#4dd346",
 }
 const darkTheme = {
     accent: "#27272a",
@@ -65,10 +68,10 @@ const darkTheme = {
     sidebarPrimary: "#1447e6",
     sidebarPrimaryForeground: "#fafafa",
     sidebarRing: "#71717b",
+    nonPersonalBest: "#f8d30b",
+    sessionBest: "#aa3cdc",
+    personalBest: "#4dd346",
 }
-
-console.log("light theme: ", lightTheme)
-console.log("dark theme: ", darkTheme)
 
 export const getColor = (color: keyof typeof lightTheme) =>
     Appearance.getColorScheme() === "dark" ? darkTheme[color] : lightTheme[color]
