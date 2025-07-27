@@ -12,20 +12,20 @@ const helper = createColumnHelper<IBaseResultsData>()
 export const BASE_COLUMNS = [
     helper.display({
         cell: (info) => (
-            <TextCell key="pos" style={{ flexBasis: 60 }}>
+            <TextCell key="pos" style={{ flexBasis: 54 }}>
                 {info.row.index + 1}
             </TextCell>
         ),
         header: "Pos",
-        size: 60,
+        size: 54,
     }),
     helper.accessor("driver.abbreviation", {
         cell: (info) => (
-            <TextCell key="driver" style={{ flexBasis: 80 }}>
+            <TextCell key="driver" style={{ flexBasis: 72 }}>
                 {info.getValue()}
             </TextCell>
         ),
         header: "Driver",
-        size: 80,
+        size: 72,
     }),
 ]

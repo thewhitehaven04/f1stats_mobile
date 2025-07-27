@@ -27,11 +27,11 @@ export const RACE_RESULTS_COLUMNS = [
     raceHelper.accessor("time", {
         header: "Total time",
         cell: (info) => (
-            <TextCell key="Total time" style={{ flexBasis: 144 }}>
+            <TextCell key="Total time" style={{ flexBasis: 132 }}>
                 {formatTime(info.getValue() as number)}
             </TextCell>
         ),
-        size: 144,
+        size: 132,
     }),
     raceHelper.accessor("gap", {
         header: "Gap",
