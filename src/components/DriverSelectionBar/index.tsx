@@ -71,7 +71,7 @@ export const DriverSelectionBar = () => {
                 <Link
                     href={{
                         // @ts-ignore
-                        pathname: `/season/[season]/event/[event]/session/[session]/laps?${drivers.map(([driver]) => `driver=${driver}`).join("&")}`,
+                        pathname: `/season/[season]/event/[event]/session/[session]/laps?${drivers.map(([driver]) => `drivers=${driver}`).join("&")}`,
                         params: {
                             season,
                             event,

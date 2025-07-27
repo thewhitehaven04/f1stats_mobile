@@ -99,7 +99,7 @@ export const ResultsTable = (props: TResultsData) => {
 
     return (
         <Table>
-            <TableHeader>
+            <TableHeader style={{ overflow: "hidden", borderTopLeftRadius: 16, borderTopRightRadius: 16 }}>
                 {headers.map((header) => (
                     <TextCell key={header.column.id} style={{ flexBasis: header.getSize() }}>
                         {flexRender(header.column.columnDef.header, header.getContext())}

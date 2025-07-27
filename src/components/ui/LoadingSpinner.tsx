@@ -14,11 +14,7 @@ export const LoadingSpinner = () => {
     const rotateDeg = useSharedValue(0)
 
     const rotation = useAnimatedStyle(() => ({
-        transform: [
-            {
-                rotate: rotateDeg.value * 360 + "deg",
-            },
-        ],
+        transform: [{ rotate: rotateDeg.value * 360 + "deg" }],
     }))
 
     useEffect(() => {
