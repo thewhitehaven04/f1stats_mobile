@@ -40,9 +40,8 @@ const styleSheet = StyleSheet.create({
         paddingInline: 16,
         width: "100%",
         display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        gap: 8,
+        flexDirection: "row",
+        justifyContent: 'space-between',
         borderWidth: 1,
         borderRadius: 8,
     },
@@ -50,12 +49,23 @@ const styleSheet = StyleSheet.create({
         fontSize: FontSizes.Title.sm,
         fontWeight: "500",
     },
-    dataRow: {
+    s1Column: {
         display: "flex",
-        flexDirection: "row",
-        alignItems: "baseline",
-        justifyContent: "space-between",
-        width: "100%",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: 8,
+    },
+    s2Column: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 8,
+    },
+    s3Column: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+        gap: 8,
     },
     titleRow: {
         display: "flex",
@@ -143,12 +153,30 @@ export default function LapsScreen() {
                                     borderColor: getColor("border"),
                                 }}
                             >
-                                <View style={styleSheet.titleRow}>
+                                <View style={styleSheet.s1Column}>
                                     <View>
                                         <Text style={{ fontSize: FontSizes.Body }}>
                                             Lap {index + 1}
                                         </Text>
                                     </View>
+                                    <View>
+                                        <Text style={styleSheet.timeText}>S1</Text>
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={formatTime(driverData.sector_1_time)}
+                                            isPersonalBest={driverData.is_personal_best_s1}
+                                            isSessionBest={driverData.is_best_s1}
+                                        />
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={driverData.speedtrap_1}
+                                            isSessionBest={driverData.is_best_st1}
+                                        />
+                                    </View>
+                                </View>
+                                <View style={styleSheet.s2Column}>
                                     <View>
                                         <TrackMetric
                                             value={formatTime(driverData.laptime)}
@@ -159,27 +187,7 @@ export default function LapsScreen() {
                                         />
                                     </View>
                                     <View>
-                                        <Compound width={24} height={24} />
-                                    </View>
-                                </View>
-                                <View style={styleSheet.dataRow}>
-                                    <View>
-                                        <Text style={styleSheet.timeText}>S1</Text>
-                                    </View>
-                                    <View>
                                         <Text style={styleSheet.timeText}>S2</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={styleSheet.timeText}>S3</Text>
-                                    </View>
-                                </View>
-                                <View style={styleSheet.dataRow}>
-                                    <View>
-                                        <TrackMetric
-                                            value={formatTime(driverData.sector_1_time)}
-                                            isPersonalBest={driverData.is_personal_best_s1}
-                                            isSessionBest={driverData.is_best_s1}
-                                        />
                                     </View>
                                     <View>
                                         <TrackMetric
@@ -190,23 +198,23 @@ export default function LapsScreen() {
                                     </View>
                                     <View>
                                         <TrackMetric
-                                            value={formatTime(driverData.sector_3_time)}
-                                            isPersonalBest={driverData.is_personal_best_s3}
-                                            isSessionBest={driverData.is_best_s3}
+                                            value={driverData.speedtrap_2}
+                                            isSessionBest={driverData.is_best_st2}
                                         />
                                     </View>
                                 </View>
-                                <View style={styleSheet.dataRow}>
+                                <View style={styleSheet.s3Column}>
                                     <View>
-                                        <TrackMetric
-                                            value={driverData.speedtrap_1}
-                                            isSessionBest={driverData.is_best_st1}
-                                        />
+                                        <Compound width={24} height={24} />
+                                    </View>
+                                    <View>
+                                        <Text style={styleSheet.timeText}>S3</Text>
                                     </View>
                                     <View>
                                         <TrackMetric
-                                            value={driverData.speedtrap_2}
-                                            isSessionBest={driverData.is_best_st2}
+                                            value={formatTime(driverData.sector_3_time)}
+                                            isPersonalBest={driverData.is_personal_best_s3}
+                                            isSessionBest={driverData.is_best_s3}
                                         />
                                     </View>
                                     <View>
