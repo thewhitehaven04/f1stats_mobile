@@ -12,12 +12,15 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
+    "@hey-api/client-fetch": "0.8.2",
+    "@hey-api/openapi-ts": "0.64.8",
     "@prisma/client": "6.11.1",
     "@react-native-picker/picker": "2.11.1",
     "@react-navigation/bottom-tabs": "7.4.2",
     "@react-navigation/drawer": "^7.5.3",
     "@react-navigation/elements": "^2.5.2",
     "@react-navigation/native": "7.1.14",
+    "@tanstack/react-query": "5.83.0",
     "@tanstack/react-table": "8.21.3",
     "colorizr": "3.0.8",
     "country-iso-3-to-2": "1.1.1",
@@ -45,6 +48,7 @@
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-svg": "^15.12.0",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
     "react-server-dom-webpack": "~19.0.0"
