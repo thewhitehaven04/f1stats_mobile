@@ -22,6 +22,7 @@ export const TrackMetric = ({
                         : isSessionBest
                           ? getColor("sessionBest")
                           : getColor("primary"),
+                    fontWeight: isPersonalBest || isSessionBest ? "bold" : "normal",
                 },
                 style,
             )}
