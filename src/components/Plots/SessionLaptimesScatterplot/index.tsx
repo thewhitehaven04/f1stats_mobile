@@ -1,10 +1,9 @@
 "use client"
 
 import type { LapSelectionData } from "@/src/client/generated"
-import { getTicksFromRange } from "@/src/components/Plots/helpers"
 import { formatTime, getAlternativePlotColor } from "@/src/core/helpers"
 import { Circle, useFont } from "@shopify/react-native-skia"
-import { View, Text } from "react-native"
+import { View, Text, StyleSheet } from "react-native"
 import { CartesianChart, Scatter, useChartPressState, useChartTransformState } from "victory-native"
 import SpaceMono from "@/assets/fonts/SpaceMono-Regular.ttf"
 import { Button } from "@/src/components/ui/Button"
@@ -14,6 +13,21 @@ import type { SharedValue } from "react-native-reanimated"
 function ToolTip({ x, y }: { x: SharedValue<number>; y: SharedValue<number> }) {
     return <Circle cx={x} cy={y} r={8} color="black" />
 }
+
+const styleSheet = StyleSheet.create({
+    wrapper: {
+        width: "100%",
+        height: 500,
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+    },
+    footer: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+    },
+})
 
 export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData }) => {
     const { driver_lap_data: drivers, color_map: colors } = data
@@ -54,15 +68,7 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
     })
 
     return (
-        <View
-            style={{
-                width: "100%",
-                height: 500,
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
-            }}
-        >
+        <View style={styleSheet.wrapper}>
             <CartesianChart
                 data={plotData}
                 xKey={"lap"}
@@ -116,9 +122,11 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
                     ))
                 }
             </CartesianChart>
-            <Button style={{ width: "50%" }} onPress={() => setShowOutliers(!showOutliers)}>
-                <Text style={{ textAlign: "center" }}>Toggle outliers</Text>
-            </Button>
+            <View style={styleSheet.footer}>
+                <Button onPress={() => setShowOutliers(!showOutliers)}>
+                    <Text>Toggle outliers</Text>
+                </Button>
+            </View>
         </View>
     )
 }

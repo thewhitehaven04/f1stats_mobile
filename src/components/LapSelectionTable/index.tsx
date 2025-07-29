@@ -9,7 +9,6 @@ import { useState } from "react"
 import { FlatList, StyleSheet, View, Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
 
-
 const styleSheet = StyleSheet.create({
     wrapper: {
         width: "100%",
@@ -18,6 +17,8 @@ const styleSheet = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-around",
         paddingTop: 8,
+        paddingBottom: 4,
+        boxShadow: "0px 2px 4px 0.5px rgba(0, 0, 0, 0.2)",
     },
     lapList: {
         display: "flex",
@@ -41,6 +42,7 @@ const styleSheet = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
+        width: "33%",
     },
     s1Column: {
         display: "flex",
@@ -95,24 +97,34 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                         onPress={() => setDriverIndex(selectedDriverIndex - 1)}
                     >
                         <Ionicons name="chevron-back-outline" />
-                        <Text>{data.driver_lap_data[selectedDriverIndex - 1].driver}</Text>
+                        <Text style={{ textAlign: "left" }}>
+                            {data.driver_lap_data[selectedDriverIndex - 1].driver
+                                .split(" ")[1]
+                                .slice(0, 3)}
+                        </Text>
                     </Button>
                 )}
-                <View>
-                    <Text>{currentDriver}</Text>
+                <View style={{ width: "33%" }}>
+                    <Text style={{ textAlign: "center" }}>
+                        {currentDriver.split(" ")[1].slice(0, 3)}
+                    </Text>
                 </View>
                 {hasRight && (
                     <Button
                         style={styleSheet.button}
                         onPress={() => setDriverIndex(selectedDriverIndex + 1)}
                     >
-                        <Text>{data.driver_lap_data[selectedDriverIndex + 1].driver}</Text>
+                        <Text style={{ textAlign: "right" }}>
+                            {data.driver_lap_data[selectedDriverIndex + 1].driver
+                                .split(" ")[1]
+                                .slice(0, 3)}
+                        </Text>
                         <Ionicons name="chevron-forward-outline" />
                     </Button>
                 )}
             </View>
             <FlatList
-                data={selectedDriverData}
+                data={selectedDriverData.map((item, index) => ({ ...item, lap: index + 1 }))}
                 contentContainerStyle={styleSheet.lapList}
                 ItemSeparatorComponent={() => (
                     <View
@@ -134,7 +146,7 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                         >
                             <View style={styleSheet.s1Column}>
                                 <View>
-                                    <Text style={styleSheet.timeText}>Lap 1</Text>
+                                    <Text style={styleSheet.timeText}>Lap {item.lap}</Text>
                                 </View>
                                 <View>
                                     <Text style={styleSheet.timeText}>S1</Text>

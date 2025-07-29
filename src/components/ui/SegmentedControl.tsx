@@ -23,7 +23,6 @@ const styleSheet = StyleSheet.create({
         gap: 8,
         paddingInline: 4,
         paddingBlock: 4,
-        borderWidth: 1,
         borderRadius: 12,
     },
     selectorText: {

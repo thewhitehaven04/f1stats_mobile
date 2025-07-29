@@ -1,9 +1,12 @@
+import { getDriverLaps } from "@/src/fetchers/laps"
+import { useQueryClient } from "@tanstack/react-query"
 import type { RowSelectionState } from "@tanstack/react-table"
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react"
+import { useLocalSearchParams } from "expo-router"
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react"
 
 const DriverSelectionContext = createContext<RowSelectionState>({})
 const DriverSelectionDispatchContext = createContext<{
-    updateDriverState: React.Dispatch<React.SetStateAction<RowSelectionState>>
+    updateDriverState: (state: RowSelectionState) => void
     deleteDriver: (driverId: string) => void
 }>({
     updateDriverState: () => {},
@@ -12,6 +15,8 @@ const DriverSelectionDispatchContext = createContext<{
 
 export const DriverSelection = ({ children }: { children?: ReactNode }) => {
     const [drivers, setDrivers] = useState<RowSelectionState>({})
+    const { season, event, session }: { season: string; event: string; session: string } =
+        useLocalSearchParams()
 
     const deleteDriver = (driverId: string) => {
         setDrivers((prevState) => {
@@ -22,12 +27,34 @@ export const DriverSelection = ({ children }: { children?: ReactNode }) => {
         })
     }
 
+    const queryClient = useQueryClient()
+
+    const updateDriverState = useCallback(
+        (state: RowSelectionState) => {
+            setDrivers(state)
+            queryClient.prefetchQuery({
+                queryKey: [season, event, session, drivers],
+                queryFn: () =>
+                    getDriverLaps({
+                        event,
+                        season,
+                        session,
+                        drivers: Object.entries(state)
+                            .filter(([_, isSelected]) => isSelected)
+                            .map(([driverId]) => driverId),
+                    }),
+                staleTime: Infinity,
+            })
+        },
+        [drivers, event, queryClient, season, session],
+    )
+
     const dispatchCtxValue = useMemo(
         () => ({
-            updateDriverState: setDrivers,
+            updateDriverState,
             deleteDriver,
         }),
-        [],
+        [updateDriverState],
     )
 
     return (

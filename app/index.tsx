@@ -1,7 +1,7 @@
 import { getColor } from "@/src/colorScheme"
 import { Button } from "@/src/components/ui/Button"
 import { Link } from "expo-router"
-import { PlatformColor, StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 
 export const rootStyleSheet = StyleSheet.create({
     container: {

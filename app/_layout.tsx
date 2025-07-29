@@ -21,6 +21,7 @@ export default function RootLayout() {
                             contentStyle: {
                                 backgroundColor: getColor("background"),
                             },
+                            headerShown: false,
                         }}
                     />
                     <Stack.Screen
@@ -29,6 +30,7 @@ export default function RootLayout() {
                             presentation: "containedTransparentModal",
                             animation: "fade",
                             title: "Select season",
+                            headerShown: false,
                         }}
                     />
                     <Stack.Screen
@@ -38,17 +40,12 @@ export default function RootLayout() {
                             contentStyle: {
                                 backgroundColor: getColor("background"),
                             },
+                            headerTitle: 'Results',
                         })}
                     />
-                    <Stack.Screen
-                        name="season/[season]/event/[event]/session/[session]/laps"
-                        options={({ route }) => ({
-                            title: `${route.params?.event ?? ""} - ${route.params?.session ?? ""} laps`,
-                            contentStyle: {
-                                backgroundColor: getColor("background"),
-                            },
-                        })}
-                    />
+                    <Stack.Screen name="season/[season]/event/[event]/session/[session]/(laps)" options={{
+                        headerTitle: 'Laps'
+                    }}/>
                 </Stack>
             </Providers>
         </GestureHandlerRootView>
