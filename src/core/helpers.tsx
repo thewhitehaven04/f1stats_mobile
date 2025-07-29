@@ -1,3 +1,5 @@
+import Color from "color"
+
 export const formatTime = (time_s: number | null | undefined) => {
     if (!time_s) return "N/A"
     const hours = Math.floor(time_s / 3600)
@@ -14,4 +16,8 @@ export const formatTime = (time_s: number | null | undefined) => {
         return `${minutes}:${seconds.padStart(2, "0")}.${thousandths}`
     }
     return `${hours}:${minutes}:${seconds.padStart(2, "0")}.${thousandths}`
+}
+
+export function getAlternativePlotColor(color: string) {
+    return Color(color).isDark() ? Color(color).lighten(0.2).hex() : Color(color).darken(0.2).hex()
 }

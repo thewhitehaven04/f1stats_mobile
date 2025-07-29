@@ -4,7 +4,7 @@ import { Button } from "@/src/components/ui/Button"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { Link, useLocalSearchParams, useRouter } from "expo-router"
 import { Suspense, useMemo } from "react"
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native"
+import { PlatformColor, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import { useSharedValue } from "react-native-reanimated"
 
@@ -74,7 +74,7 @@ export default function SeasonScreen() {
                         >
                             <Link href={`/season/${season}/selectorModal`} asChild>
                                 <Button>
-                                    <Text>{season}</Text>
+                                    <Text style={style.seasonSelector}>{season}</Text>
                                 </Button>
                             </Link>
                         </View>

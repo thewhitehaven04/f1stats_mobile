@@ -22,6 +22,7 @@
     "@react-navigation/native": "7.1.14",
     "@tanstack/react-query": "5.83.0",
     "@tanstack/react-table": "8.21.3",
+    "color": "5.0.0",
     "colorizr": "3.0.8",
     "country-iso-3-to-2": "1.1.1",
     "date-fns": "4.1.0",
@@ -51,7 +52,8 @@
     "react-native-svg": "^15.12.0",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
-    "react-server-dom-webpack": "~19.0.0"
+    "react-server-dom-webpack": "~19.0.0",
+    "victory-native": "^41.17.4"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",

@@ -25,7 +25,6 @@ const styleSheet = StyleSheet.create({
         paddingBlock: 4,
         borderWidth: 1,
         borderRadius: 12,
-        width: "100%",
     },
     selectorText: {
         textAlign: "center",
