@@ -1,5 +1,6 @@
 import { TextCell } from "@/src/components/Tables"
 import { createColumnHelper } from "@tanstack/react-table"
+import { Text } from 'react-native'
 
 export interface IBaseResultsData {
     driver: { name: string; country: string; id: string; abbreviation: string }
@@ -25,7 +26,7 @@ export const BASE_COLUMNS = [
                 {info.getValue()}
             </TextCell>
         ),
-        header: "Driver",
+        header: (info) => <Text key={info.column.id}>Driver</Text>,
         size: 72,
     }),
 ]

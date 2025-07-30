@@ -1,7 +1,7 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
 import { Table, TableBody, TableHeader, TableRow, TextCell } from "@/src/components/Tables"
-import { DriverSelection, useDriverSelectionDispatch } from "@/src/components/Tables/presets/results/driverSelectionAtom"
+import { DriverSelection } from "@/src/components/Tables/presets/results/driverSelectionAtom"
 import { SessionType } from "@/src/components/Tables/presets/results/mapper"
 import type { IPracticeData } from "@/src/components/Tables/presets/results/practice"
 import { type IQualifyingData } from "@/src/components/Tables/presets/results/qualifying"
@@ -17,7 +17,7 @@ import { Fragment, useMemo } from "react"
 import { Pressable, StyleSheet } from "react-native"
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated"
 import * as Haptics from "expo-haptics"
-import { useAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 
 type TResultsData =
     | {
@@ -84,7 +84,7 @@ const DetailsRow = ({
 }
 
 export const ResultsTable = (props: TResultsData) => {
-    const [_, updateDriverState] = useAtom(DriverSelection)
+    const updateDriverState = useSetAtom(DriverSelection)
     const { getFlatHeaders, getRowModel } = useReactTable({
         columns: props.columns,
         data: props.rows,
