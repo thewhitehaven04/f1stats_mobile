@@ -5,7 +5,7 @@ import { KeysetSeasonPagination } from "@/src/components/KeysetPagination"
 import { Button } from "@/src/components/ui/Button"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { Link, useLocalSearchParams, useRouter } from "expo-router"
-import { Platform, Pressable, StatusBar, StyleSheet, Text, View } from "react-native"
+import { Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native"
 import Animated, { FadeIn } from "react-native-reanimated"
 
 const modalStyleSheet = StyleSheet.create({
@@ -37,40 +37,42 @@ export default function SeasonSelectorModal() {
     }
 
     return (
-        <Animated.View entering={FadeIn} style={modalStyleSheet.wrapper}>
-            <Link href="/" asChild>
-                <Pressable style={{ width: "100%" }} />
-            </Link>
-            <Animated.View
-                style={{
-                    backgroundColor: getColor("background"),
-                }}
-            >
-                <KeysetSeasonPagination
-                    current={season}
-                    previous={
-                        previous ? (
-                            <Button size="regular" onPress={() => navigateToSeason(previous)}>
-                                <View style={modalStyleSheet.navButton}>
-                                    <Ionicons name="chevron-back-outline" size={18} />
-                                    <Text>{previous}</Text>
-                                </View>
-                            </Button>
-                        ) : null
-                    }
-                    next={
-                        next ? (
-                            <Button size="regular" onPress={() => navigateToSeason(next)}>
-                                <View style={modalStyleSheet.navButton}>
-                                    <Text>{next}</Text>
-                                    <Ionicons name="chevron-forward-outline" size={18} />
-                                </View>
-                            </Button>
-                        ) : null
-                    }
-                />
-                <StatusBar barStyle={Platform.OS === "ios" ? "light-content" : "default"} />
+        <SafeAreaView>
+            <Animated.View entering={FadeIn} style={modalStyleSheet.wrapper}>
+                <Link href="/" asChild>
+                    <Pressable style={{ width: "100%" }} />
+                </Link>
+                <Animated.View
+                    style={{
+                        backgroundColor: getColor("background"),
+                    }}
+                >
+                    <KeysetSeasonPagination
+                        current={season}
+                        previous={
+                            previous ? (
+                                <Button size="regular" onPress={() => navigateToSeason(previous)}>
+                                    <View style={modalStyleSheet.navButton}>
+                                        <Ionicons name="chevron-back-outline" size={18} />
+                                        <Text>{previous}</Text>
+                                    </View>
+                                </Button>
+                            ) : null
+                        }
+                        next={
+                            next ? (
+                                <Button size="regular" onPress={() => navigateToSeason(next)}>
+                                    <View style={modalStyleSheet.navButton}>
+                                        <Text>{next}</Text>
+                                        <Ionicons name="chevron-forward-outline" size={18} />
+                                    </View>
+                                </Button>
+                            ) : null
+                        }
+                    />
+                    <StatusBar barStyle={Platform.OS === "ios" ? "light-content" : "default"} />
+                </Animated.View>
             </Animated.View>
-        </Animated.View>
+        </SafeAreaView>
     )
 }

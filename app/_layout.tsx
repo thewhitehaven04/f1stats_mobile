@@ -1,6 +1,7 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
 import { Providers } from "@/src/providers"
+import type { ParamListBase, RouteProp } from "@react-navigation/native"
 import Stack from "expo-router/build/layouts/Stack"
 import React from "react"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
@@ -8,12 +9,13 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 export const unstable_settings = {
     initialRouteName: "index",
 }
+
 export default function RootLayout() {
     return (
         <GestureHandlerRootView>
             <Providers>
                 <Stack>
-                    <Stack.Screen name="index" />
+                    <Stack.Screen name="index" options={{ headerShown: false }} />
                     <Stack.Screen
                         name="season/[season]/index"
                         options={{

@@ -28,9 +28,9 @@ const styles = StyleSheet.create({
     titleContainer: {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         padding: 8,
-        alignItems: 'center',
+        alignItems: "center",
     },
     content: {
         overflow: "hidden",
@@ -98,7 +98,7 @@ export const ListItemTitle = (
     const collapseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     return (
         <View {...rest} style={StyleSheet.compose(styles.titleContainer, style)}>
-            <View>{children}</View>
+            <View style={{ flexShrink: 1, flexGrow: 1, flexBasis: '100%' }}>{children}</View>
             <Pressable
                 onPressIn={() => setIsPressed(true)}
                 onPressOut={() => setIsPressed(false)}
@@ -108,6 +108,7 @@ export const ListItemTitle = (
                         isCollapsed ? 0 : collapseTimeout,
                     )
                 }}
+                style={{ flexShrink: 0, flexGrow: 1 }}
             >
                 <Ionicons name={getChevronStyle(isCollapsed, isPressed)} size={24} />
             </Pressable>
