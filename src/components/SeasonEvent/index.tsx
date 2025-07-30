@@ -10,18 +10,20 @@ import type { ISession, TMappedSeasonEvent } from "@/src/fetchers/events/types"
 import * as FontSizes from "@/src/fontSizes"
 import { format } from "date-fns"
 import { Link } from "expo-router"
-import { PlatformColor, StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import CountryFlag from "react-native-country-flag"
 
 const seasonEventStyleSheet = StyleSheet.create({
     title: {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "center",
+        justifyContent: "flex-start",
+        alignItems: 'center',
         gap: 16,
+        width: '75%',
     },
     headerText: {
-        fontSize: FontSizes.Title.md,
+        fontSize: FontSizes.Title.sm,
         fontWeight: 500,
     },
     sessionLinkFont: {
@@ -39,6 +41,7 @@ const seasonEventStyleSheet = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
+        justifyContent: 'center',
         gap: 16,
         paddingInline: 16,
     },
