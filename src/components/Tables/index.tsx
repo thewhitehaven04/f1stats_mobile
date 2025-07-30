@@ -33,6 +33,7 @@ const styleSheet = StyleSheet.create({
         paddingBlock: 4,
         paddingInline: 8,
         flexGrow: 1,
+        color: getColor('foreground')
     },
     row: {
         display: "flex",

@@ -1,7 +1,7 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
 import { useEffect } from "react"
-import { View } from "react-native"
+import { StyleSheet, View } from "react-native"
 import Animated, {
     Easing,
     useAnimatedStyle,
@@ -9,6 +9,17 @@ import Animated, {
     withRepeat,
     withTiming,
 } from "react-native-reanimated"
+
+const styleSheet = StyleSheet.create({
+    spinner: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        height: "100%",
+    },
+})
 
 export const LoadingSpinner = () => {
     const rotateDeg = useSharedValue(0)
@@ -28,16 +39,7 @@ export const LoadingSpinner = () => {
     }, [rotateDeg])
 
     return (
-        <View
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-                height: "100%",
-            }}
-        >
+        <View style={styleSheet.spinner}>
             <Animated.View
                 style={[
                     {

@@ -2,6 +2,7 @@ import { TextCell } from "@/src/components/Tables"
 import { BASE_COLUMNS, type IBaseResultsData } from "@/src/components/Tables/presets/results/common"
 import { formatTime } from "@/src/core/helpers"
 import { createColumnHelper } from "@tanstack/react-table"
+import { Text } from "react-native"
 
 export interface IPracticeData extends IBaseResultsData {
     time: number | null
@@ -22,7 +23,7 @@ export const PRACTICE_RESULTS_COLUMNS = [
                 {formatTime(info.getValue() as number)}
             </TextCell>
         ),
-        header: "Laptime",
+        header: () => <Text key="laptime">Laptime</Text>,
         size: 120,
     }),
     helper.accessor("gap", {
@@ -31,7 +32,7 @@ export const PRACTICE_RESULTS_COLUMNS = [
                 {info.getValue()}
             </TextCell>
         ),
-        header: "Gap",
+        header: () => <Text key="gap">Gap</Text>,
         size: 84,
     }),
 ]

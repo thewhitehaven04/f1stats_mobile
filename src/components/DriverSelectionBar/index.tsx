@@ -1,10 +1,10 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
-import { DriverSelection } from '@/src/components/Tables/presets/results/driverSelectionAtom'
+import { DriverSelection } from "@/src/components/Tables/presets/results/driverSelectionAtom"
 import { Button } from "@/src/components/ui/Button"
 import { Chip } from "@/src/components/ui/Chip"
 import { Link, useLocalSearchParams } from "expo-router"
-import { useAtom } from 'jotai'
+import { useAtom } from "jotai"
 import { StyleSheet, Text, ScrollView } from "react-native"
 import Animated, { SlideInDown, SlideOutDown } from "react-native-reanimated"
 

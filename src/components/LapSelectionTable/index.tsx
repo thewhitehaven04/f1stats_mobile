@@ -6,7 +6,7 @@ import { COLOR_MAP, type TCompound } from "@/src/components/ui/TyreCompounds"
 import { formatTime } from "@/src/core/helpers"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { useState } from "react"
-import { FlatList, StyleSheet, View, Text } from "react-native"
+import { FlatList, StyleSheet, View, Text, Pressable } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
 import { useTelemetryPrefetchOnSelectionChange } from "@/src/components/LapSelectionTable/useTelemetryPrefetch"
 import { useTelemetryLapSelection } from "@/src/atoms/telemetryLapSelection"
@@ -50,18 +50,21 @@ const styleSheet = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
+        justifyContent: "flex-end",
         gap: 4,
     },
     s2Column: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: "flex-end",
         gap: 4,
     },
     s3Column: {
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-end",
+        justifyContent: "flex-end",
         gap: 4,
     },
     titleRow: {
@@ -142,90 +145,93 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                 renderItem={({ item }) => {
                     const Compound = COLOR_MAP[item.compound_id as TCompound]
                     return (
-                        <View
-                            key={item.id}
-                            style={{
-                                ...styleSheet.cardWrapper,
-                                borderColor: getColor("border"),
-                            }}
-                        >
-                            <View style={styleSheet.s1Column}>
-                                <View>
-                                    <Button
-                                        onPress={() => toggleSelection(currentDriver, item.lap)}
+                        <Pressable onPress={() => toggleSelection(currentDriver, item.lap)}>
+                            <View
+                                key={item.id}
+                                style={{
+                                    ...styleSheet.cardWrapper,
+                                    borderColor: getColor("border"),
+                                }}
+                            >
+                                <View style={styleSheet.s1Column}>
+                                    <View
                                         style={{
-                                            filter: isLapSelected(currentDriver, item.lap)
-                                                ? "brightness(0.95)"
-                                                : "none",
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            gap: 8,
                                         }}
                                     >
                                         <Text style={styleSheet.timeText}>Lap {item.lap}</Text>
-                                    </Button>
+                                        {isLapSelected(currentDriver, item.lap) && (
+                                            <Ionicons name="checkmark-outline" color="green" />
+                                        )}
+                                    </View>
+                                    <View>
+                                        <Text style={styleSheet.timeText}>S1</Text>
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={formatTime(item.sector_1_time)}
+                                            isPersonalBest={item.is_personal_best_s1}
+                                            isSessionBest={item.is_best_s1}
+                                        />
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={item.speedtrap_1}
+                                            isSessionBest={item.is_best_st1}
+                                        />
+                                    </View>
                                 </View>
-                                <View>
-                                    <Text style={styleSheet.timeText}>S1</Text>
+                                <View style={styleSheet.s2Column}>
+                                    <View>
+                                        <TrackMetric
+                                            value={formatTime(item.laptime)}
+                                            isPersonalBest={item.is_pb}
+                                            style={styleSheet.timeText}
+                                        />
+                                    </View>
+                                    <View>
+                                        <Text style={styleSheet.timeText}>S2</Text>
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={formatTime(item.sector_2_time)}
+                                            isPersonalBest={item.is_personal_best_s2}
+                                            isSessionBest={item.is_best_s2}
+                                        />
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={item.speedtrap_2}
+                                            isSessionBest={item.is_best_st2}
+                                        />
+                                    </View>
                                 </View>
-                                <View>
-                                    <TrackMetric
-                                        value={formatTime(item.sector_1_time)}
-                                        isPersonalBest={item.is_personal_best_s1}
-                                        isSessionBest={item.is_best_s1}
-                                    />
-                                </View>
-                                <View>
-                                    <TrackMetric
-                                        value={item.speedtrap_1}
-                                        isSessionBest={item.is_best_st1}
-                                    />
+                                <View style={styleSheet.s3Column}>
+                                    <View>
+                                        <Compound width={24} height={24} />
+                                    </View>
+                                    <View>
+                                        <Text style={styleSheet.timeText}>S3</Text>
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={formatTime(item.sector_3_time)}
+                                            isPersonalBest={item.is_personal_best_s3}
+                                            isSessionBest={item.is_best_s3}
+                                        />
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={item.speedtrap_fl}
+                                            isSessionBest={item.is_best_stfl}
+                                        />
+                                    </View>
                                 </View>
                             </View>
-                            <View style={styleSheet.s2Column}>
-                                <View>
-                                    <TrackMetric
-                                        value={formatTime(item.laptime)}
-                                        isPersonalBest={item.is_pb}
-                                        style={styleSheet.timeText}
-                                    />
-                                </View>
-                                <View>
-                                    <Text style={styleSheet.timeText}>S2</Text>
-                                </View>
-                                <View>
-                                    <TrackMetric
-                                        value={formatTime(item.sector_2_time)}
-                                        isPersonalBest={item.is_personal_best_s2}
-                                        isSessionBest={item.is_best_s2}
-                                    />
-                                </View>
-                                <View>
-                                    <TrackMetric
-                                        value={item.speedtrap_2}
-                                        isSessionBest={item.is_best_st2}
-                                    />
-                                </View>
-                            </View>
-                            <View style={styleSheet.s3Column}>
-                                <View>
-                                    <Compound width={24} height={24} />
-                                </View>
-                                <View>
-                                    <Text style={styleSheet.timeText}>S3</Text>
-                                </View>
-                                <View>
-                                    <TrackMetric
-                                        value={formatTime(item.sector_3_time)}
-                                        isPersonalBest={item.is_personal_best_s3}
-                                        isSessionBest={item.is_best_s3}
-                                    />
-                                </View>
-                                <View>
-                                    <TrackMetric
-                                        value={item.speedtrap_fl}
-                                        isSessionBest={item.is_best_stfl}
-                                    />
-                                </View>
-                            </View>
-                        </View>
+                        </Pressable>
                     )
                 }}
             />

@@ -36,6 +36,9 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         width: "100%",
     },
+    icon: {
+        color: getColor("primary"),
+    },
 })
 
 const noop = () => {}
@@ -98,7 +101,7 @@ export const ListItemTitle = (
     const collapseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     return (
         <View {...rest} style={StyleSheet.compose(styles.titleContainer, style)}>
-            <View style={{ flexShrink: 1, flexGrow: 1, flexBasis: '100%' }}>{children}</View>
+            <View style={{ flexShrink: 1, flexGrow: 1, flexBasis: "100%" }}>{children}</View>
             <Pressable
                 onPressIn={() => setIsPressed(true)}
                 onPressOut={() => setIsPressed(false)}
@@ -110,7 +113,7 @@ export const ListItemTitle = (
                 }}
                 style={{ flexShrink: 0, flexGrow: 1 }}
             >
-                <Ionicons name={getChevronStyle(isCollapsed, isPressed)} size={24} />
+                <Ionicons name={getChevronStyle(isCollapsed, isPressed)} style={styles.icon} size={24} />
             </Pressable>
         </View>
     )

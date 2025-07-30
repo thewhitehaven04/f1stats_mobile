@@ -1,3 +1,4 @@
+import { getColor } from '@/src/colorScheme'
 import { TextCell } from "@/src/components/Tables"
 import { createColumnHelper } from "@tanstack/react-table"
 import { Text } from 'react-native'

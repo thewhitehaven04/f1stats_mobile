@@ -1,5 +1,6 @@
 "use client"
 import { alpha3ToAlpha2Map } from "@/src/alpha3toAlpha2map"
+import { getColor } from '@/src/colorScheme'
 import { Button } from "@/src/components/ui/Button"
 import {
     CollapsableListItem,
@@ -25,10 +26,12 @@ const seasonEventStyleSheet = StyleSheet.create({
     headerText: {
         fontSize: FontSizes.Title.sm,
         fontWeight: 500,
+        color: getColor('foreground'),
     },
     sessionLinkFont: {
         fontSize: FontSizes.Body,
         fontWeight: 500,
+        color: getColor('foreground'),
     },
     sessionLink: {
         display: "flex",

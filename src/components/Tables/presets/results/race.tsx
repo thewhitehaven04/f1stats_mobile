@@ -3,6 +3,7 @@ import { BASE_COLUMNS, type IBaseResultsData } from "@/src/components/Tables/pre
 import type { RACE_COLUMNS } from "@/src/components/Tables/presets/results/mapper"
 import { formatTime } from "@/src/core/helpers"
 import { createColumnHelper } from "@tanstack/react-table"
+import { Text } from "react-native"
 
 export interface IRaceData extends IBaseResultsData {
     time: number | null
@@ -24,7 +25,7 @@ const raceHelper = createColumnHelper<IRaceData>()
 export const RACE_RESULTS_COLUMNS = [
     ...BASE_COLUMNS,
     raceHelper.accessor("time", {
-        header: "Total time",
+        header: () => <Text>Total time</Text>,
         cell: (info) => (
             <TextCell key="totalTime" style={{ flexBasis: 132 }}>
                 {formatTime(info.getValue() as number)}
@@ -33,7 +34,7 @@ export const RACE_RESULTS_COLUMNS = [
         size: 132,
     }),
     raceHelper.accessor("gap", {
-        header: "Gap",
+        header: () => <Text>Gap</Text>,
         cell: (info) => (
             <TextCell key="gap" style={{ flexBasis: 96 }}>
                 {formatTime(info.getValue() as number)}
