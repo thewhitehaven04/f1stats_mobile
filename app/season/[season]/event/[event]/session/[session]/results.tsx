@@ -3,7 +3,6 @@ import renderSeasonMetrics from "@/src/actions/render/sessionMetrics"
 import renderSessionResults from "@/src/actions/render/sessionResults"
 import { getColor } from "@/src/colorScheme"
 import { DriverSelectionBar } from "@/src/components/DriverSelectionBar"
-import { DriverSelection } from "@/src/components/Tables/presets/results/driverSelection"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { useLocalSearchParams } from "expo-router"
 import { Suspense, useMemo } from "react"
@@ -63,10 +62,10 @@ export default function ResultsScreen() {
     )
 
     return (
-        <DriverSelection>
+        <>
             <View style={styleSheet.wrapper}>
                 <ScrollView
-                    style={{ overflowY: "visible", }}
+                    style={{ overflowY: "visible" }}
                     contentContainerStyle={styleSheet.scroll}
                 >
                     <View style={{ ...styleSheet.card, borderColor: getColor("border") }}>
@@ -80,6 +79,6 @@ export default function ResultsScreen() {
             <View style={styleSheet.footer}>
                 <DriverSelectionBar />
             </View>
-        </DriverSelection>
+        </>
     )
 }

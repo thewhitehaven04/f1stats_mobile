@@ -1,12 +1,10 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
-import {
-    useDriverSelection,
-    useDriverSelectionDispatch,
-} from "@/src/components/Tables/presets/results/driverSelection"
+import { DriverSelection } from '@/src/components/Tables/presets/results/driverSelectionAtom'
 import { Button } from "@/src/components/ui/Button"
 import { Chip } from "@/src/components/ui/Chip"
 import { Link, useLocalSearchParams } from "expo-router"
+import { useAtom } from 'jotai'
 import { StyleSheet, Text, ScrollView } from "react-native"
 import Animated, { SlideInDown, SlideOutDown } from "react-native-reanimated"
 
@@ -36,8 +34,16 @@ export const DriverSelectionBar = () => {
     const { season, event, session }: { season: string; event: string; session: string } =
         useLocalSearchParams()
 
-    const driverSelection = useDriverSelection()
-    const { deleteDriver } = useDriverSelectionDispatch()
+    const [driverSelection, setDriverSelection] = useAtom(DriverSelection)
+
+    const deleteDriver = (driver: string) => {
+        setDriverSelection((prev) => {
+            return {
+                ...prev,
+                [driver]: false,
+            }
+        })
+    }
 
     const drivers = Object.entries(driverSelection).filter(([_, isSelected]) => isSelected)
     const driverAbbreviations = drivers.map(([driverId]) => [
