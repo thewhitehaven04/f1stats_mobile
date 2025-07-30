@@ -78,6 +78,7 @@ export const DriverSelectionBar = () => {
                             session,
                         },
                     }}
+                    prefetch
                     asChild
                 >
                     <Button>

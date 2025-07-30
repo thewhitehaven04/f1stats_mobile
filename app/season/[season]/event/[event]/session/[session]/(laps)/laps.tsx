@@ -1,13 +1,13 @@
 "use client"
 import { useLocalSearchParams } from "expo-router"
-import { View } from "react-native"
+import { SafeAreaView } from "react-native"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Suspense } from "react"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import * as SegmentedControl from "@/src/components/ui/SegmentedControl"
-import { LapSelectionTable } from "@/src/components/LapSelectionTable"
 import { SessionLaptimesScatterplot } from "@/src/components/Plots/SessionLaptimesScatterplot"
 import { getDriverLaps } from "@/src/fetchers/laps"
+import { LapSelectionTable } from '@/src/components/LapSelectionTable'
 
 export default function LapsScreen() {
     const {
@@ -31,7 +31,7 @@ export default function LapsScreen() {
 
     return (
         <Suspense fallback={<LoadingSpinner />}>
-            <View>
+            <SafeAreaView>
                 <SegmentedControl.Root defaultSegment="Table">
                     <SegmentedControl.Wrapper>
                         <SegmentedControl.SegmentSelector name="Table" />
@@ -44,7 +44,7 @@ export default function LapsScreen() {
                         <SessionLaptimesScatterplot data={data} />
                     </SegmentedControl.Segment>
                 </SegmentedControl.Root>
-            </View>
+            </SafeAreaView>
         </Suspense>
     )
 }

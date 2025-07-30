@@ -8,6 +8,8 @@ import Ionicons from "@expo/vector-icons/Ionicons"
 import { useState } from "react"
 import { FlatList, StyleSheet, View, Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
+import { useTelemetryPrefetchOnSelectionChange } from "@/src/components/LapSelectionTable/useTelemetryPrefetch"
+import { useTelemetryLapSelection } from "@/src/atoms/telemetryLapSelection"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -88,6 +90,9 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
     const hasLeft = selectedDriverIndex > 0
     const hasRight = selectedDriverIndex < data.driver_lap_data.length - 1
 
+    useTelemetryPrefetchOnSelectionChange()
+    const { isLapSelected, toggleSelection } = useTelemetryLapSelection()
+
     return (
         <>
             <View style={styleSheet.wrapper}>
@@ -146,7 +151,16 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                         >
                             <View style={styleSheet.s1Column}>
                                 <View>
-                                    <Text style={styleSheet.timeText}>Lap {item.lap}</Text>
+                                    <Button
+                                        onPress={() => toggleSelection(currentDriver, item.lap)}
+                                        style={{
+                                            filter: isLapSelected(currentDriver, item.lap)
+                                                ? "brightness(0.95)"
+                                                : "none",
+                                        }}
+                                    >
+                                        <Text style={styleSheet.timeText}>Lap {item.lap}</Text>
+                                    </Button>
                                 </View>
                                 <View>
                                     <Text style={styleSheet.timeText}>S1</Text>

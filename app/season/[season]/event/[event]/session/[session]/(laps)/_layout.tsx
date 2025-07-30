@@ -4,17 +4,16 @@ import { Tabs } from "expo-router"
 
 export default function LapsLayout() {
     return (
-        <Tabs screenOptions={{ headerShown: false }}>
+        <Tabs>
             <Tabs.Screen
                 name="laps"
                 options={{
-                    href: "/season/[season]/event/[event]/session/[session]/(laps)/laps",
+                    href: "/season/[season]/event/[event]/session/[session]/(laps)/index",
                     headerShown: false,
+                    title: "Lap times",
                     sceneStyle: {
                         backgroundColor: getColor('background')
                     },
-                    title: "Lap times",
-                    headerBackgroundContainerStyle: { backgroundColor: 'red' },
                     tabBarIcon: () => <Ionicons name="timer" size={24} color="black" />,
                 }}
             />
@@ -23,11 +22,10 @@ export default function LapsLayout() {
                 options={{
                     href: "/season/[season]/event/[event]/session/[session]/(laps)/telemetry",
                     headerShown: false,
+                    title: "Telemetry",
                     sceneStyle: {
                         backgroundColor: getColor('background')
                     },
-                    title: "Telemetry",
-                    headerBackgroundContainerStyle: { backgroundColor: 'red' },
                     tabBarIcon: () => <Ionicons name="analytics-outline" size={24} color="black" />,
                 }}
             />

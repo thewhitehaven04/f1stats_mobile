@@ -1,12 +1,20 @@
 import { ResultsTable } from "@/src/components/Tables/presets/results"
+import type { IBaseResultsData } from "@/src/components/Tables/presets/results/common"
 import {
     SessionType,
     sessionResultsToTableRows,
 } from "@/src/components/Tables/presets/results/mapper"
-import { PRACTICE_RESULTS_COLUMNS } from "@/src/components/Tables/presets/results/practice"
-import { QUALIFYING_COLUMNS_RESULTS } from "@/src/components/Tables/presets/results/qualifying"
-import { RACE_RESULTS_COLUMNS } from "@/src/components/Tables/presets/results/race"
+import {
+    PRACTICE_RESULTS_COLUMNS,
+    type IPracticeData,
+} from "@/src/components/Tables/presets/results/practice"
+import {
+    QUALIFYING_COLUMNS_RESULTS,
+    type IQualifyingData,
+} from "@/src/components/Tables/presets/results/qualifying"
+import { RACE_RESULTS_COLUMNS, type IRaceData } from "@/src/components/Tables/presets/results/race"
 import { fetchSessionResults } from "@/src/fetchers/results"
+import type { ColumnDef } from "@tanstack/react-table"
 import { ScrollView } from "react-native"
 
 const SESSION_TYPE_COLUMN_MAP = Object.freeze({
@@ -31,7 +39,11 @@ async function renderSessionResults({
     return (
         <ScrollView horizontal contentContainerStyle={{ width: "100%" }}>
             <ResultsTable
-                columns={SESSION_TYPE_COLUMN_MAP[sessionType]}
+                columns={
+                    SESSION_TYPE_COLUMN_MAP[sessionType] as ColumnDef<
+                        IPracticeData | IRaceData | IQualifyingData
+                    >[]
+                }
                 rows={rows}
                 sessionType={sessionType}
                 {...rest}

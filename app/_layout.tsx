@@ -40,12 +40,10 @@ export default function RootLayout() {
                             contentStyle: {
                                 backgroundColor: getColor("background"),
                             },
-                            headerTitle: 'Results',
+                            headerTitle: "Results",
                         })}
                     />
-                    <Stack.Screen name="season/[season]/event/[event]/session/[session]/(laps)" options={{
-                        headerTitle: 'Laps'
-                    }}/>
+                    <Stack.Screen name="season/[season]/event/[event]/session/[session]/(laps)" />
                 </Stack>
             </Providers>
         </GestureHandlerRootView>
