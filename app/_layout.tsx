@@ -41,9 +41,15 @@ export default function RootLayout() {
                                 backgroundColor: getColor("background"),
                             },
                             headerTitle: "Results",
+                            headerShown: false,
                         })}
                     />
-                    <Stack.Screen name="season/[season]/event/[event]/session/[session]/(laps)" />
+                    <Stack.Screen
+                        name="season/[season]/event/[event]/session/[session]/(laps)"
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
                 </Stack>
             </Providers>
         </GestureHandlerRootView>
