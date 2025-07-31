@@ -34,7 +34,7 @@ const styleSheet = StyleSheet.create({
         width: "100%",
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: 'space-between'
     },
     driverText: {
         fontSize: FontSizes.Title.sm,
@@ -51,6 +51,7 @@ const styleSheet = StyleSheet.create({
         flexDirection: "column",
         alignItems: "flex-start",
         justifyContent: "flex-end",
+        flexBasis: '33%',
         gap: 4,
     },
     s2Column: {
@@ -58,6 +59,7 @@ const styleSheet = StyleSheet.create({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-end",
+        flexBasis: '33%',
         gap: 4,
     },
     s3Column: {
@@ -65,6 +67,7 @@ const styleSheet = StyleSheet.create({
         flexDirection: "column",
         alignItems: "flex-end",
         justifyContent: "flex-end",
+        flexBasis: '33%',
         gap: 4,
     },
     titleRow: {
@@ -76,11 +79,13 @@ const styleSheet = StyleSheet.create({
     },
     timeText: {
         fontSize: FontSizes.Body,
+        color: getColor('foreground')
     },
     separator: {
         width: "100%",
         borderWidth: 1,
         marginBlock: 4,
+        borderColor: getColor("border"),
     },
 })
 
@@ -101,7 +106,7 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
             <View style={styleSheet.wrapper}>
                 {hasLeft && (
                     <Button
-                        style={styleSheet.button}
+                        style={{ ...styleSheet.button }}
                         onPress={() => setDriverIndex(selectedDriverIndex - 1)}
                     >
                         <Ionicons name="chevron-back-outline" />
@@ -134,14 +139,7 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
             <FlatList
                 data={selectedDriverData.map((item, index) => ({ ...item, lap: index + 1 }))}
                 contentContainerStyle={styleSheet.lapList}
-                ItemSeparatorComponent={() => (
-                    <View
-                        style={{
-                            ...styleSheet.separator,
-                            borderColor: getColor("border"),
-                        }}
-                    />
-                )}
+                ItemSeparatorComponent={() => <View style={styleSheet.separator} />}
                 renderItem={({ item }) => {
                     const Compound = COLOR_MAP[item.compound_id as TCompound]
                     return (

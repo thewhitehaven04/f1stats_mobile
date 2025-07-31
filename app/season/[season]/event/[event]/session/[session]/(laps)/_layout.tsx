@@ -1,10 +1,16 @@
+'use client'
 import { getColor } from '@/src/colorScheme'
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { Tabs } from "expo-router"
 
 export default function LapsLayout() {
     return (
-        <Tabs>
+        <Tabs screenOptions={{
+            tabBarStyle: {
+                backgroundColor: getColor('muted'), 
+                borderColor: getColor('muted'), 
+            },
+        }}>
             <Tabs.Screen
                 name="laps"
                 options={{
@@ -14,7 +20,7 @@ export default function LapsLayout() {
                     sceneStyle: {
                         backgroundColor: getColor('background')
                     },
-                    tabBarIcon: () => <Ionicons name="timer" size={24} color="black" />,
+                    tabBarIcon: () => <Ionicons name="timer" size={24} color={getColor('mutedForeground')} />,
                 }}
             />
             <Tabs.Screen
@@ -26,7 +32,7 @@ export default function LapsLayout() {
                     sceneStyle: {
                         backgroundColor: getColor('background')
                     },
-                    tabBarIcon: () => <Ionicons name="analytics-outline" size={24} color="black" />,
+                    tabBarIcon: () => <Ionicons name="analytics-outline" size={24} color={getColor('mutedForeground')} />,
                 }}
             />
         </Tabs>

@@ -39,6 +39,9 @@ export const Button = ({
                                 scale: pressed ? 0.98 : 1,
                             },
                         ],
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
                     },
                     style,
                 )

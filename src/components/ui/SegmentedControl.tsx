@@ -27,6 +27,7 @@ const styleSheet = StyleSheet.create({
     },
     selectorText: {
         textAlign: "center",
+        color: getColor('mutedForeground')
     },
 })
 
