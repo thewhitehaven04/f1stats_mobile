@@ -9,8 +9,9 @@ const styleSheet = StyleSheet.create({
         borderWidth: 1,
         paddingInline: 8,
         paddingBlock: 4,
-        backgroundColor: getColor("muted"),
-        color: getColor("mutedForeground")
+        backgroundColor: getColor("background"),
+        color: getColor("accent"),
+        borderColor: getColor('ring')
     },
 })
 

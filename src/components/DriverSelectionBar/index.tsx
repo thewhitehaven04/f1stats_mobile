@@ -1,5 +1,5 @@
 "use client"
-import { getColor } from "@/src/colorScheme"
+import { getColor } from '@/src/colorScheme'
 import { DriverSelection } from "@/src/components/Tables/presets/results/driverSelectionAtom"
 import { Button } from "@/src/components/ui/Button"
 import { Chip } from "@/src/components/ui/Chip"
@@ -19,7 +19,7 @@ const styleSheet = StyleSheet.create({
         gap: 8,
         paddingInline: 16,
         paddingBlock: 8,
-        backgroundColor: getColor("card"),
+        backgroundColor: getColor("muted"),
     },
     chipWrapper: {
         display: "flex",
@@ -84,7 +84,7 @@ export const DriverSelectionBar = () => {
                     prefetch
                     asChild
                 >
-                    <Button label="Analyse" />
+                    <Button variant='outline' label="Analyse" />
                 </Link>
             </Animated.View>
         )
