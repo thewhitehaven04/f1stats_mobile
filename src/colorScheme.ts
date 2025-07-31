@@ -1,6 +1,6 @@
 import { Appearance } from "react-native"
 
-const lightTheme = {
+export const lightTheme = {
     accent: "#f4f4f5",
     accentForeground: "#18181b",
     background: "#ffffff",
@@ -36,7 +36,8 @@ const lightTheme = {
     sessionBest: "#aa3cdc",
     personalBest: "#4dd346",
 }
-const darkTheme = {
+
+export const darkTheme = {
     accent: "#27272a",
     accentForeground: "#fafafa",
     background: "#09090b",

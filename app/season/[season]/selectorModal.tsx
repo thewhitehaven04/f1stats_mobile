@@ -22,6 +22,9 @@ const modalStyleSheet = StyleSheet.create({
         alignItems: "center",
         width: 48,
     },
+    buttonText: {
+        color: getColor("primary"),
+    },
 })
 
 const SUPPORTED_SEASONS = ["2023", "2024", "2025"]
@@ -53,8 +56,12 @@ export default function SeasonSelectorModal() {
                             previous ? (
                                 <Button size="regular" onPress={() => navigateToSeason(previous)}>
                                     <View style={modalStyleSheet.navButton}>
-                                        <Ionicons name="chevron-back-outline" size={18} />
-                                        <Text>{previous}</Text>
+                                        <Ionicons
+                                            name="chevron-back-outline"
+                                            size={18}
+                                            color={getColor("foreground")}
+                                        />
+                                        <Text style={modalStyleSheet.buttonText}>{previous}</Text>
                                     </View>
                                 </Button>
                             ) : null
@@ -63,8 +70,12 @@ export default function SeasonSelectorModal() {
                             next ? (
                                 <Button size="regular" onPress={() => navigateToSeason(next)}>
                                     <View style={modalStyleSheet.navButton}>
-                                        <Text>{next}</Text>
-                                        <Ionicons name="chevron-forward-outline" size={18} />
+                                        <Text style={modalStyleSheet.buttonText}>{next}</Text>
+                                        <Ionicons
+                                            name="chevron-forward-outline"
+                                            size={18}
+                                            color={getColor("foreground")}
+                                        />
                                     </View>
                                 </Button>
                             ) : null

@@ -11,23 +11,22 @@ export const rootStyleSheet = StyleSheet.create({
         justifyContent: "center",
         height: "100%",
         gap: 16,
+        backgroundColor: getColor("background"),
     },
     buttonTitle: {
         fontSize: 24,
+        color: getColor("foreground"),
     },
     title: {
         fontSize: 48,
         fontWeight: 600,
+        color: getColor("foreground"),
     },
 })
 
 export default function Index() {
     return (
-        <View
-            style={StyleSheet.compose(rootStyleSheet.container, {
-                backgroundColor: getColor("background"),
-            })}
-        >
+        <View style={rootStyleSheet.container}>
             <Link href="/season/2024" asChild>
                 <Button variant="outline" size="large">
                     <Text style={rootStyleSheet.buttonTitle}>Start</Text>

@@ -1,7 +1,6 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
 import { Providers } from "@/src/providers"
-import type { ParamListBase, RouteProp } from "@react-navigation/native"
 import Stack from "expo-router/build/layouts/Stack"
 import React from "react"
 import { GestureHandlerRootView } from "react-native-gesture-handler"

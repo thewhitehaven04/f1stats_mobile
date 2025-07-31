@@ -1,5 +1,6 @@
 "use client"
 import renderSeasonEventsAction from "@/src/actions/render/seasonEvents"
+import { getColor } from "@/src/colorScheme"
 import { Button } from "@/src/components/ui/Button"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { Link, useLocalSearchParams, useRouter } from "expo-router"
@@ -21,6 +22,17 @@ const style = StyleSheet.create({
     },
     scrollContainer: {
         gap: 16,
+    },
+    buttonWrapper: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+    },
+    collectionWrapper: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        flex: 1,
     },
 })
 
@@ -61,31 +73,25 @@ export default function SeasonScreen() {
     )
 
     return (
-        <GestureDetector gesture={scrollUp}>
-            <ScrollView contentContainerStyle={style.wrapperContent}>
-                <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
+            <GestureDetector gesture={scrollUp}>
+                <ScrollView contentContainerStyle={style.wrapperContent}>
                     <View style={style.viewContent}>
-                        <View
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "center",
-                            }}
-                        >
+                        <View style={style.buttonWrapper}>
                             <Link href={`/season/${season}/selectorModal`} asChild>
-                                <Button>
-                                    <Text>{season}</Text>
-                                </Button>
+                                <Button label={season} size='large'/>
                             </Link>
                         </View>
-                        <Suspense fallback={<LoadingSpinner />}>
-                            <ScrollView contentContainerStyle={style.scrollContainer}>
-                                {seasonEvents}
-                            </ScrollView>
-                        </Suspense>
+                        <View style={style.collectionWrapper}>
+                            <Suspense fallback={<LoadingSpinner />}>
+                                <ScrollView contentContainerStyle={style.scrollContainer}>
+                                    {seasonEvents}
+                                </ScrollView>
+                            </Suspense>
+                        </View>
                     </View>
-                </SafeAreaView>
-            </ScrollView>
-        </GestureDetector>
+                </ScrollView>
+            </GestureDetector>
+        </SafeAreaView>
     )
 }
