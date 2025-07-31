@@ -8,7 +8,7 @@ export default function LapsLayout() {
             <Tabs.Screen
                 name="laps"
                 options={{
-                    href: "/season/[season]/event/[event]/session/[session]/(laps)/index",
+                    href: "./../index",
                     headerShown: false,
                     title: "Lap times",
                     sceneStyle: {
@@ -20,7 +20,7 @@ export default function LapsLayout() {
             <Tabs.Screen
                 name="telemetry"
                 options={{
-                    href: "/season/[season]/event/[event]/session/[session]/(laps)/telemetry",
+                    href: "./../telemetry",
                     headerShown: false,
                     title: "Telemetry",
                     sceneStyle: {

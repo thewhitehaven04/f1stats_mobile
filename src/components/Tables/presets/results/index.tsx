@@ -99,15 +99,15 @@ export const ResultsTable = (props: TResultsData) => {
     const { rows } = getRowModel()
 
     return (
-        <Table>
-            <TableHeader style={{ overflow: "hidden", borderTopLeftRadius: 16, borderTopRightRadius: 16 }}>
+        <Table style={{ overflow: 'hidden' }}>
+            <TableHeader>
                 {headers.map((header) => (
                     <TextCell key={header.column.id} style={{ flexBasis: header.getSize() }}>
                         {flexRender(header.column.columnDef.header, header.getContext())}
                     </TextCell>
                 ))}
             </TableHeader>
-            <TableBody style={{ overflowX: "scroll" }}>
+            <TableBody>
                 {rows.map((row) => (
                     <Fragment key={row.id}>
                         <TableRow

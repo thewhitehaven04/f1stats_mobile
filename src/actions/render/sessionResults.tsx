@@ -37,18 +37,16 @@ async function renderSessionResults({
     const { rows, sessionType, ...rest } = sessionResultsToTableRows(results.data, results.type)
 
     return (
-        <ScrollView horizontal contentContainerStyle={{ width: "100%" }}>
-            <ResultsTable
-                columns={
-                    SESSION_TYPE_COLUMN_MAP[sessionType] as ColumnDef<
-                        IPracticeData | IRaceData | IQualifyingData
-                    >[]
-                }
-                rows={rows}
-                sessionType={sessionType}
-                {...rest}
-            />
-        </ScrollView>
+        <ResultsTable
+            columns={
+                SESSION_TYPE_COLUMN_MAP[sessionType] as ColumnDef<
+                    IPracticeData | IRaceData | IQualifyingData
+                >[]
+            }
+            rows={rows}
+            sessionType={sessionType}
+            {...rest}
+        />
     )
 }
 

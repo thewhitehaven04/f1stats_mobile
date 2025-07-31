@@ -3,7 +3,7 @@ import { BASE_COLUMNS, type IBaseResultsData } from "@/src/components/Tables/pre
 import type { QUALIFYING_COLUMNS } from "@/src/components/Tables/presets/results/mapper"
 import { formatTime } from "@/src/core/helpers"
 import { createColumnHelper } from "@tanstack/react-table"
-import { Text } from 'react-native'
+import { Text } from "react-native"
 
 export interface IQualifyingData extends IBaseResultsData {
     time: number | null

@@ -6,7 +6,8 @@ import { DriverSelectionBar } from "@/src/components/DriverSelectionBar"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { useLocalSearchParams } from "expo-router"
 import { Suspense, useMemo } from "react"
-import { ScrollView, StyleSheet, View } from "react-native"
+import { ScrollView, StyleSheet, useColorScheme, View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -25,8 +26,9 @@ const styleSheet = StyleSheet.create({
     },
     card: {
         borderRadius: 16,
-        borderWidth: 1,
+        borderWidth: 0,
         width: "100%",
+        backgroundColor: getColor('card'),
     },
     footer: {
         position: "absolute",
@@ -41,14 +43,17 @@ export default function ResultsScreen() {
     const { season, session, event }: { season: string; session: string; event: string } =
         useLocalSearchParams()
 
+    const colorScheme = useColorScheme()
+
     const sessionMetrics = useMemo(
         () =>
             renderSeasonMetrics({
                 season,
                 session: decodeURIComponent(session),
                 event: decodeURIComponent(event),
+                darkMode: colorScheme === "dark",
             }),
-        [season, session, event],
+        [season, session, event, colorScheme],
     )
 
     const sessionResults = useMemo(
@@ -62,23 +67,24 @@ export default function ResultsScreen() {
     )
 
     return (
-        <>
+        <SafeAreaView edges={["top", "left", "right"]}>
             <View style={styleSheet.wrapper}>
-                <ScrollView
-                    style={{ overflowY: "visible" }}
-                    contentContainerStyle={styleSheet.scroll}
-                >
-                    <View style={{ ...styleSheet.card, borderColor: getColor("border") }}>
-                        <Suspense fallback={<LoadingSpinner />}>{sessionMetrics}</Suspense>
-                    </View>
-                    <View style={{ marginBottom: 80 }}>
-                        <Suspense fallback={<LoadingSpinner />}>{sessionResults}</Suspense>
-                    </View>
-                </ScrollView>
+                <Suspense fallback={<LoadingSpinner />}>
+                    <ScrollView
+                        style={{ width: "100%", flexGrow: 1 }}
+                        contentContainerStyle={styleSheet.scroll}
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <View style={{ ...styleSheet.card, borderColor: getColor("border") }}>
+                            {sessionMetrics}
+                        </View>
+                        <View style={{ marginBottom: 80 }}>{sessionResults}</View>
+                    </ScrollView>
+                </Suspense>
             </View>
             <View style={styleSheet.footer}>
                 <DriverSelectionBar />
             </View>
-        </>
+        </SafeAreaView>
     )
 }

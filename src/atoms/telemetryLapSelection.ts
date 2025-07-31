@@ -8,10 +8,12 @@ export const useTelemetryLapSelection = () => {
 
     const toggleSelection = useCallback(
         (driver: string, lap: number) => {
-            const selectedDriver = driverLapSelection.find(([d]) => d === driver)
+            const driverLaps = driverLapSelection.find(([d, l]) => d === driver && l === lap)
 
-            if (selectedDriver) {
-                setDriverLapSelection(driverLapSelection.filter(([d]) => d !== driver))
+            if (driverLaps) {
+                setDriverLapSelection(
+                    driverLapSelection.filter(([d, l]) => d !== driver && l !== lap),
+                )
             } else {
                 setDriverLapSelection((selection) => [...selection, [driver, lap]])
             }

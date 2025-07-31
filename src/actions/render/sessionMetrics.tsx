@@ -1,4 +1,5 @@
 "use server"
+import { darkTheme, lightTheme } from "@/src/colorScheme"
 import { fetchSessionMetrics } from "@/src/fetchers/session"
 import * as FontSizes from "@/src/fontSizes"
 import Ionicons from "@expo/vector-icons/Ionicons"
@@ -9,10 +10,12 @@ async function renderSeasonMetrics({
     season,
     event,
     session,
+    darkMode,
 }: {
     season: string
     event: string
     session: string
+    darkMode: boolean
 }) {
     const metrics = await fetchSessionMetrics({
         session,
@@ -25,19 +28,29 @@ async function renderSeasonMetrics({
             style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 8,
+                gap: 24,
                 alignContent: "space-evenly",
-                paddingBlock: 4,
-                paddingInline: 8,
+                padding: 16,
             }}
         >
             <View
-                style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center" }}
+                style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start" }}
             >
-                <Text style={{ fontSize: FontSizes.Title.md, fontWeight: 600 }}>
-                    {metrics.sessionData.eventName}
+                <Text
+                    style={{
+                        fontSize: FontSizes.Title.md,
+                        fontWeight: 600,
+                        color: darkMode ? darkTheme.foreground : lightTheme.foreground,
+                    }}
+                >
+                    {metrics.sessionData.eventName} - {metrics.sessionData.sessionType}
                 </Text>
-                <Text style={{ fontSize: FontSizes.Body }}>
+                <Text
+                    style={{
+                        fontSize: FontSizes.Body,
+                        color: darkMode ? darkTheme.foreground : lightTheme.foreground,
+                    }}
+                >
                     {format(metrics.sessionData.startTime, "MMM dd, HH:MM")} -{" "}
                     {format(metrics.sessionData.endTime, "HH:MM")}
                 </Text>
@@ -58,9 +71,18 @@ async function renderSeasonMetrics({
                         alignItems: "center",
                     }}
                 >
-                    <Ionicons name="thermometer-outline" size={32} />
+                    <Ionicons
+                        name="thermometer-outline"
+                        size={32}
+                        style={{ color: darkMode ? darkTheme.foreground : lightTheme.foreground }}
+                    />
                     <View>
-                        <Text style={{ fontSize: FontSizes.Body }}>
+                        <Text
+                            style={{
+                                fontSize: FontSizes.Body,
+                                color: darkMode ? darkTheme.foreground : lightTheme.foreground,
+                            }}
+                        >
                             {metrics.weather.airTempStart} - {metrics.weather.airTempEnd}°C
                         </Text>
                     </View>
@@ -73,9 +95,18 @@ async function renderSeasonMetrics({
                         alignItems: "center",
                     }}
                 >
-                    <Ionicons name="car-sport-outline" size={32} />
+                    <Ionicons
+                        name="car-sport-outline"
+                        size={32}
+                        style={{ color: darkMode ? darkTheme.foreground : lightTheme.foreground }}
+                    />
                     <View>
-                        <Text style={{ fontSize: FontSizes.Body }}>
+                        <Text
+                            style={{
+                                fontSize: FontSizes.Body,
+                                color: darkMode ? darkTheme.foreground : lightTheme.foreground,
+                            }}
+                        >
                             {metrics.weather.trackTempStart} - {metrics.weather.trackTempEnd}°C
                         </Text>
                     </View>
@@ -88,9 +119,18 @@ async function renderSeasonMetrics({
                         alignItems: "center",
                     }}
                 >
-                    <Ionicons name="water-outline" size={32} />
+                    <Ionicons
+                        name="water-outline"
+                        size={32}
+                        style={{ color: darkMode ? darkTheme.foreground : lightTheme.foreground }}
+                    />
                     <View>
-                        <Text style={{ fontSize: FontSizes.Body }}>
+                        <Text
+                            style={{
+                                fontSize: FontSizes.Body,
+                                color: darkMode ? darkTheme.foreground : lightTheme.foreground,
+                            }}
+                        >
                             {metrics.weather.humidityStart} - {metrics.weather.humidityEnd} %
                         </Text>
                     </View>

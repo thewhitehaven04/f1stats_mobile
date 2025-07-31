@@ -7,18 +7,17 @@ import { Pressable } from "react-native-gesture-handler"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
-        borderWidth: 0.5,
+        borderWidth: 1,
         borderColor: getColor("border"),
         borderRadius: 16,
-        width: '100%',
+        width: "100%",
     },
     header: {
         width: "100%",
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
+        backgroundColor: getColor("muted"),
     },
     headerTextCell: {
         fontSize: FontSizes.Body,
@@ -33,7 +32,8 @@ const styleSheet = StyleSheet.create({
         paddingBlock: 4,
         paddingInline: 8,
         flexGrow: 1,
-        color: getColor('foreground')
+        color: getColor("foreground"),
+        borderColor: getColor("border"),
     },
     row: {
         display: "flex",
@@ -43,10 +43,12 @@ const styleSheet = StyleSheet.create({
         alignItems: "center",
         borderTopWidth: 0.5,
         borderBottomWidth: 0.5,
+        borderColor: getColor("border"),
     },
     textCell: {
-        fontSize: FontSizes.Body,
+        fontSize: 17,
         textAlign: "center",
+        color: getColor("primary"),
     },
 })
 
@@ -60,17 +62,7 @@ export const Table = ({ children, style, ...rest }: ComponentProps<typeof View>)
 
 export const TableHeader = ({ children, style, ...rest }: ComponentProps<typeof View>) => {
     return (
-        <View
-            style={StyleSheet.compose(
-                {
-                    ...styleSheet.header,
-                    backgroundColor: getColor("muted"),
-                    color: getColor("mutedForeground"),
-                },
-                style,
-            )}
-            {...rest}
-        >
+        <View style={StyleSheet.compose(styleSheet.header, style)} {...rest}>
             {children}
         </View>
     )
@@ -99,24 +91,12 @@ export const TableRow = ({
             onPress={onPress}
             onLongPress={onLongPress}
         >
-            <View
-                style={StyleSheet.compose(
-                    { ...styleSheet.row, borderColor: getColor("border") },
-                    style,
-                )}
-                {...rest}
-            >
+            <View style={StyleSheet.compose(styleSheet.row, style)} {...rest}>
                 {children}
             </View>
         </Pressable>
     ) : (
-        <View
-            style={StyleSheet.compose(
-                { ...styleSheet.row, borderColor: getColor("border") },
-                style,
-            )}
-            {...rest}
-        >
+        <View style={StyleSheet.compose(styleSheet.row, style)} {...rest}>
             {children}
         </View>
     )
@@ -132,13 +112,7 @@ export const TableBody = ({ children, style, ...rest }: ComponentProps<typeof Vi
 
 export const TableCell = ({ children, style, ...rest }: ComponentProps<typeof View>) => {
     return (
-        <View
-            style={StyleSheet.compose(
-                { ...styleSheet.cell, borderColor: getColor("border") },
-                style,
-            )}
-            {...rest}
-        >
+        <View style={StyleSheet.compose(styleSheet.cell, style)} {...rest}>
             {children}
         </View>
     )
@@ -151,13 +125,7 @@ export const TextCell = ({
     ...rest
 }: ComponentProps<typeof View> & { textStyle?: ComponentProps<typeof Text>["style"] }) => {
     return (
-        <View
-            {...rest}
-            style={StyleSheet.compose(
-                { ...styleSheet.cell, borderColor: getColor("border") },
-                style,
-            )}
-        >
+        <View {...rest} style={StyleSheet.compose(styleSheet.cell, style)}>
             <Text style={StyleSheet.compose(styleSheet.textCell, textStyle)}>{children}</Text>
         </View>
     )

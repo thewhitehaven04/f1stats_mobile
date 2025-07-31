@@ -5,20 +5,21 @@ import { Button } from "@/src/components/ui/Button"
 import { Chip } from "@/src/components/ui/Chip"
 import { Link, useLocalSearchParams } from "expo-router"
 import { useAtom } from "jotai"
-import { StyleSheet, Text, ScrollView } from "react-native"
+import { useEffect } from "react"
+import { StyleSheet, ScrollView } from "react-native"
 import Animated, { SlideInDown, SlideOutDown } from "react-native-reanimated"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
         width: "100%",
         borderRadius: 16,
-        borderWidth: 1,
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "baseline",
         gap: 8,
         paddingInline: 16,
         paddingBlock: 8,
+        backgroundColor: getColor("card"),
     },
     chipWrapper: {
         display: "flex",
@@ -51,19 +52,15 @@ export const DriverSelectionBar = () => {
         driverId.split(" ")[1].slice(0, 3),
     ])
 
+    useEffect(() => setDriverSelection({}), [setDriverSelection])
+
     const isVisible = driverAbbreviations.length > 0
     return (
         isVisible && (
             <Animated.View
                 entering={SlideInDown.duration(300)}
                 exiting={SlideOutDown.duration(300)}
-                style={[
-                    {
-                        ...styleSheet.wrapper,
-                        borderColor: getColor("border"),
-                        backgroundColor: getColor("card"),
-                    },
-                ]}
+                style={styleSheet.wrapper}
             >
                 <ScrollView horizontal contentContainerStyle={styleSheet.chipWrapper}>
                     {driverAbbreviations.map(([driver, abbreviation]) => (
@@ -87,9 +84,7 @@ export const DriverSelectionBar = () => {
                     prefetch
                     asChild
                 >
-                    <Button>
-                        <Text>Analyse</Text>
-                    </Button>
+                    <Button label="Analyse" />
                 </Link>
             </Animated.View>
         )

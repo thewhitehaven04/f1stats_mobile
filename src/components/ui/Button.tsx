@@ -2,18 +2,21 @@
 import { getColor } from "@/src/colorScheme"
 import { type ComponentProps } from "react"
 import { Pressable, type StyleProp, type ViewStyle } from "react-native"
-import { StyleSheet } from "react-native"
+import { StyleSheet, Text } from "react-native"
+import * as FontSizes from "@/src/fontSizes"
 
 export const Button = ({
     children,
     variant = "solid",
     size = "regular",
     style,
+    label,
     ...rest
 }: Omit<ComponentProps<typeof Pressable>, "style"> & {
     variant?: "outline" | "solid"
     size?: "regular" | "large"
     style?: StyleProp<ViewStyle>
+    label?: string
 }) => {
     return (
         <Pressable
@@ -41,7 +44,18 @@ export const Button = ({
                 )
             }
         >
-            {children}
+            {label ? (
+                <Text
+                    style={{
+                        color: getColor("foreground"),
+                        fontSize: size === "large" ? FontSizes.Title.sm : FontSizes.Body,
+                    }}
+                >
+                    {label}
+                </Text>
+            ) : (
+                children
+            )}
         </Pressable>
     )
 }

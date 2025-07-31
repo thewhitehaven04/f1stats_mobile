@@ -1,6 +1,6 @@
 import { getColor } from "@/src/colorScheme"
 import type { ComponentProps } from "react"
-import { View, StyleSheet, Pressable, Text } from "react-native"
+import { StyleSheet, Pressable, Text } from "react-native"
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated"
 
 const styleSheet = StyleSheet.create({
@@ -9,6 +9,8 @@ const styleSheet = StyleSheet.create({
         borderWidth: 1,
         paddingInline: 8,
         paddingBlock: 4,
+        backgroundColor: getColor("muted"),
+        color: getColor("mutedForeground")
     },
 })
 
@@ -18,24 +20,16 @@ export const Chip = ({
     onPress,
     label,
     ...rest
-}: ComponentProps<typeof View> & { onPress?: () => void; label?: string }) => {
+}: ComponentProps<typeof Animated.View> & { onPress?: () => void; label?: string }) => {
     return (
         <Pressable onPress={onPress}>
             <Animated.View
                 entering={FadeIn}
                 exiting={FadeOut}
-                style={StyleSheet.compose(
-                    {
-                        ...styleSheet.chip,
-                        backgroundColor: getColor("muted"),
-                        color: getColor("mutedForeground"),
-                        borderColor: getColor("border"),
-                    },
-                    style,
-                )}
+                style={StyleSheet.compose(styleSheet.chip, style)}
                 {...rest}
             >
-                {label ? <Text>{label}</Text> : children}
+                {label ? <Text style={{ color: getColor("foreground") }}>{label}</Text> : children}
             </Animated.View>
         </Pressable>
     )
