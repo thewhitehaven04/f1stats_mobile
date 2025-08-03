@@ -1,26 +1,13 @@
 "use client"
-import { getColor } from '@/src/colorScheme'
 import { DriverSelection } from "@/src/components/Tables/presets/results/driverSelectionAtom"
 import { Button } from "@/src/components/ui/Button"
 import { Chip } from "@/src/components/ui/Chip"
 import { Link, useLocalSearchParams } from "expo-router"
 import { useAtom } from "jotai"
-import { useEffect } from "react"
 import { StyleSheet, ScrollView } from "react-native"
-import Animated, { SlideInDown, SlideOutDown } from "react-native-reanimated"
+import { BottomSheet } from "../ui/BottomSheet"
 
 const styleSheet = StyleSheet.create({
-    wrapper: {
-        width: "100%",
-        borderRadius: 16,
-        flexDirection: "row",
-        justifyContent: "space-around",
-        alignItems: "baseline",
-        gap: 8,
-        paddingInline: 16,
-        paddingBlock: 8,
-        backgroundColor: getColor("muted"),
-    },
     chipWrapper: {
         display: "flex",
         flexDirection: "row",
@@ -28,6 +15,9 @@ const styleSheet = StyleSheet.create({
         gap: 8,
         alignItems: "center",
         width: "64%",
+    },
+    wrapper: {
+        width: '90%',
     },
 })
 
@@ -52,16 +42,10 @@ export const DriverSelectionBar = () => {
         driverId.split(" ")[1].slice(0, 3),
     ])
 
-    useEffect(() => setDriverSelection({}), [setDriverSelection])
-
     const isVisible = driverAbbreviations.length > 0
     return (
         isVisible && (
-            <Animated.View
-                entering={SlideInDown.duration(300)}
-                exiting={SlideOutDown.duration(300)}
-                style={styleSheet.wrapper}
-            >
+            <BottomSheet style={styleSheet.wrapper}>
                 <ScrollView horizontal contentContainerStyle={styleSheet.chipWrapper}>
                     {driverAbbreviations.map(([driver, abbreviation]) => (
                         <Chip
@@ -73,20 +57,18 @@ export const DriverSelectionBar = () => {
                 </ScrollView>
                 <Link
                     href={{
-                        // @ts-ignore
-                        pathname: `/season/[season]/event/[event]/session/[session]/laps?${drivers.map(([driver]) => `drivers=${driver}`).join("&")}`,
+                        pathname: "/season/[season]/event/[event]/session/[session]/laps",
                         params: {
                             season,
                             event,
                             session,
                         },
                     }}
-                    prefetch
                     asChild
                 >
-                    <Button variant='outline' label="Analyse" />
+                    <Button variant="outline" label="Analyse" />
                 </Link>
-            </Animated.View>
+            </BottomSheet>
         )
     )
 }

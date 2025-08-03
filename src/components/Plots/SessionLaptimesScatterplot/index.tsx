@@ -53,7 +53,7 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
     const plotData = indices.map((index) => {
         const entries = drivers.map((driver) => {
             const isFlyingLap =
-                !driver.laps[index - 1].is_inlap && !driver.laps[index - 1].is_outlap
+                !driver.laps[index - 1]?.is_inlap && !driver.laps[index - 1]?.is_outlap
             return [
                 driver.driver,
                 showOutliers
@@ -71,7 +71,7 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
         <View style={styleSheet.wrapper}>
             <CartesianChart
                 data={plotData}
-                xKey={"lap"}
+                xKey="lap"
                 yKeys={driverNames}
                 padding={{ left: 8, right: 8, top: 8 }}
                 axisOptions={{

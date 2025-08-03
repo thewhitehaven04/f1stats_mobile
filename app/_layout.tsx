@@ -30,25 +30,34 @@ export default function RootLayout() {
                         options={{
                             presentation: "containedTransparentModal",
                             animation: "fade",
-                            title: "Select season",
                             headerShown: false,
                         }}
                     />
                     <Stack.Screen
                         name="season/[season]/event/[event]/session/[session]/results"
                         options={({ route }) => ({
-                            title: `${route.params?.event ?? ""} - ${route.params?.session ?? ""} results`,
                             contentStyle: {
                                 backgroundColor: getColor("background"),
                             },
-                            headerTitle: "Results",
                             headerShown: false,
                         })}
                     />
                     <Stack.Screen
-                        name="season/[season]/event/[event]/session/[session]/(laps)"
+                        name="season/[season]/event/[event]/session/[session]/laps"
                         options={{
+                            contentStyle: {
+                                backgroundColor: getColor("background"),
+                            },
                             headerShown: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="season/[season]/event/[event]/session/[session]/telemetry"
+                        options={{
+                            contentStyle: {
+                                backgroundColor: getColor("background"),
+                            },
+                            title: "Telemetry"
                         }}
                     />
                 </Stack>

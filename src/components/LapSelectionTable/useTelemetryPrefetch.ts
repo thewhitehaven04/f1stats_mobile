@@ -1,13 +1,12 @@
-import { TelemetryLapSelection, useTelemetryLapSelection } from "@/src/atoms/telemetryLapSelection"
+import { TelemetryLapSelection } from "@/src/atoms/telemetryLapSelection"
 import { ApiClient } from "@/src/client"
 import {
-    getLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetriesPost,
+    getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost,
     type SessionQuery,
 } from "@/src/client/generated"
-import { useQueryClient } from "@tanstack/react-query"
+import { usePrefetchQuery } from "@tanstack/react-query"
 import { useLocalSearchParams } from "expo-router"
-import { useAtomValue } from 'jotai'
-import { useEffect, useRef } from "react"
+import { useAtomValue } from "jotai"
 
 export const buildQueriesFromSelection = (selection: [string, number][]) => {
     const queries: SessionQuery[] = []
@@ -31,37 +30,30 @@ export const buildQueriesFromSelection = (selection: [string, number][]) => {
 }
 
 export const useTelemetryPrefetchOnSelectionChange = () => {
-    const client = useQueryClient()
     const { season, session, event }: { season: string; session: string; event: string } =
         useLocalSearchParams()
 
-    const timeoutRef = useRef<number>(null)
-
     const selection = useAtomValue(TelemetryLapSelection)
+    const queries = buildQueriesFromSelection(selection)
 
-    useEffect(() => {
-        const queries = buildQueriesFromSelection(selection)
-        timeoutRef.current = setTimeout(
-            () =>
-                client.prefetchQuery({
-                    queryKey: [season, session, event, "telemetry", queries],
-                    queryFn: () =>
-                        getLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetriesPost({
-                            client: ApiClient,
-                            body: {
-                                queries,
-                            },
-                            path: {
-                                session,
-                                event,
-                                year: season,
-                            },
-                        }),
-                    staleTime: Infinity,
-                }),
-            500,
-        )
+    usePrefetchQuery({
+        queryKey: [season, session, event, "telemetry", queries],
+        queryFn: () => {
+            if (!queries.length) {
+                return null
+            }
 
-        return () => clearTimeout(timeoutRef.current)
-    }, [client, event, season, session, selection])
+            return getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost({
+                client: ApiClient,
+                body: {
+                    queries,
+                },
+                path: {
+                    session,
+                    event,
+                    year: season,
+                },
+            })
+        },
+    })
 }

@@ -12,7 +12,7 @@ export const useTelemetryLapSelection = () => {
 
             if (driverLaps) {
                 setDriverLapSelection(
-                    driverLapSelection.filter(([d, l]) => d !== driver && l !== lap),
+                    driverLapSelection.filter(([d, l]) => d !== driver || l !== lap),
                 )
             } else {
                 setDriverLapSelection((selection) => [...selection, [driver, lap]])

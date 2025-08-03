@@ -6,7 +6,7 @@ import { COLOR_MAP, type TCompound } from "@/src/components/ui/TyreCompounds"
 import { formatTime } from "@/src/core/helpers"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { useState } from "react"
-import { FlatList, StyleSheet, View, Text, Pressable } from "react-native"
+import { FlatList, StyleSheet, Pressable, View, Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
 import { useTelemetryPrefetchOnSelectionChange } from "@/src/components/LapSelectionTable/useTelemetryPrefetch"
 import { useTelemetryLapSelection } from "@/src/atoms/telemetryLapSelection"
@@ -34,7 +34,7 @@ const styleSheet = StyleSheet.create({
         width: "100%",
         display: "flex",
         flexDirection: "row",
-        justifyContent: 'space-between'
+        justifyContent: "space-between",
     },
     driverText: {
         fontSize: FontSizes.Title.sm,
@@ -51,7 +51,7 @@ const styleSheet = StyleSheet.create({
         flexDirection: "column",
         alignItems: "flex-start",
         justifyContent: "flex-end",
-        flexBasis: '33%',
+        flexBasis: "33%",
         gap: 4,
     },
     s2Column: {
@@ -59,7 +59,7 @@ const styleSheet = StyleSheet.create({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-end",
-        flexBasis: '33%',
+        flexBasis: "33%",
         gap: 4,
     },
     s3Column: {
@@ -67,7 +67,7 @@ const styleSheet = StyleSheet.create({
         flexDirection: "column",
         alignItems: "flex-end",
         justifyContent: "flex-end",
-        flexBasis: '33%',
+        flexBasis: "33%",
         gap: 4,
     },
     titleRow: {
@@ -79,7 +79,7 @@ const styleSheet = StyleSheet.create({
     },
     timeText: {
         fontSize: FontSizes.Body,
-        color: getColor('foreground')
+        color: getColor("foreground"),
     },
     separator: {
         width: "100%",
@@ -88,6 +88,8 @@ const styleSheet = StyleSheet.create({
         borderColor: getColor("border"),
     },
 })
+
+const mapDriverToAbbreviation = (driver: string) => driver.split(" ")[1].slice(0, 3)
 
 export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
     const [selectedDriverIndex, setDriverIndex] = useState(0)
@@ -111,15 +113,15 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                     >
                         <Ionicons name="chevron-back-outline" />
                         <Text style={{ textAlign: "left" }}>
-                            {data.driver_lap_data[selectedDriverIndex - 1].driver
-                                .split(" ")[1]
-                                .slice(0, 3)}
+                            {mapDriverToAbbreviation(
+                                data.driver_lap_data[selectedDriverIndex - 1].driver,
+                            )}
                         </Text>
                     </Button>
                 )}
                 <View style={{ width: "33%" }}>
                     <Text style={{ textAlign: "center" }}>
-                        {currentDriver.split(" ")[1].slice(0, 3)}
+                        {mapDriverToAbbreviation(currentDriver)}
                     </Text>
                 </View>
                 {hasRight && (
@@ -128,9 +130,9 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                         onPress={() => setDriverIndex(selectedDriverIndex + 1)}
                     >
                         <Text style={{ textAlign: "right" }}>
-                            {data.driver_lap_data[selectedDriverIndex + 1].driver
-                                .split(" ")[1]
-                                .slice(0, 3)}
+                            {mapDriverToAbbreviation(
+                                data.driver_lap_data[selectedDriverIndex + 1].driver,
+                            )}
                         </Text>
                         <Ionicons name="chevron-forward-outline" />
                     </Button>

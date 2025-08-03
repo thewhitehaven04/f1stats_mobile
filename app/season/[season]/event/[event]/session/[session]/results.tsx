@@ -28,7 +28,7 @@ const styleSheet = StyleSheet.create({
         borderRadius: 16,
         borderWidth: 0,
         width: "100%",
-        backgroundColor: getColor('card'),
+        backgroundColor: getColor("muted"),
     },
     footer: {
         position: "absolute",
@@ -82,9 +82,7 @@ export default function ResultsScreen() {
                     </ScrollView>
                 </Suspense>
             </View>
-            <View style={styleSheet.footer}>
-                <DriverSelectionBar />
-            </View>
+            <DriverSelectionBar />
         </SafeAreaView>
     )
 }
