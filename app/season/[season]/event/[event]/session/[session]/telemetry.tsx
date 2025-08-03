@@ -2,24 +2,39 @@
 import { ApiClient } from "@/src/client"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useLocalSearchParams } from "expo-router"
-import { SafeAreaView, StyleSheet, View, Text } from "react-native"
-import { CartesianChart, Line } from "victory-native"
-import SpaceMono from "@/assets/fonts/SpaceMono-Regular.ttf"
-import { useMemo } from "react"
-import { useFont } from "@shopify/react-native-skia"
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 import { useAtomValue } from "jotai"
 import { TelemetryLapSelection } from "@/src/atoms/telemetryLapSelection"
 import { buildQueriesFromSelection } from "@/src/components/LapSelectionTable/useTelemetryPrefetch"
 import { getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost } from "@/src/client/generated"
-import { getAlternativePlotColor } from "@/src/core/helpers"
+import { TelemetryPlot } from "@/src/components/Plots/TelemetryPlot"
+import { useMemo } from "react"
+import { LegendItem } from "@/src/components/Plots/LegendItem"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
-        width: "100%",
-        height: 500,
         display: "flex",
         flexDirection: "column",
         gap: 16,
+    },
+    speedtrace: {
+        height: 350,
+    },
+    brake: {
+        height: 150,
+    },
+    throttle: {
+        height: 150,
+    },
+    rpm: {
+        height: 150,
+    },
+    legend: {
+        display: "flex",
+        flexDirection: "row",
+        gap: 8,
+        justifyContent: "space-evenly",
+        flexWrap: "wrap",
     },
 })
 
@@ -32,82 +47,109 @@ export default function Telemetry() {
     const queries = buildQueriesFromSelection(selection)
     const { data } = useSuspenseQuery({
         queryKey: [season, event, session, "telemetry", queries],
-        queryFn: () => {
-            return getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost(
-                {
-                    client: ApiClient,
-                    body: {
-                        queries,
-                    },
-                    path: {
-                        session,
-                        event,
-                        year: season,
-                    },
-                    throwOnError: true,
+        queryFn: () =>
+            getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost({
+                client: ApiClient,
+                body: {
+                    queries,
                 },
-            )
-        },
+                path: {
+                    session,
+                    event,
+                    year: season,
+                },
+                throwOnError: true,
+            }),
     })
 
-    const colorMap = data.data.color_map
-    const font = useFont(SpaceMono, 13)
+    const {
+        data: { telemetries, color_map },
+    } = data
 
-    const avgTelemetries = data.data.telemetries
+    const distance = useMemo(
+        () => telemetries[0].telemetry.map(({ distance }) => distance),
+        [telemetries],
+    )
 
-    const drivers = avgTelemetries.map((driverTelemetry) => driverTelemetry.driver)
-
-    const chartData: Record<string, number>[] = useMemo(() => {
-        const distance = avgTelemetries[0].telemetry.map(({ distance }) => distance)
+    const speedtraceData: Record<string, number>[] = useMemo(() => {
         const chartData = distance.map((d) => ({
             distance: d,
         }))
 
         chartData.forEach((dataInstance, i) => {
-            avgTelemetries.forEach(({ telemetry, driver }) => {
+            telemetries.forEach(({ telemetry, driver }) => {
                 dataInstance[driver] = telemetry[i]?.speed || null
             })
         })
 
         return chartData
-    }, [avgTelemetries])
+    }, [distance, telemetries])
+
+    const throttleData: Record<string, number>[] = useMemo(() => {
+        const chartData = distance.map((d) => ({
+            distance: d,
+        }))
+
+        chartData.forEach((dataInstance, i) => {
+            telemetries.forEach(({ telemetry, driver }) => {
+                dataInstance[driver] = telemetry[i]?.throttle || null
+            })
+        })
+
+        return chartData
+    }, [distance, telemetries])
+
+    const brakeData: Record<string, number>[] = useMemo(() => {
+        const chartData = distance.map((d) => ({
+            distance: d,
+        }))
+
+        chartData.forEach((dataInstance, i) => {
+            telemetries.forEach(({ telemetry, driver }) => {
+                dataInstance[driver] = telemetry[i]?.brake || null
+            })
+        })
+
+        return chartData
+    }, [distance, telemetries])
+
+    const rpmData: Record<string, number>[] = useMemo(() => {
+        const chartData = distance.map((d) => ({
+            distance: d,
+        }))
+
+        chartData.forEach((dataInstance, i) => {
+            telemetries.forEach(({ telemetry, driver }) => {
+                dataInstance[driver] = telemetry[i]?.rpm || null
+            })
+        })
+
+        return chartData
+    }, [distance, telemetries])
+
+    const yAxes = telemetries.map(({ driver }) => driver)
 
     return (
         <SafeAreaView style={styleSheet.wrapper}>
-            <CartesianChart
-                data={chartData}
-                xKey="distance"
-                yKeys={drivers}
-                axisOptions={{
-                    font,
-                    axisSide: {
-                        x: "bottom",
-                        y: "left",
-                    },
-                    labelPosition: {
-                        x: "outset",
-                        y: "inset",
-                    },
-                }}
-            >
-                {({ points }) =>
-                    drivers.map((driver) => (
-                        <Line
-                            key={driver}
-                            points={points[driver]}
-                            color={
-                                colorMap[driver].style === "default"
-                                    ? colorMap[driver].color
-                                    : getAlternativePlotColor(colorMap[driver].color)
-                            }
-                            strokeWidth={3}
-                        />
-                    ))
-                }
-            </CartesianChart>
-            <View>
-                <Text>{"Speed (km/h)"}</Text>
-            </View>
+            <ScrollView>
+                <View style={styleSheet.speedtrace}>
+                    <TelemetryPlot chartData={speedtraceData} yAxes={yAxes} colorMap={color_map} />
+                </View>
+                <View style={styleSheet.throttle}>
+                    <TelemetryPlot chartData={throttleData} yAxes={yAxes} colorMap={color_map} />
+                </View>
+                <View style={styleSheet.brake}>
+                    <TelemetryPlot chartData={brakeData} yAxes={yAxes} colorMap={color_map} />
+                </View>
+                <View style={styleSheet.rpm}>
+                    <TelemetryPlot chartData={rpmData} yAxes={yAxes} colorMap={color_map} />
+                </View>
+                <View style={styleSheet.legend}>
+                    {yAxes.map((driver) => (
+                        <LegendItem label={driver} plotColor={color_map[driver]} key={driver} />
+                    ))}
+                </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }

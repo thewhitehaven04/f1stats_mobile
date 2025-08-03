@@ -21,3 +21,5 @@ export const formatTime = (time_s: number | null | undefined) => {
 export function getAlternativePlotColor(color: string) {
     return Color(color).isDark() ? Color(color).lighten(0.2).hex() : Color(color).darken(0.2).hex()
 }
+
+export const mapDriverToAbbreviation = (driver: string) => driver.split(" ")[1].slice(0, 3)

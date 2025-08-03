@@ -20,6 +20,10 @@ const styleSheet = StyleSheet.create({
         width: "90%",
         bottom: 100,
     },
+    bottomSheetButton: {
+        width: "100%",
+        height: "100%",
+    },
 })
 
 export default function LapsScreen() {
@@ -66,7 +70,10 @@ export default function LapsScreen() {
                                     }}
                                     asChild
                                 >
-                                    <Button label="View telemetry" />
+                                    <Button
+                                        label="View telemetry"
+                                        style={styleSheet.bottomSheetButton}
+                                    />
                                 </Link>
                             </BottomSheet>
                         )}

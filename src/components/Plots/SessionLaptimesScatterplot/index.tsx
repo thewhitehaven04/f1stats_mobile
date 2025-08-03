@@ -9,6 +9,7 @@ import SpaceMono from "@/assets/fonts/SpaceMono-Regular.ttf"
 import { Button } from "@/src/components/ui/Button"
 import { useState } from "react"
 import type { SharedValue } from "react-native-reanimated"
+import { useZoomReset } from "@/src/components/Plots/hooks/useZoomReset"
 
 function ToolTip({ x, y }: { x: SharedValue<number>; y: SharedValue<number> }) {
     return <Circle cx={x} cy={y} r={8} color="black" />
@@ -36,11 +37,6 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
 
     const driverNames = data.driver_lap_data.map((driver) => driver.driver)
 
-    const { state: transformState } = useChartTransformState({
-        scaleX: 1,
-        scaleY: 1,
-    })
-
     const { state: pressState, isActive: isPressActive } = useChartPressState({
         x: 0,
         y: Object.fromEntries(drivers.map((driver) => [driver.driver, 0])),
@@ -66,6 +62,8 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
         entries.push(["lap", index])
         return Object.fromEntries(entries)
     })
+
+    const { transformState } = useZoomReset()
 
     return (
         <View style={styleSheet.wrapper}>

@@ -3,7 +3,7 @@ import { getColor } from "@/src/colorScheme"
 import { TrackMetric } from "@/src/components/Laptime"
 import { Button } from "@/src/components/ui/Button"
 import { COLOR_MAP, type TCompound } from "@/src/components/ui/TyreCompounds"
-import { formatTime } from "@/src/core/helpers"
+import { formatTime, mapDriverToAbbreviation } from "@/src/core/helpers"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { useState } from "react"
 import { FlatList, StyleSheet, Pressable, View, Text } from "react-native"
@@ -88,8 +88,6 @@ const styleSheet = StyleSheet.create({
         borderColor: getColor("border"),
     },
 })
-
-const mapDriverToAbbreviation = (driver: string) => driver.split(" ")[1].slice(0, 3)
 
 export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
     const [selectedDriverIndex, setDriverIndex] = useState(0)

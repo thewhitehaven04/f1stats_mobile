@@ -11,8 +11,6 @@ const styleSheet = StyleSheet.create({
         justifyContent: "space-around",
         alignItems: "baseline",
         gap: 8,
-        paddingInline: 16,
-        paddingBlock: 8,
         backgroundColor: getColor("muted"),
         position: "absolute",
         left: "50%",

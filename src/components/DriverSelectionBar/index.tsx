@@ -18,6 +18,8 @@ const styleSheet = StyleSheet.create({
     },
     wrapper: {
         width: '90%',
+        paddingBlock: 8,
+        paddingInline: 16
     },
 })
 

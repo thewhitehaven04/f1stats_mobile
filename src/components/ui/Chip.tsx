@@ -11,7 +11,7 @@ const styleSheet = StyleSheet.create({
         paddingBlock: 4,
         backgroundColor: getColor("background"),
         color: getColor("accent"),
-        borderColor: getColor('ring')
+        borderColor: getColor('border')
     },
 })
 

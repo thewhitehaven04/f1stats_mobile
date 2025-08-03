@@ -1,11 +1,10 @@
 "use client"
 import renderSeasonEventsAction from "@/src/actions/render/seasonEvents"
-import { getColor } from "@/src/colorScheme"
 import { Button } from "@/src/components/ui/Button"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { Link, useLocalSearchParams, useRouter } from "expo-router"
 import { Suspense, useMemo } from "react"
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native"
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import { useSharedValue } from "react-native-reanimated"
 
