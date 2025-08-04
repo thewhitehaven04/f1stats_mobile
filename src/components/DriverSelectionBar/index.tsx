@@ -1,11 +1,11 @@
 "use client"
-import { DriverSelection } from "@/src/components/Tables/presets/results/driverSelectionAtom"
 import { Button } from "@/src/components/ui/Button"
 import { Chip } from "@/src/components/ui/Chip"
 import { Link, useLocalSearchParams } from "expo-router"
-import { useAtom } from "jotai"
 import { StyleSheet, ScrollView } from "react-native"
 import { BottomSheet } from "../ui/BottomSheet"
+import { useAppDispatch, useAppSelector } from "@/src/store"
+import { listLaps, toggleDriver } from "@/src/store/slices/driverSelection"
 
 const styleSheet = StyleSheet.create({
     chipWrapper: {
@@ -17,9 +17,9 @@ const styleSheet = StyleSheet.create({
         width: "64%",
     },
     wrapper: {
-        width: '90%',
+        width: "90%",
         paddingBlock: 8,
-        paddingInline: 16
+        paddingInline: 16,
     },
 })
 
@@ -27,18 +27,9 @@ export const DriverSelectionBar = () => {
     const { season, event, session }: { season: string; event: string; session: string } =
         useLocalSearchParams()
 
-    const [driverSelection, setDriverSelection] = useAtom(DriverSelection)
+    const dispatch = useAppDispatch()
+    const drivers = useAppSelector(listLaps)
 
-    const deleteDriver = (driver: string) => {
-        setDriverSelection((prev) => {
-            return {
-                ...prev,
-                [driver]: false,
-            }
-        })
-    }
-
-    const drivers = Object.entries(driverSelection).filter(([_, isSelected]) => isSelected)
     const driverAbbreviations = drivers.map(([driverId]) => [
         driverId,
         driverId.split(" ")[1].slice(0, 3),
@@ -53,7 +44,13 @@ export const DriverSelectionBar = () => {
                         <Chip
                             key={driver}
                             label={abbreviation}
-                            onPress={() => deleteDriver(driver)}
+                            onPress={() =>
+                                dispatch(
+                                    toggleDriver({
+                                        driver,
+                                    }),
+                                )
+                            }
                         />
                     ))}
                 </ScrollView>

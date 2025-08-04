@@ -4,12 +4,13 @@ import type { LapSelectionData } from "@/src/client/generated"
 import { formatTime, getAlternativePlotColor } from "@/src/core/helpers"
 import { Circle, useFont } from "@shopify/react-native-skia"
 import { View, Text, StyleSheet } from "react-native"
-import { CartesianChart, Scatter, useChartPressState, useChartTransformState } from "victory-native"
+import { CartesianChart, Scatter, useChartPressState } from "victory-native"
 import SpaceMono from "@/assets/fonts/SpaceMono-Regular.ttf"
 import { Button } from "@/src/components/ui/Button"
 import { useState } from "react"
 import type { SharedValue } from "react-native-reanimated"
 import { useZoomReset } from "@/src/components/Plots/hooks/useZoomReset"
+import { LegendItem } from "@/src/components/Plots/LegendItem"
 
 function ToolTip({ x, y }: { x: SharedValue<number>; y: SharedValue<number> }) {
     return <Circle cx={x} cy={y} r={8} color="black" />
@@ -27,6 +28,13 @@ const styleSheet = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent: "center",
+    },
+    legend: {
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: 'wrap',
+        justifyContent: 'space-evenly',
+        gap: 8, 
     },
 })
 
@@ -120,6 +128,11 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
                     ))
                 }
             </CartesianChart>
+            <View style={styleSheet.legend}>
+                {driverNames.map((name) => (
+                    <LegendItem key={name} label={name} plotColor={colors[name]} />
+                ))}
+            </View>
             <View style={styleSheet.footer}>
                 <Button onPress={() => setShowOutliers(!showOutliers)}>
                     <Text>Toggle outliers</Text>

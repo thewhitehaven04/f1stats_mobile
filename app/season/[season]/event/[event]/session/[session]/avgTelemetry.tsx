@@ -1,15 +1,12 @@
 "use client"
-import { ApiClient } from "@/src/client"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useGetAverageTelemetriesQuery, type TSession } from "@/src/client"
 import { useLocalSearchParams } from "expo-router"
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
-import { useAtomValue } from "jotai"
-import { TelemetryLapSelection } from "@/src/atoms/telemetryLapSelection"
-import { buildQueriesFromSelection } from "@/src/components/LapSelectionTable/useTelemetryPrefetch"
-import { getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost } from "@/src/client/generated"
 import { TelemetryPlot } from "@/src/components/Plots/TelemetryPlot"
 import { useMemo } from "react"
 import { LegendItem } from "@/src/components/Plots/LegendItem"
+import { useAppSelector } from "@/src/store"
+import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -42,24 +39,13 @@ export default function Telemetry() {
     const { season, session, event }: { season: string; session: string; event: string } =
         useLocalSearchParams()
 
-    const selection = useAtomValue(TelemetryLapSelection)
+    const selection = useAppSelector((state) => state.lapSelection)
 
-    const queries = buildQueriesFromSelection(selection)
-    const { data } = useSuspenseQuery({
-        queryKey: [season, event, session, "telemetry", queries],
-        queryFn: () =>
-            getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost({
-                client: ApiClient,
-                body: {
-                    queries,
-                },
-                path: {
-                    session,
-                    event,
-                    year: season,
-                },
-                throwOnError: true,
-            }),
+    const { data, isLoading } = useGetAverageTelemetriesQuery({
+        session: decodeURIComponent(session) as TSession,
+        event,
+        year: season,
+        selection,
     })
 
     const {
@@ -106,7 +92,7 @@ export default function Telemetry() {
 
         chartData.forEach((dataInstance, i) => {
             telemetries.forEach(({ telemetry, driver }) => {
-                dataInstance[driver] = telemetry[i]?.brake || null
+                dataInstance[driver] = telemetry[i].brake ?? 0
             })
         })
 
@@ -131,25 +117,37 @@ export default function Telemetry() {
 
     return (
         <SafeAreaView style={styleSheet.wrapper}>
-            <ScrollView>
-                <View style={styleSheet.speedtrace}>
-                    <TelemetryPlot chartData={speedtraceData} yAxes={yAxes} colorMap={color_map} />
-                </View>
-                <View style={styleSheet.throttle}>
-                    <TelemetryPlot chartData={throttleData} yAxes={yAxes} colorMap={color_map} />
-                </View>
-                <View style={styleSheet.brake}>
-                    <TelemetryPlot chartData={brakeData} yAxes={yAxes} colorMap={color_map} />
-                </View>
-                <View style={styleSheet.rpm}>
-                    <TelemetryPlot chartData={rpmData} yAxes={yAxes} colorMap={color_map} />
-                </View>
-                <View style={styleSheet.legend}>
-                    {yAxes.map((driver) => (
-                        <LegendItem label={driver} plotColor={color_map[driver]} key={driver} />
-                    ))}
-                </View>
-            </ScrollView>
+            {isLoading ? (
+                <ScrollView>
+                    <View style={styleSheet.speedtrace}>
+                        <TelemetryPlot
+                            chartData={speedtraceData}
+                            yAxes={yAxes}
+                            colorMap={color_map}
+                        />
+                    </View>
+                    <View style={styleSheet.throttle}>
+                        <TelemetryPlot
+                            chartData={throttleData}
+                            yAxes={yAxes}
+                            colorMap={color_map}
+                        />
+                    </View>
+                    <View style={styleSheet.brake}>
+                        <TelemetryPlot chartData={brakeData} yAxes={yAxes} colorMap={color_map} />
+                    </View>
+                    <View style={styleSheet.rpm}>
+                        <TelemetryPlot chartData={rpmData} yAxes={yAxes} colorMap={color_map} />
+                    </View>
+                    <View style={styleSheet.legend}>
+                        {yAxes.map((driver) => (
+                            <LegendItem label={driver} plotColor={color_map[driver]} key={driver} />
+                        ))}
+                    </View>
+                </ScrollView>
+            ) : (
+                <LoadingSpinner />
+            )}
         </SafeAreaView>
     )
 }

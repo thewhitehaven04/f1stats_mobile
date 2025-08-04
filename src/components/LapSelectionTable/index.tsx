@@ -8,8 +8,9 @@ import Ionicons from "@expo/vector-icons/Ionicons"
 import { useState } from "react"
 import { FlatList, StyleSheet, Pressable, View, Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
-import { useTelemetryPrefetchOnSelectionChange } from "@/src/components/LapSelectionTable/useTelemetryPrefetch"
-import { useTelemetryLapSelection } from "@/src/atoms/telemetryLapSelection"
+import { usePrefetch } from "@/src/client"
+import { useAppDispatch } from "@/src/store"
+import { toggleDriverLapSelection } from "@/src/store/slices/lapSelection"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -98,8 +99,11 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
     const hasLeft = selectedDriverIndex > 0
     const hasRight = selectedDriverIndex < data.driver_lap_data.length - 1
 
-    useTelemetryPrefetchOnSelectionChange()
-    const { isLapSelected, toggleSelection } = useTelemetryLapSelection()
+    const dispatch = useAppDispatch()
+
+    usePrefetch("getLapTelemetries", {
+        ifOlderThan: 0.5,
+    })
 
     return (
         <>
@@ -143,7 +147,18 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                 renderItem={({ item }) => {
                     const Compound = COLOR_MAP[item.compound_id as TCompound]
                     return (
-                        <Pressable onPress={() => toggleSelection(currentDriver, item.lap)}>
+                        <Pressable
+                            onPress={() =>
+                                dispatch(
+                                    toggleDriverLapSelection([
+                                        {
+                                            lap: item.lap,
+                                            driver: currentDriver,
+                                        },
+                                    ]),
+                                )
+                            }
+                        >
                             <View
                                 key={item.id}
                                 style={{

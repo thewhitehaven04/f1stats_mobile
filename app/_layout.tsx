@@ -52,7 +52,16 @@ export default function RootLayout() {
                         }}
                     />
                     <Stack.Screen
-                        name="season/[season]/event/[event]/session/[session]/telemetry"
+                        name="season/[season]/event/[event]/session/[session]/avgTelemetry"
+                        options={{
+                            contentStyle: {
+                                backgroundColor: getColor("background"),
+                            },
+                            title: "Average telemetry"
+                        }}
+                    />
+                    <Stack.Screen
+                        name="season/[season]/event/[event]/session/[session]/lapTelemetry"
                         options={{
                             contentStyle: {
                                 backgroundColor: getColor("background"),

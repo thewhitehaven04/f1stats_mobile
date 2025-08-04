@@ -1,6 +1,7 @@
 "use client"
 import renderSeasonMetrics from "@/src/actions/render/sessionMetrics"
 import renderSessionResults from "@/src/actions/render/sessionResults"
+import { usePrefetch } from '@/src/client'
 import { getColor } from "@/src/colorScheme"
 import { DriverSelectionBar } from "@/src/components/DriverSelectionBar"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"

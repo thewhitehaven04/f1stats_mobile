@@ -17,7 +17,8 @@ import { Fragment, useMemo } from "react"
 import { Pressable, StyleSheet } from "react-native"
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated"
 import * as Haptics from "expo-haptics"
-import { useSetAtom } from 'jotai'
+import { useAppDispatch, useAppSelector } from '@/src/store'
+import { updateSelection } from '@/src/store/slices/driverSelection'
 
 type TResultsData =
     | {
@@ -84,14 +85,15 @@ const DetailsRow = ({
 }
 
 export const ResultsTable = (props: TResultsData) => {
-    const updateDriverState = useSetAtom(DriverSelection)
+    const dispatch = useAppDispatch()
+
     const { getFlatHeaders, getRowModel } = useReactTable({
         columns: props.columns,
         data: props.rows,
         getRowCanExpand: () => props.sessionType !== SessionType.PRACTICE,
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
-        onRowSelectionChange: updateDriverState,
+        onRowSelectionChange:  (onChangeFn) => dispatch(onChangeFn),
         getRowId: (row) => row.driver.id,
     })
 
