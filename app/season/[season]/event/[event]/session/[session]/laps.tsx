@@ -1,7 +1,6 @@
 "use client"
 import { Link, useLocalSearchParams } from "expo-router"
 import { StyleSheet } from "react-native"
-import { Suspense, useEffect } from "react"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import * as SegmentedControl from "@/src/components/ui/SegmentedControl"
 import { SessionLaptimesScatterplot } from "@/src/components/Plots/SessionLaptimesScatterplot"
@@ -10,17 +9,17 @@ import { Button } from "@/src/components/ui/Button"
 import { BottomSheet } from "@/src/components/ui/BottomSheet"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useAppSelector } from "@/src/store"
-import { useGetLapsQuery, usePrefetch, type TSession } from "@/src/store/slices/api"
+import { useGetLapsQuery, type TSession } from "@/src/store/slices/api"
 import { selectDriverList } from "@/src/store/slices/driverSelection"
 
 const styleSheet = StyleSheet.create({
     bottomSheet: {
-        width: "90%",
-        bottom: 100,
+        width: "85%",
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "space-evenly",
+        paddingBlock: 8,
     },
     bottomSheetButton: {
         width: "100%",
@@ -46,7 +45,11 @@ const TelemetryNavigation = (props: { season: string; session: string; event: st
                 }}
                 asChild
             >
-                <Button label="View telemetry" style={styleSheet.bottomSheetButton} />
+                <Button
+                    label="Average telemetry"
+                    variant="outline"
+                    style={styleSheet.bottomSheetButton}
+                />
             </Link>
             <Link
                 href={{
@@ -59,7 +62,11 @@ const TelemetryNavigation = (props: { season: string; session: string; event: st
                 }}
                 asChild
             >
-                <Button label="View average telemetry" style={styleSheet.bottomSheetButton} />
+                <Button
+                    label="Lap telemetry"
+                    variant="outline"
+                    style={styleSheet.bottomSheetButton}
+                />
             </Link>
         </BottomSheet>
     ) : null
@@ -97,7 +104,7 @@ export default function LapsScreen() {
         useLocalSearchParams()
 
     return (
-        <SafeAreaView edges={["top", "left", "right"]}>
+        <SafeAreaView edges={["top", "left", "right"]} style={{ marginBottom: 90 }}>
             <SegmentedControl.Root defaultSegment="Table">
                 <SegmentedControl.Wrapper>
                     <SegmentedControl.SegmentSelector name="Table" />

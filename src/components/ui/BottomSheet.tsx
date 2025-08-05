@@ -23,7 +23,7 @@ const styleSheet = StyleSheet.create({
             }
         ],
         bottom: 0,
-        boxShadow: '0px 2px 4px 0.2px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 10px 20px rgba(0, 0, 0, 0.12), 0 6px 6px rgba(0, 0, 0, 0.08)',
     },
 })
 

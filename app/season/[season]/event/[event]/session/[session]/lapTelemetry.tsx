@@ -6,7 +6,7 @@ import { useMemo } from "react"
 import { LegendItem } from "@/src/components/Plots/LegendItem"
 import { useAppSelector } from "@/src/store"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
-import { useGetLapTelemetriesQuery, type TSession } from '@/src/store/slices/api'
+import { useGetLapTelemetriesQuery, type TSession } from "@/src/store/slices/api"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -18,13 +18,13 @@ const styleSheet = StyleSheet.create({
         height: 350,
     },
     brake: {
-        height: 150,
+        height: 110,
     },
     throttle: {
-        height: 150,
+        height: 110,
     },
     rpm: {
-        height: 150,
+        height: 110,
     },
     legend: {
         display: "flex",
@@ -49,13 +49,9 @@ export default function Telemetry() {
         selection,
     })
 
-    const {
-        data: { telemetries, color_map },
-    } = data
-
     const distance = useMemo(
-        () => telemetries[0].telemetry.map(({ distance }) => distance),
-        [telemetries],
+        () => data?.telemetries[0].lap.telemetry.map(({ distance }) => distance) || [],
+        [data?.telemetries],
     )
 
     const speedtraceData: Record<string, number>[] = useMemo(() => {
@@ -63,91 +59,92 @@ export default function Telemetry() {
             distance: d,
         }))
 
-        chartData.forEach((dataInstance, i) => {
-            telemetries.forEach(({ telemetry, driver }) => {
-                dataInstance[driver] = telemetry[i]?.speed || null
+        chartData.forEach((dataInstance: Record<string, number | null>, i) => {
+            data?.telemetries.forEach(({ lap, driver }) => {
+                dataInstance[`${driver}-${lap}`] = lap.telemetry[i]?.speed || null
             })
         })
 
         return chartData
-    }, [distance, telemetries])
+    }, [data?.telemetries, distance])
 
     const throttleData: Record<string, number>[] = useMemo(() => {
         const chartData = distance.map((d) => ({
             distance: d,
         }))
 
-        chartData.forEach((dataInstance, i) => {
-            telemetries.forEach(({ telemetry, driver }) => {
-                dataInstance[driver] = telemetry[i]?.throttle || null
+        chartData.forEach((dataInstance: Record<string, number | null>, i) => {
+            data?.telemetries.forEach(({ lap, driver }) => {
+                dataInstance[`${driver}-${lap.lap_number}`] = lap.telemetry[i]?.throttle || null
             })
         })
 
         return chartData
-    }, [distance, telemetries])
+    }, [data?.telemetries, distance])
 
     const brakeData: Record<string, number>[] = useMemo(() => {
         const chartData = distance.map((d) => ({
             distance: d,
         }))
 
-        chartData.forEach((dataInstance, i) => {
-            telemetries.forEach(({ telemetry, driver }) => {
-                dataInstance[driver] = telemetry[i].brake ?? 0
+        chartData.forEach((dataInstance: Record<string, number | null>, i) => {
+            data?.telemetries.forEach(({ lap, driver }) => {
+                dataInstance[`${driver}-${lap.lap_number}`] = lap.telemetry[i]?.brake || null
             })
         })
 
         return chartData
-    }, [distance, telemetries])
+    }, [data?.telemetries, distance])
 
     const rpmData: Record<string, number>[] = useMemo(() => {
         const chartData = distance.map((d) => ({
             distance: d,
         }))
 
-        chartData.forEach((dataInstance, i) => {
-            telemetries.forEach(({ telemetry, driver }) => {
-                dataInstance[driver] = telemetry[i]?.rpm || null
+        chartData.forEach((dataInstance: Record<string, number | null>, i) => {
+            data?.telemetries.forEach(({ lap, driver }) => {
+                dataInstance[`${driver}-${lap.lap_number}`] = lap.telemetry[i]?.rpm || null
             })
         })
 
         return chartData
-    }, [distance, telemetries])
+    }, [data?.telemetries, distance])
 
-    const yAxes = telemetries.map(({ driver }) => driver)
+    const yAxes = data?.telemetries.map(({ lap, driver }) => `${driver} - ${lap.lap_number}`) || []
+    const colorMap = data?.color_map || {}
 
     return (
         <SafeAreaView style={styleSheet.wrapper}>
-            {isLoading ? (
-                <LoadingSpinner />
-            ) : (
+            {!isLoading && data ? (
                 <ScrollView>
                     <View style={styleSheet.speedtrace}>
                         <TelemetryPlot
                             chartData={speedtraceData}
                             yAxes={yAxes}
-                            colorMap={color_map}
+                            colorMap={colorMap}
                         />
                     </View>
                     <View style={styleSheet.throttle}>
-                        <TelemetryPlot
-                            chartData={throttleData}
-                            yAxes={yAxes}
-                            colorMap={color_map}
-                        />
+                        <TelemetryPlot chartData={throttleData} yAxes={yAxes} colorMap={colorMap} />
                     </View>
                     <View style={styleSheet.brake}>
-                        <TelemetryPlot chartData={brakeData} yAxes={yAxes} colorMap={color_map} />
+                        <TelemetryPlot chartData={brakeData} yAxes={yAxes} colorMap={colorMap} />
                     </View>
                     <View style={styleSheet.rpm}>
-                        <TelemetryPlot chartData={rpmData} yAxes={yAxes} colorMap={color_map} />
+                        <TelemetryPlot chartData={rpmData} yAxes={yAxes} colorMap={colorMap} />
                     </View>
                     <View style={styleSheet.legend}>
                         {yAxes.map((driver) => (
-                            <LegendItem label={driver} plotColor={color_map[driver]} key={driver} />
+                            <LegendItem
+                                label={`${driver} lap`}
+                                plotColor={colorMap[driver]}
+                                key={driver}
+                            />
                         ))}
                     </View>
                 </ScrollView>
+            ) : (
+                <LoadingSpinner />
             )}
         </SafeAreaView>
     )

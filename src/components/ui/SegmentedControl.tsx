@@ -80,7 +80,7 @@ export const SegmentSelector = ({ name }: { name: string }) => {
         <Button
             variant="solid"
             onPress={() => setSegment.setTab(name)}
-            style={{
+            contentStyle={{
                 filter: activeSegment === name ? "brightness(0.95)" : "none",
                 flex: 1,
             }}

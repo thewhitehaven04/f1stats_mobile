@@ -86,7 +86,6 @@ export default function ResultsScreen() {
                     </ScrollView>
                 </Suspense>
             </View>
-
             <DriverSelectionBar />
         </SafeAreaView>
     )

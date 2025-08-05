@@ -2,9 +2,9 @@ import type { PlotColor } from "@/src/client/generated"
 import { useFont } from "@shopify/react-native-skia"
 import SpaceMono from "@/assets/fonts/SpaceMono-Regular.ttf"
 import { CartesianChart, Line, useChartPressState } from "victory-native"
-import { getAlternativePlotColor } from "@/src/core/helpers"
 import { getColor } from "@/src/colorScheme"
 import { useZoomReset } from "@/src/components/Plots/hooks/useZoomReset"
+import { getAlternativePlotColor } from "@/src/core/helpers"
 
 export const TelemetryPlot = ({
     chartData,
@@ -59,12 +59,13 @@ export const TelemetryPlot = ({
                     <Line
                         key={driver}
                         points={points[driver]}
+                        strokeWidth={1.8}
                         color={
                             colorMap[driver].style === "default"
                                 ? colorMap[driver].color
                                 : getAlternativePlotColor(colorMap[driver].color)
                         }
-                        strokeWidth={1.8}
+                        connectMissingData
                     />
                 ))
             }

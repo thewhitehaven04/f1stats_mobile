@@ -1,7 +1,7 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
 import { type ComponentProps, type ReactNode } from "react"
-import { Pressable, type StyleProp, type ViewStyle } from "react-native"
+import { Pressable, type StyleProp, type View, type ViewStyle } from "react-native"
 import { Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
@@ -13,14 +13,16 @@ export const Button = ({
     variant = "solid",
     size = "regular",
     style,
+    contentStyle,
     label,
     ...rest
 }: Omit<ComponentProps<typeof Pressable>, "style" | "children"> & {
     variant?: "outline" | "solid"
     size?: "regular" | "large"
     style?: StyleProp<ViewStyle>
+    contentStyle?: ComponentProps<typeof View>['style'] 
     label?: string
-    children: ReactNode
+    children?: ReactNode
 }) => {
     const svScale = useSharedValue(1)
 
@@ -59,6 +61,7 @@ export const Button = ({
                         flexDirection: "row",
                         justifyContent: "center",
                     },
+                    contentStyle,
                     animatedStyle,
                 ]}
             >
