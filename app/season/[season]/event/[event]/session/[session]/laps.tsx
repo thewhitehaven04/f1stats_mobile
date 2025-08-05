@@ -1,6 +1,6 @@
 "use client"
 import { Link, useLocalSearchParams } from "expo-router"
-import { StyleSheet } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import * as SegmentedControl from "@/src/components/ui/SegmentedControl"
 import { SessionLaptimesScatterplot } from "@/src/components/Plots/SessionLaptimesScatterplot"
@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { useAppSelector } from "@/src/store"
 import { useGetLapsQuery, type TSession } from "@/src/store/slices/api"
 import { selectDriverList } from "@/src/store/slices/driverSelection"
+import Ionicons from "@expo/vector-icons/Ionicons"
 
 const styleSheet = StyleSheet.create({
     bottomSheet: {
@@ -24,6 +25,12 @@ const styleSheet = StyleSheet.create({
     bottomSheetButton: {
         width: "100%",
         height: "100%",
+    },
+    segmentWrapper: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
     },
 })
 
@@ -106,10 +113,18 @@ export default function LapsScreen() {
     return (
         <SafeAreaView edges={["top", "left", "right"]} style={{ marginBottom: 90 }}>
             <SegmentedControl.Root defaultSegment="Table">
-                <SegmentedControl.Wrapper>
-                    <SegmentedControl.SegmentSelector name="Table" />
-                    <SegmentedControl.SegmentSelector name="Chart" />
-                </SegmentedControl.Wrapper>
+                <View style={styleSheet.segmentWrapper}>
+                    <SegmentedControl.Wrapper style={{ width: 220, justifyContent: "center" }}>
+                        <SegmentedControl.SegmentSelector
+                            name="Table"
+                            icon={<Ionicons name="menu-outline" size={24}/>}
+                        />
+                        <SegmentedControl.SegmentSelector
+                            name="Chart"
+                            icon={<Ionicons name="trending-up-outline" size={24} />}
+                        />
+                    </SegmentedControl.Wrapper>
+                </View>
                 <LapsView season={season} session={session} event={event} />
             </SegmentedControl.Root>
         </SafeAreaView>

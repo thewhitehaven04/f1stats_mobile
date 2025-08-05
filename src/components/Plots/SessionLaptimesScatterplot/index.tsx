@@ -32,9 +32,9 @@ const styleSheet = StyleSheet.create({
     legend: {
         display: "flex",
         flexDirection: "row",
-        flexWrap: 'wrap',
-        justifyContent: 'space-evenly',
-        gap: 8, 
+        flexWrap: "wrap",
+        justifyContent: "center",
+        gap: 12,
     },
 })
 
@@ -134,9 +134,7 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
                 ))}
             </View>
             <View style={styleSheet.footer}>
-                <Button onPress={() => setShowOutliers(!showOutliers)}>
-                    <Text>Toggle outliers</Text>
-                </Button>
+                <Button onPress={() => setShowOutliers(!showOutliers)} label="Toggle outliers" />
             </View>
         </View>
     )

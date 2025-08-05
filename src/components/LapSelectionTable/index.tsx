@@ -5,14 +5,13 @@ import { Button } from "@/src/components/ui/Button"
 import { COLOR_MAP, type TCompound } from "@/src/components/ui/TyreCompounds"
 import { formatTime, mapDriverToAbbreviation } from "@/src/core/helpers"
 import Ionicons from "@expo/vector-icons/Ionicons"
-import { useCallback, useEffect, useState } from "react"
+import { useState } from "react"
 import { FlatList, StyleSheet, Pressable, View, Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
 import { useAppDispatch, useAppSelector } from "@/src/store"
 import { toggleDriverLapSelection } from "@/src/store/slices/lapSelection"
-import { usePrefetch, type TSession } from "@/src/store/slices/api"
 import { useLocalSearchParams } from "expo-router"
-import { useTelemetryPrefetch } from '@/src/components/Plots/hooks/usePrefetchTelemetryPlotData'
+import { useTelemetryPrefetch } from "@/src/components/Plots/hooks/usePrefetchTelemetryPlotData"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -20,10 +19,13 @@ const styleSheet = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-around",
+        justifyContent: "space-between",
         paddingTop: 8,
         paddingBottom: 4,
-        boxShadow: "0px 2px 4px 0.5px rgba(0, 0, 0, 0.2)",
+        paddingInline: 8,
+        borderBottomWidth: 1,
+        boxShadow: "0 3px 9px rgba(0, 0, 0, 0.08)",
+        marginBottom: 8,
     },
     lapList: {
         display: "flex",
@@ -106,10 +108,10 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
 
     const { season, session, event }: { season: string; session: string; event: string } =
         useLocalSearchParams()
-    
+
     useTelemetryPrefetch({
         season,
-        event, 
+        event,
         session,
         selection: lapSelection,
     })
@@ -124,29 +126,21 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
         <>
             <View style={styleSheet.wrapper}>
                 {hasLeft && (
-                    <Button
-                        style={{ ...styleSheet.button }}
-                        onPress={() => setDriverIndex(selectedDriverIndex - 1)}
-                    >
+                    <Button onPress={() => setDriverIndex(selectedDriverIndex - 1)}>
                         <Ionicons name="chevron-back-outline" />
-                        <Text style={{ textAlign: "left" }}>
+                        <Text>
                             {mapDriverToAbbreviation(
                                 data.driver_lap_data[selectedDriverIndex - 1].driver,
                             )}
                         </Text>
                     </Button>
                 )}
-                <View style={{ width: "33%" }}>
-                    <Text style={{ textAlign: "center" }}>
-                        {mapDriverToAbbreviation(currentDriver)}
-                    </Text>
+                <View style={{ padding: 8 }}>
+                    <Text>{mapDriverToAbbreviation(currentDriver)}</Text>
                 </View>
                 {hasRight && (
-                    <Button
-                        style={styleSheet.button}
-                        onPress={() => setDriverIndex(selectedDriverIndex + 1)}
-                    >
-                        <Text style={{ textAlign: "right" }}>
+                    <Button onPress={() => setDriverIndex(selectedDriverIndex + 1)}>
+                        <Text>
                             {mapDriverToAbbreviation(
                                 data.driver_lap_data[selectedDriverIndex + 1].driver,
                             )}
@@ -192,7 +186,11 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                                     >
                                         <Text style={styleSheet.timeText}>Lap {item.lap}</Text>
                                         {isLapSelectedForDriver(currentDriver, item.lap) && (
-                                            <Ionicons name="checkmark-outline" color="green" />
+                                            <Ionicons
+                                                name="checkmark-outline"
+                                                color={getColor("foreground")}
+                                                size={20}
+                                            />
                                         )}
                                     </View>
                                     <View>

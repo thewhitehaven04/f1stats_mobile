@@ -30,7 +30,7 @@ export const Button = ({
         transform: [{ scale: svScale.value }],
     }))
     const handlePress = () => {
-        svScale.value = withTiming(0.98, { duration: ANIMATION_DURATION_MS })
+        svScale.value = withTiming(0.97, { duration: ANIMATION_DURATION_MS })
         setTimeout(() => {
             svScale.value = withTiming(1, { duration: ANIMATION_DURATION_MS })
         }, ANIMATION_DURATION_MS)
@@ -39,10 +39,10 @@ export const Button = ({
         <Pressable
             {...rest}
             onPress={(evt) => {
+                handlePress()
                 if (rest.onPress) {
                     rest.onPress(evt)
                 }
-                handlePress()
             }}
         >
             <Animated.View
@@ -60,6 +60,7 @@ export const Button = ({
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "center",
+                        alignItems: 'center',
                     },
                     contentStyle,
                     animatedStyle,

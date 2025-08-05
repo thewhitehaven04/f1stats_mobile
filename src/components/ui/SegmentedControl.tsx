@@ -24,10 +24,11 @@ const styleSheet = StyleSheet.create({
         paddingInline: 4,
         paddingBlock: 4,
         borderRadius: 12,
+        backgroundColor: getColor("muted"),
     },
     selectorText: {
         textAlign: "center",
-        color: getColor('mutedForeground')
+        color: getColor("foreground"),
     },
 })
 
@@ -72,7 +73,7 @@ export const Wrapper = (props: ComponentProps<typeof View>) => {
     )
 }
 
-export const SegmentSelector = ({ name }: { name: string }) => {
+export const SegmentSelector = ({ name, icon }: { name: string; icon?: ReactNode }) => {
     const setSegment = useContext(SegmentedControlDispatch)
     const activeSegment = useContext(SegmentedControlContext)
 
@@ -81,11 +82,17 @@ export const SegmentSelector = ({ name }: { name: string }) => {
             variant="solid"
             onPress={() => setSegment.setTab(name)}
             contentStyle={{
-                filter: activeSegment === name ? "brightness(0.95)" : "none",
-                flex: 1,
+                backgroundColor: activeSegment === name ? getColor("background") : "transparent",
+                gap: 8,
             }}
+            label={!icon ? name : undefined}
         >
-            <Text style={styleSheet.selectorText}>{name}</Text>
+            {icon ? (
+                <>
+                    {icon}
+                    <Text>{name}</Text>
+                </>
+            ) : null}
         </Button>
     )
 }
