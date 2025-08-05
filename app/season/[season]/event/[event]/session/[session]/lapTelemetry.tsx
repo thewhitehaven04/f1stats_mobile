@@ -1,11 +1,12 @@
 "use client"
-import { useGetLapTelemetriesQuery, type TSession } from "@/src/client"
 import { useLocalSearchParams } from "expo-router"
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 import { TelemetryPlot } from "@/src/components/Plots/TelemetryPlot"
 import { useMemo } from "react"
 import { LegendItem } from "@/src/components/Plots/LegendItem"
 import { useAppSelector } from "@/src/store"
+import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
+import { useGetLapTelemetriesQuery, type TSession } from '@/src/store/slices/api'
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -117,25 +118,37 @@ export default function Telemetry() {
 
     return (
         <SafeAreaView style={styleSheet.wrapper}>
-            <ScrollView>
-                <View style={styleSheet.speedtrace}>
-                    <TelemetryPlot chartData={speedtraceData} yAxes={yAxes} colorMap={color_map} />
-                </View>
-                <View style={styleSheet.throttle}>
-                    <TelemetryPlot chartData={throttleData} yAxes={yAxes} colorMap={color_map} />
-                </View>
-                <View style={styleSheet.brake}>
-                    <TelemetryPlot chartData={brakeData} yAxes={yAxes} colorMap={color_map} />
-                </View>
-                <View style={styleSheet.rpm}>
-                    <TelemetryPlot chartData={rpmData} yAxes={yAxes} colorMap={color_map} />
-                </View>
-                <View style={styleSheet.legend}>
-                    {yAxes.map((driver) => (
-                        <LegendItem label={driver} plotColor={color_map[driver]} key={driver} />
-                    ))}
-                </View>
-            </ScrollView>
+            {isLoading ? (
+                <LoadingSpinner />
+            ) : (
+                <ScrollView>
+                    <View style={styleSheet.speedtrace}>
+                        <TelemetryPlot
+                            chartData={speedtraceData}
+                            yAxes={yAxes}
+                            colorMap={color_map}
+                        />
+                    </View>
+                    <View style={styleSheet.throttle}>
+                        <TelemetryPlot
+                            chartData={throttleData}
+                            yAxes={yAxes}
+                            colorMap={color_map}
+                        />
+                    </View>
+                    <View style={styleSheet.brake}>
+                        <TelemetryPlot chartData={brakeData} yAxes={yAxes} colorMap={color_map} />
+                    </View>
+                    <View style={styleSheet.rpm}>
+                        <TelemetryPlot chartData={rpmData} yAxes={yAxes} colorMap={color_map} />
+                    </View>
+                    <View style={styleSheet.legend}>
+                        {yAxes.map((driver) => (
+                            <LegendItem label={driver} plotColor={color_map[driver]} key={driver} />
+                        ))}
+                    </View>
+                </ScrollView>
+            )}
         </SafeAreaView>
     )
 }

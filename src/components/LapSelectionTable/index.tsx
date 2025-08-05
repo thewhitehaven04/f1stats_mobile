@@ -5,12 +5,14 @@ import { Button } from "@/src/components/ui/Button"
 import { COLOR_MAP, type TCompound } from "@/src/components/ui/TyreCompounds"
 import { formatTime, mapDriverToAbbreviation } from "@/src/core/helpers"
 import Ionicons from "@expo/vector-icons/Ionicons"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { FlatList, StyleSheet, Pressable, View, Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
-import { usePrefetch } from "@/src/client"
-import { useAppDispatch } from "@/src/store"
+import { useAppDispatch, useAppSelector } from "@/src/store"
 import { toggleDriverLapSelection } from "@/src/store/slices/lapSelection"
+import { usePrefetch, type TSession } from "@/src/store/slices/api"
+import { useLocalSearchParams } from "expo-router"
+import { useTelemetryPrefetch } from '@/src/components/Plots/hooks/usePrefetchTelemetryPlotData'
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -100,10 +102,23 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
     const hasRight = selectedDriverIndex < data.driver_lap_data.length - 1
 
     const dispatch = useAppDispatch()
+    const lapSelection = useAppSelector((state) => state.lapSelection)
 
-    usePrefetch("getLapTelemetries", {
-        ifOlderThan: 0.5,
+    const { season, session, event }: { season: string; session: string; event: string } =
+        useLocalSearchParams()
+    
+    useTelemetryPrefetch({
+        season,
+        event, 
+        session,
+        selection: lapSelection,
     })
+
+    const isLapSelectedForDriver = (driver: string, lap: number) => {
+        return !!lapSelection.find(
+            ([existingDriver, existingLap]) => existingDriver === driver && existingLap === lap,
+        )
+    }
 
     return (
         <>
@@ -148,7 +163,7 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                     const Compound = COLOR_MAP[item.compound_id as TCompound]
                     return (
                         <Pressable
-                            onPress={() =>
+                            onPress={() => {
                                 dispatch(
                                     toggleDriverLapSelection([
                                         {
@@ -157,7 +172,7 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                                         },
                                     ]),
                                 )
-                            }
+                            }}
                         >
                             <View
                                 key={item.id}
@@ -176,7 +191,7 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                                         }}
                                     >
                                         <Text style={styleSheet.timeText}>Lap {item.lap}</Text>
-                                        {isLapSelected(currentDriver, item.lap) && (
+                                        {isLapSelectedForDriver(currentDriver, item.lap) && (
                                             <Ionicons name="checkmark-outline" color="green" />
                                         )}
                                     </View>

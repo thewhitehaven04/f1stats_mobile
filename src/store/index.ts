@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit"
 import DriverSelectionReducer from "./slices/driverSelection"
-import { ApiSlice } from "@/src/client"
 import { useDispatch, useSelector, useStore } from "react-redux"
 import DriverLapSelectionReducer from "./slices/lapSelection"
+import { ApiSlice } from "@/src/store/slices/api"
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +10,10 @@ export const store = configureStore({
         lapSelection: DriverLapSelectionReducer,
         [ApiSlice.reducerPath]: ApiSlice.reducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }).concat(ApiSlice.middleware),
 })
 
 type AppStore = typeof store

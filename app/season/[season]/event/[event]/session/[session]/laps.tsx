@@ -1,7 +1,7 @@
 "use client"
 import { Link, useLocalSearchParams } from "expo-router"
 import { StyleSheet } from "react-native"
-import { Suspense } from "react"
+import { Suspense, useEffect } from "react"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import * as SegmentedControl from "@/src/components/ui/SegmentedControl"
 import { SessionLaptimesScatterplot } from "@/src/components/Plots/SessionLaptimesScatterplot"
@@ -10,8 +10,8 @@ import { Button } from "@/src/components/ui/Button"
 import { BottomSheet } from "@/src/components/ui/BottomSheet"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useAppSelector } from "@/src/store"
-import { listLaps } from "@/src/store/slices/driverSelection"
-import { useGetLapsQuery, usePrefetch, type TSession } from "@/src/client"
+import { useGetLapsQuery, usePrefetch, type TSession } from "@/src/store/slices/api"
+import { selectDriverList } from "@/src/store/slices/driverSelection"
 
 const styleSheet = StyleSheet.create({
     bottomSheet: {
@@ -28,11 +28,46 @@ const styleSheet = StyleSheet.create({
     },
 })
 
-export default function LapsScreen() {
-    const { season, session, event }: { season: string; session: string; event: string } =
-        useLocalSearchParams()
+const TelemetryNavigation = (props: { season: string; session: string; event: string }) => {
+    const { season, session, event } = props
+    const selectedDriverLaps = useAppSelector((state) => state.lapSelection)
+    const hasSelectedLaps = selectedDriverLaps.length > 0
 
-    const selectedDrivers = useAppSelector(listLaps)
+    return hasSelectedLaps ? (
+        <BottomSheet style={styleSheet.bottomSheet}>
+            <Link
+                href={{
+                    pathname: "/season/[season]/event/[event]/session/[session]/avgTelemetry",
+                    params: {
+                        season,
+                        session,
+                        event,
+                    },
+                }}
+                asChild
+            >
+                <Button label="View telemetry" style={styleSheet.bottomSheetButton} />
+            </Link>
+            <Link
+                href={{
+                    pathname: "/season/[season]/event/[event]/session/[session]/lapTelemetry",
+                    params: {
+                        season,
+                        session,
+                        event,
+                    },
+                }}
+                asChild
+            >
+                <Button label="View average telemetry" style={styleSheet.bottomSheetButton} />
+            </Link>
+        </BottomSheet>
+    ) : null
+}
+
+export const LapsView = (props: { season: string; event: string; session: string }) => {
+    const { season, session, event } = props
+    const selectedDrivers = useAppSelector(selectDriverList)
 
     const { data, isLoading } = useGetLapsQuery({
         session: decodeURIComponent(session) as TSession,
@@ -40,78 +75,36 @@ export default function LapsScreen() {
         year: season,
         driverSelection: selectedDrivers,
     })
+    return (
+        <>
+            <SegmentedControl.Segment name="Table">
+                {isLoading || !data ? <LoadingSpinner /> : <LapSelectionTable data={data} />}
+                <TelemetryNavigation season={season} session={session} event={event} />
+            </SegmentedControl.Segment>
+            <SegmentedControl.Segment name="Chart">
+                {isLoading || !data ? (
+                    <LoadingSpinner />
+                ) : (
+                    <SessionLaptimesScatterplot data={data} />
+                )}
+            </SegmentedControl.Segment>
+        </>
+    )
+}
 
-    const hasSelectedLaps = selectedDrivers.length > 0
-    
-    usePrefetch("getLapTelemetries", {
-        ifOlderThan: 0.5,
-    })
-    usePrefetch("getAverageTelemetries", {
-        ifOlderThan: 0.5,
-    })
+export default function LapsScreen() {
+    const { season, session, event }: { season: string; session: string; event: string } =
+        useLocalSearchParams()
 
     return (
-        <Suspense fallback={<LoadingSpinner />}>
-            <SafeAreaView edges={["top", "left", "right"]}>
-                <SegmentedControl.Root defaultSegment="Table">
-                    <SegmentedControl.Wrapper>
-                        <SegmentedControl.SegmentSelector name="Table" />
-                        <SegmentedControl.SegmentSelector name="Chart" />
-                    </SegmentedControl.Wrapper>
-                    <SegmentedControl.Segment name="Table">
-                        {isLoading || !data ? (
-                            <LoadingSpinner />
-                        ) : (
-                            <LapSelectionTable data={data} />
-                        )}
-                        {hasSelectedLaps && (
-                            <BottomSheet style={styleSheet.bottomSheet}>
-                                <Link
-                                    href={{
-                                        pathname:
-                                            "/season/[season]/event/[event]/session/[session]/avgTelemetry",
-                                        params: {
-                                            season,
-                                            session,
-                                            event,
-                                        },
-                                    }}
-                                    asChild
-                                >
-                                    <Button
-                                        label="View telemetry"
-                                        style={styleSheet.bottomSheetButton}
-                                    />
-                                </Link>
-                                <Link
-                                    href={{
-                                        pathname:
-                                            "/season/[season]/event/[event]/session/[session]/lapTelemetry",
-                                        params: {
-                                            season,
-                                            session,
-                                            event,
-                                        },
-                                    }}
-                                    asChild
-                                >
-                                    <Button
-                                        label="View average telemetry"
-                                        style={styleSheet.bottomSheetButton}
-                                    />
-                                </Link>
-                            </BottomSheet>
-                        )}
-                    </SegmentedControl.Segment>
-                    <SegmentedControl.Segment name="Chart">
-                        {isLoading || !data ? (
-                            <LoadingSpinner />
-                        ) : (
-                            <SessionLaptimesScatterplot data={data} />
-                        )}
-                    </SegmentedControl.Segment>
-                </SegmentedControl.Root>
-            </SafeAreaView>
-        </Suspense>
+        <SafeAreaView edges={["top", "left", "right"]}>
+            <SegmentedControl.Root defaultSegment="Table">
+                <SegmentedControl.Wrapper>
+                    <SegmentedControl.SegmentSelector name="Table" />
+                    <SegmentedControl.SegmentSelector name="Chart" />
+                </SegmentedControl.Wrapper>
+                <LapsView season={season} session={session} event={event} />
+            </SegmentedControl.Root>
+        </SafeAreaView>
     )
 }

@@ -1,7 +1,6 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
 import { Table, TableBody, TableHeader, TableRow, TextCell } from "@/src/components/Tables"
-import { DriverSelection } from "@/src/components/Tables/presets/results/driverSelectionAtom"
 import { SessionType } from "@/src/components/Tables/presets/results/mapper"
 import type { IPracticeData } from "@/src/components/Tables/presets/results/practice"
 import { type IQualifyingData } from "@/src/components/Tables/presets/results/qualifying"
@@ -17,7 +16,7 @@ import { Fragment, useMemo } from "react"
 import { Pressable, StyleSheet } from "react-native"
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated"
 import * as Haptics from "expo-haptics"
-import { useAppDispatch, useAppSelector } from '@/src/store'
+import { useAppDispatch } from '@/src/store'
 import { updateSelection } from '@/src/store/slices/driverSelection'
 
 type TResultsData =
@@ -93,7 +92,9 @@ export const ResultsTable = (props: TResultsData) => {
         getRowCanExpand: () => props.sessionType !== SessionType.PRACTICE,
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
-        onRowSelectionChange:  (onChangeFn) => dispatch(onChangeFn),
+        onRowSelectionChange:  (onChangeFn) => {
+            dispatch(updateSelection(onChangeFn))
+        },
         getRowId: (row) => row.driver.id,
     })
 

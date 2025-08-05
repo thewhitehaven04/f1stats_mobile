@@ -1,14 +1,17 @@
 "use client"
 import renderSeasonMetrics from "@/src/actions/render/sessionMetrics"
 import renderSessionResults from "@/src/actions/render/sessionResults"
-import { usePrefetch } from '@/src/client'
 import { getColor } from "@/src/colorScheme"
 import { DriverSelectionBar } from "@/src/components/DriverSelectionBar"
+import { Button } from "@/src/components/ui/Button"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
+import { useAppDispatch, useAppSelector } from "@/src/store"
+import { increment } from "@/src/store/slices/driverSelection"
 import { useLocalSearchParams } from "expo-router"
 import { Suspense, useMemo } from "react"
-import { ScrollView, StyleSheet, useColorScheme, View } from "react-native"
+import { ScrollView, StyleSheet, useColorScheme, View, Text } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useSelector } from "react-redux"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -83,6 +86,7 @@ export default function ResultsScreen() {
                     </ScrollView>
                 </Suspense>
             </View>
+
             <DriverSelectionBar />
         </SafeAreaView>
     )

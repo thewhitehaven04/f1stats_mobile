@@ -93,24 +93,18 @@ const getChevronStyle = (isCollapsed: boolean, isFocused: boolean) => {
 export const ListItemTitle = (
     props: ComponentProps<typeof View> & { collapseTimeout?: number },
 ) => {
-    const { children, style, collapseTimeout = COLLAPSE_TIMEOUT, ...rest } = props
+    const { children, style, ...rest } = props
 
     const { isCollapsed, setIsCollapsed } = useContext(CollapsableItemContext)
     const [isPressed, setIsPressed] = useState(false)
 
-    const collapseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     return (
         <View {...rest} style={StyleSheet.compose(styles.titleContainer, style)}>
             <View style={{ flexShrink: 1, flexGrow: 1, flexBasis: "100%" }}>{children}</View>
             <Pressable
                 onPressIn={() => setIsPressed(true)}
                 onPressOut={() => setIsPressed(false)}
-                onPress={() => {
-                    collapseTimeoutRef.current = setTimeout(
-                        () => setIsCollapsed(!isCollapsed),
-                        isCollapsed ? 0 : collapseTimeout,
-                    )
-                }}
+                onPress={() => setIsCollapsed(!isCollapsed)}
                 style={{ flexShrink: 0, flexGrow: 1 }}
             >
                 <Ionicons name={getChevronStyle(isCollapsed, isPressed)} style={styles.icon} size={24} />

@@ -5,7 +5,8 @@ import { Link, useLocalSearchParams } from "expo-router"
 import { StyleSheet, ScrollView } from "react-native"
 import { BottomSheet } from "../ui/BottomSheet"
 import { useAppDispatch, useAppSelector } from "@/src/store"
-import { listLaps, toggleDriver } from "@/src/store/slices/driverSelection"
+import { toggleDriver } from "@/src/store/slices/driverSelection"
+import { useMemo } from "react"
 
 const styleSheet = StyleSheet.create({
     chipWrapper: {
@@ -28,12 +29,17 @@ export const DriverSelectionBar = () => {
         useLocalSearchParams()
 
     const dispatch = useAppDispatch()
-    const drivers = useAppSelector(listLaps)
+    const resultSelection = useAppSelector(
+        ({ driverSelection }) => driverSelection.driverResultSelection,
+    )
 
-    const driverAbbreviations = drivers.map(([driverId]) => [
-        driverId,
-        driverId.split(" ")[1].slice(0, 3),
-    ])
+    const driverAbbreviations = useMemo(
+        () =>
+            Object.entries(resultSelection)
+                .filter(([_, isSelected]) => isSelected)
+                .map(([driverId]) => [driverId, driverId.split(" ")[1].slice(0, 3)]),
+        [resultSelection],
+    )
 
     const isVisible = driverAbbreviations.length > 0
     return (

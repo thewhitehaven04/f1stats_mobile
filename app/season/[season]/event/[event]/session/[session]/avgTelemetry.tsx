@@ -1,5 +1,4 @@
 "use client"
-import { useGetAverageTelemetriesQuery, type TSession } from "@/src/client"
 import { useLocalSearchParams } from "expo-router"
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 import { TelemetryPlot } from "@/src/components/Plots/TelemetryPlot"
@@ -7,6 +6,7 @@ import { useMemo } from "react"
 import { LegendItem } from "@/src/components/Plots/LegendItem"
 import { useAppSelector } from "@/src/store"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
+import { useGetAverageTelemetriesQuery, type TSession } from '@/src/store/slices/api'
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -35,7 +35,7 @@ const styleSheet = StyleSheet.create({
     },
 })
 
-export default function Telemetry() {
+export default function AverageTelemetry() {
     const { season, session, event }: { season: string; session: string; event: string } =
         useLocalSearchParams()
 

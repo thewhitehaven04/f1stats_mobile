@@ -1,89 +1,29 @@
-import {
-    getLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetriesPost,
-    getSessionLaptimesFilteredApiSeasonYearEventEventSessionSessionLapsPost,
-} from "@/src/client/generated"
-import { buildQueriesFromSelection } from "@/src/components/LapSelectionTable/useTelemetryPrefetch"
+import { type SessionQuery } from "@/src/client/generated"
 import { createClient } from "@hey-api/client-fetch"
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 
-const baseUrl = process.env.EXPO_PUBLIC_API_URL
+export const BASE_URL = process.env.EXPO_PUBLIC_API_URL
 
-const ApiClient = createClient({
-    baseUrl,
+export const ApiClient = createClient({
+    baseUrl: BASE_URL,
 })
 
-export type TSession =
-    | "Race"
-    | "Sprint"
-    | "Sprint Qualifying"
-    | "Sprint"
-    | "Practice 1"
-    | "Practice 2"
-    | "Practice 3"
+export const buildQueriesFromSelection = (selection: [string, number][]) => {
+    const queries: SessionQuery[] = []
 
-type TSessionArgs = {
-    year: string
-    event: string
-    session: TSession
+    for (const [driver, lap] of selection) {
+        const drv = queries.find((q) => q.driver === driver)
+
+        if (!drv) {
+            queries.push({
+                driver,
+                lap_filter: [lap],
+            })
+        } else {
+            if (drv.lap_filter) {
+                drv.lap_filter.push(lap)
+            }
+        }
+    }
+
+    return queries
 }
-
-export const ApiSlice = createApi({
-    reducerPath: "laps",
-    baseQuery: fetchBaseQuery({ baseUrl }),
-    endpoints: (build) => ({
-        getLaps: build.query({
-            queryFn: async (args: TSessionArgs & { driverSelection: string[] }) => {
-                return await getSessionLaptimesFilteredApiSeasonYearEventEventSessionSessionLapsPost(
-                    {
-                        client: ApiClient,
-                        path: args,
-                        body: {
-                            queries: args.driverSelection.map((driver) => ({
-                                driver,
-                                lap_filter: null,
-                            })),
-                        },
-                        throwOnError: true,
-                    },
-                )
-            },
-        }),
-        getLapTelemetries: build.query({
-            queryFn: async ({
-                selection,
-                ...args
-            }: TSessionArgs & { selection: [string, number][] }) => {
-                return await getLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetriesPost({
-                    client: ApiClient,
-                    path: args,
-                    body: {
-                        queries: buildQueriesFromSelection(selection),
-                    },
-                    throwOnError: true,
-                })
-            },
-        }),
-        getAverageTelemetries: build.query({
-            queryFn: async ({
-                selection,
-                ...args
-            }: TSessionArgs & { selection: [string, number][] }) => {
-                return await getLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetriesPost({
-                    client: ApiClient,
-                    path: args,
-                    body: {
-                        queries: buildQueriesFromSelection(selection),
-                    },
-                    throwOnError: true,
-                })
-            },
-        }),
-    }),
-})
-
-export const {
-    useGetAverageTelemetriesQuery,
-    useGetLapsQuery,
-    useGetLapTelemetriesQuery,
-    usePrefetch,
-} = ApiSlice
