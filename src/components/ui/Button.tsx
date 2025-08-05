@@ -2,8 +2,11 @@
 import { getColor } from "@/src/colorScheme"
 import { type ComponentProps } from "react"
 import { Pressable, type StyleProp, type ViewStyle } from "react-native"
-import { StyleSheet, Text } from "react-native"
+import { Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
+
+const ANIMATION_DURATION_MS = 90 
 
 export const Button = ({
     children,
@@ -18,11 +21,22 @@ export const Button = ({
     style?: StyleProp<ViewStyle>
     label?: string
 }) => {
+    const svScale = useSharedValue(1)
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: withTiming(svScale.value, { duration: 150 })}],
+    }))
+    const handlePress = () => {
+        svScale.value = withTiming(0.98, { duration: ANIMATION_DURATION_MS })
+        setTimeout(() => {
+            svScale.value = withTiming(1, { duration: ANIMATION_DURATION_MS })
+        }, ANIMATION_DURATION_MS)
+    }
     return (
-        <Pressable
-            {...rest}
-            style={({ pressed }) =>
-                StyleSheet.compose(
+        <Animated.View style={animatedStyle}>
+            <Pressable
+                {...rest}
+                style={[
                     {
                         paddingBlock: size === "regular" ? 8 : 16,
                         paddingInline: size === "regular" ? 16 : 32,
@@ -33,32 +47,27 @@ export const Button = ({
                                 : getColor("primaryForeground"),
                         borderColor: getColor("border"),
                         borderWidth: variant === "outline" ? 1 : 0,
-                        filter: pressed ? "brightness(0.9)" : "none",
-                        transform: [
-                            {
-                                scale: pressed ? 0.98 : 1,
-                            },
-                        ],
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
                     },
                     style,
-                )
-            }
-        >
-            {label ? (
-                <Text
-                    style={{
-                        color: getColor("foreground"),
-                        fontSize: size === "large" ? FontSizes.Title.sm : FontSizes.Body,
-                    }}
-                >
-                    {label}
-                </Text>
-            ) : (
-                children
-            )}
-        </Pressable>
+                ]}
+                onPress={() => handlePress()}
+            >
+                {label ? (
+                    <Text
+                        style={{
+                            color: getColor("foreground"),
+                            fontSize: size === "large" ? FontSizes.Title.sm : FontSizes.Body,
+                        }}
+                    >
+                        {label}
+                    </Text>
+                ) : (
+                    children
+                )}
+            </Pressable>
+        </Animated.View>
     )
 }
