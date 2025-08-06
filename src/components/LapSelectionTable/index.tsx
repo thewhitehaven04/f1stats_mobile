@@ -127,7 +127,7 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
             <View style={styleSheet.wrapper}>
                 {hasLeft && (
                     <Button onPress={() => setDriverIndex(selectedDriverIndex - 1)}>
-                        <Ionicons name="chevron-back-outline" />
+                        <Ionicons name="chevron-back-outline" size={16} />
                         <Text>
                             {mapDriverToAbbreviation(
                                 data.driver_lap_data[selectedDriverIndex - 1].driver,
@@ -145,7 +145,7 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                                 data.driver_lap_data[selectedDriverIndex + 1].driver,
                             )}
                         </Text>
-                        <Ionicons name="chevron-forward-outline" />
+                        <Ionicons name="chevron-forward-outline" size={16} />
                     </Button>
                 )}
             </View>

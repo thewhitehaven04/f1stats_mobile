@@ -1,10 +1,13 @@
 import { getColor } from "@/src/colorScheme"
 import { Button } from "@/src/components/ui/Button"
+import { Background } from "@react-navigation/elements"
 import {
     createContext,
     useCallback,
     useContext,
+    useEffect,
     useMemo,
+    useRef,
     useState,
     type ComponentProps,
     type ReactNode,
@@ -44,6 +47,17 @@ export const Root = ({
     const setTab = useCallback((tab: string) => {
         setActiveSegment(tab)
     }, [])
+    const activeElementRef = useRef<View>(null)
+
+    useEffect(() => {
+        const activeTab = activeElementRef.current
+        if (activeTab) {
+            activeTab.measure((x, y, width) => {
+                const left = x
+                const right = left + width
+            })
+        }
+    }, [])
 
     const dispatchCtxValue = useMemo(
         () => ({
@@ -61,7 +75,19 @@ export const Root = ({
     )
 }
 
+// x -- top-left horizontal
+// y -- top-left vertical
+// x + width -- top-right horizontal
+// y + height -- bottom-left vertical
+
 export const Wrapper = (props: ComponentProps<typeof View>) => {
+    const wrapperRef = useRef<View>(null)
+
+    useEffect(() => {
+        if (wrapperRef.current) {
+        }
+    }, [])
+
     return (
         <View
             {...props}
@@ -69,6 +95,7 @@ export const Wrapper = (props: ComponentProps<typeof View>) => {
                 { ...styleSheet.wrapper, borderColor: getColor("border") },
                 props.style,
             )}
+            ref={wrapperRef}
         />
     )
 }
@@ -78,22 +105,48 @@ export const SegmentSelector = ({ name, icon }: { name: string; icon?: ReactNode
     const activeSegment = useContext(SegmentedControlContext)
 
     return (
-        <Button
-            variant="solid"
-            onPress={() => setSegment.setTab(name)}
-            contentStyle={{
-                backgroundColor: activeSegment === name ? getColor("background") : "transparent",
-                gap: 8,
-            }}
-            label={!icon ? name : undefined}
-        >
-            {icon ? (
-                <>
-                    {icon}
-                    <Text>{name}</Text>
-                </>
-            ) : null}
-        </Button>
+        <View style={{ position: "relative" }}>
+            <Button
+                variant="solid"
+                onPress={() => setSegment.setTab(name)}
+                contentStyle={{
+                    backgroundColor:
+                        activeSegment === name ? getColor("background") : "transparent",
+                    gap: 8,
+                    zIndex: 10,
+                }}
+                label={!icon ? name : undefined}
+            >
+                {icon ? (
+                    <>
+                        {icon}
+                        <Text>{name}</Text>
+                    </>
+                ) : null}
+            </Button>
+            <Button
+                variant="solid"
+                onPress={() => setSegment.setTab(name)}
+                style={{ position: "absolute", zIndex: 0, top: 0 }}
+                contentStyle={{
+                    backgroundColor:
+                        activeSegment === name ? getColor("background") : "transparent",
+                    gap: 8,
+                }}
+                textStyle={{
+                    color: getColor("background"),
+                    backgroundColor: getColor("foreground"),
+                }}
+                label={!icon ? name : undefined}
+            >
+                {icon ? (
+                    <>
+                        {icon}
+                        <Text>{name}</Text>
+                    </>
+                ) : null}
+            </Button>
+        </View>
     )
 }
 

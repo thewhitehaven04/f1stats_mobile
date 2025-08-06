@@ -6,7 +6,7 @@ import { Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 
-const ANIMATION_DURATION_MS = 90
+const ANIMATION_DURATION_MS = 80
 
 export const Button = ({
     children,
@@ -14,13 +14,15 @@ export const Button = ({
     size = "regular",
     style,
     contentStyle,
+    textStyle,
     label,
     ...rest
 }: Omit<ComponentProps<typeof Pressable>, "style" | "children"> & {
     variant?: "outline" | "solid"
     size?: "regular" | "large"
     style?: StyleProp<ViewStyle>
-    contentStyle?: ComponentProps<typeof View>['style'] 
+    contentStyle?: ComponentProps<typeof View>["style"]
+    textStyle?: ComponentProps<typeof Text>["style"]
     label?: string
     children?: ReactNode
 }) => {
@@ -60,7 +62,7 @@ export const Button = ({
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "center",
-                        alignItems: 'center',
+                        alignItems: "center",
                     },
                     contentStyle,
                     animatedStyle,
@@ -68,10 +70,13 @@ export const Button = ({
             >
                 {label ? (
                     <Text
-                        style={{
-                            color: getColor("foreground"),
-                            fontSize: size === "large" ? FontSizes.Title.sm : FontSizes.Body,
-                        }}
+                        style={[
+                            {
+                                color: getColor("foreground"),
+                                fontSize: size === "large" ? FontSizes.Title.sm : FontSizes.Body,
+                            },
+                            textStyle,
+                        ]}
                     >
                         {label}
                     </Text>
