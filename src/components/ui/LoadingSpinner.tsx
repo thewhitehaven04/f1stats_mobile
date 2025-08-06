@@ -31,7 +31,7 @@ export const LoadingSpinner = () => {
     useEffect(() => {
         rotateDeg.value = withRepeat(
             withTiming(1, {
-                duration: 1500,
+                duration: 1000,
                 easing: Easing.linear,
             }),
             -1,

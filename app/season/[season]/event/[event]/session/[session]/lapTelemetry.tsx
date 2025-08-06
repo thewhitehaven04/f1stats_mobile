@@ -7,6 +7,8 @@ import { LegendItem } from "@/src/components/Plots/LegendItem"
 import { useAppSelector } from "@/src/store"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { useGetLapTelemetriesQuery, type TSession } from "@/src/store/slices/api"
+import { getAlternativePlotColor } from "@/src/core/helpers"
+import { BrakePlot } from '@/src/components/Plots/BrakePlot'
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -32,6 +34,7 @@ const styleSheet = StyleSheet.create({
         gap: 8,
         justifyContent: "space-evenly",
         flexWrap: "wrap",
+        width: "90%",
     },
 })
 
@@ -61,7 +64,7 @@ export default function Telemetry() {
 
         chartData.forEach((dataInstance: Record<string, number | null>, i) => {
             data?.telemetries.forEach(({ lap, driver }) => {
-                dataInstance[`${driver}-${lap}`] = lap.telemetry[i]?.speed || null
+                dataInstance[`${driver}-${lap.lap_number}`] = lap.telemetry[i]?.speed || null
             })
         })
 
@@ -110,8 +113,19 @@ export default function Telemetry() {
         return chartData
     }, [data?.telemetries, distance])
 
-    const yAxes = data?.telemetries.map(({ lap, driver }) => `${driver} - ${lap.lap_number}`) || []
-    const colorMap = data?.color_map || {}
+    const yAxes: string[] = []
+    const colorMap: Record<string, string> = {}
+    data?.telemetries.forEach(({ lap, driver }) => {
+        const axisName = `${driver}-${lap.lap_number}`
+        const driverData = data?.color_map[driver]
+        yAxes.push(axisName)
+        colorMap[axisName] =
+            driverData.style === "default"
+                ? driverData.color
+                : getAlternativePlotColor(driverData.color)
+    })
+    console.log(colorMap)
+    console.log(yAxes)
 
     return (
         <SafeAreaView style={styleSheet.wrapper}>
@@ -128,18 +142,14 @@ export default function Telemetry() {
                         <TelemetryPlot chartData={throttleData} yAxes={yAxes} colorMap={colorMap} />
                     </View>
                     <View style={styleSheet.brake}>
-                        <TelemetryPlot chartData={brakeData} yAxes={yAxes} colorMap={colorMap} />
+                        <BrakePlot chartData={brakeData} yAxes={yAxes} colorMap={colorMap} />
                     </View>
                     <View style={styleSheet.rpm}>
                         <TelemetryPlot chartData={rpmData} yAxes={yAxes} colorMap={colorMap} />
                     </View>
                     <View style={styleSheet.legend}>
                         {yAxes.map((driver) => (
-                            <LegendItem
-                                label={`${driver} lap`}
-                                plotColor={colorMap[driver]}
-                                key={driver}
-                            />
+                            <LegendItem label={driver} plotColor={colorMap[driver]} key={driver} />
                         ))}
                     </View>
                 </ScrollView>

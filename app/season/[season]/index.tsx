@@ -2,11 +2,13 @@
 import renderSeasonEventsAction from "@/src/actions/render/seasonEvents"
 import { Button } from "@/src/components/ui/Button"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
+import Ionicons from "@expo/vector-icons/Ionicons"
 import { Link, useLocalSearchParams, useRouter } from "expo-router"
 import { Suspense, useMemo } from "react"
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
+import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import { useSharedValue } from "react-native-reanimated"
+import * as FontSizes from '@/src/fontSizes'
 
 const style = StyleSheet.create({
     wrapperContent: {
@@ -34,10 +36,25 @@ const style = StyleSheet.create({
         justifyContent: "center",
         flex: 1,
     },
+    error: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+    },
 })
 
 const PAGE_REFRESH_SCROLL_THRESHOLD = 75
 const VELOCITY_THRESHOLD = 75
+
+export function ErrorBoundary() {
+    return (
+        <View>
+            <Ionicons name="warning" size={64} />
+            <Text style={{ fontSize: FontSizes.Title.lg }}>Something went wrong</Text>
+        </View>
+    )
+}
 
 export default function SeasonScreen() {
     const { season }: { season: string } = useLocalSearchParams()

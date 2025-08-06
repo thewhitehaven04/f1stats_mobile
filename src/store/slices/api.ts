@@ -1,5 +1,6 @@
 import { ApiClient, BASE_URL, buildQueriesFromSelection } from "@/src/client"
 import {
+    getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost,
     getLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetriesPost,
     getSessionLaptimesFilteredApiSeasonYearEventEventSessionSessionLapsPost,
 } from "@/src/client/generated"
@@ -70,7 +71,7 @@ export const ApiSlice = createApi({
             }: TSessionArgs & { selection: [string, number][] }) => {
                 return {
                     data: (
-                        await getLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetriesPost(
+                        await getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost(
                             {
                                 client: ApiClient,
                                 path: args,

@@ -1,7 +1,6 @@
 import type { PlotColor } from "@/src/client/generated"
 import { getColor } from "@/src/colorScheme"
 import { useZoomReset } from "@/src/components/Plots/hooks/useZoomReset"
-import { getAlternativePlotColor } from "@/src/core/helpers"
 import { useChartPressState, CartesianChart, useLinePath, type PointsArray } from "victory-native"
 import SpaceMono from "@/assets/fonts/SpaceMono-Regular.ttf"
 import { Path, useFont } from "@shopify/react-native-skia"
@@ -20,7 +19,7 @@ export const BrakePlot = ({
     yAxes,
 }: {
     chartData: Record<string, number>[]
-    colorMap: Record<string, PlotColor>
+    colorMap: Record<string, string>
     yAxes: string[]
 }) => {
     const font = useFont(SpaceMono, 13)
@@ -38,16 +37,18 @@ export const BrakePlot = ({
             xKey="distance"
             yKeys={yAxes}
             padding={{ left: 8, right: 8, top: 8 }}
-            xAxis={{
+            axisOptions={{
                 font,
-                axisSide: 'bottom',
-                labelPosition: 'outset',
+                axisSide: {
+                    x: "bottom",
+                    y: "left",
+                },
+                labelPosition: {
+                    x: "outset",
+                    y: "inset",
+                },
                 lineColor: getColor("border"),
             }}
-            yAxis={yAxes.map(() => ({
-                font, 
-                labelPosition: 'inset',
-            }))}
             transformState={transformState}
             chartPressState={pressState}
             transformConfig={{
@@ -62,15 +63,7 @@ export const BrakePlot = ({
         >
             {({ points }) =>
                 yAxes.map((driver) => (
-                    <StepLine
-                        key={driver}
-                        points={points[driver]}
-                        color={
-                            colorMap[driver].style === "default"
-                                ? colorMap[driver].color
-                                : getAlternativePlotColor(colorMap[driver].color)
-                        }
-                    />
+                    <StepLine key={driver} points={points[driver]} color={colorMap[driver]} />
                 ))
             }
         </CartesianChart>

@@ -47,6 +47,8 @@ const CollapsableItemContext = createContext<{
     isCollapsed: boolean
 }>({ setIsCollapsed: noop, isCollapsed: false })
 
+const bezierInOutBase = [0.25, 0.1, 0.25, 1] as const
+
 export const CollapsableListItem = (
     props: ComponentProps<typeof View> & { isCollapsedDefault?: boolean },
 ) => {
@@ -73,7 +75,7 @@ export const CollapsableListItem = (
                     },
                     rest.style,
                 )}
-                layout={LinearTransition.duration(300).easing(Easing.inOut(Easing.quad))}
+                layout={LinearTransition.duration(350).easing(Easing.bezierFn(...bezierInOutBase))}
             >
                 {children}
             </Animated.View>

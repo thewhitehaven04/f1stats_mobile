@@ -1,10 +1,8 @@
-import type { PlotColor } from "@/src/client/generated"
 import { useFont } from "@shopify/react-native-skia"
 import SpaceMono from "@/assets/fonts/SpaceMono-Regular.ttf"
 import { CartesianChart, Line, useChartPressState } from "victory-native"
 import { getColor } from "@/src/colorScheme"
 import { useZoomReset } from "@/src/components/Plots/hooks/useZoomReset"
-import { getAlternativePlotColor } from "@/src/core/helpers"
 
 export const TelemetryPlot = ({
     chartData,
@@ -12,7 +10,7 @@ export const TelemetryPlot = ({
     yAxes,
 }: {
     chartData: Record<string, number>[]
-    colorMap: Record<string, PlotColor>
+    colorMap: Record<string, string>
     yAxes: string[]
 }) => {
     const font = useFont(SpaceMono, 13)
@@ -55,16 +53,12 @@ export const TelemetryPlot = ({
             }}
         >
             {({ points }) =>
-                yAxes.map((driver) => (
+                yAxes.map((axis) => (
                     <Line
-                        key={driver}
-                        points={points[driver]}
+                        key={axis}
+                        points={points[axis]}
                         strokeWidth={1.8}
-                        color={
-                            colorMap[driver].style === "default"
-                                ? colorMap[driver].color
-                                : getAlternativePlotColor(colorMap[driver].color)
-                        }
+                        color={colorMap[axis]}
                         connectMissingData
                     />
                 ))

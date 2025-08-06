@@ -1,6 +1,6 @@
 "use client"
 import { alpha3ToAlpha2Map } from "@/src/alpha3toAlpha2map"
-import { getColor } from '@/src/colorScheme'
+import { getColor } from "@/src/colorScheme"
 import { Button } from "@/src/components/ui/Button"
 import {
     CollapsableListItem,
@@ -19,19 +19,19 @@ const seasonEventStyleSheet = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent: "flex-start",
-        alignItems: 'center',
+        alignItems: "center",
         gap: 16,
-        width: '75%',
+        width: "75%",
     },
     headerText: {
         fontSize: FontSizes.Title.sm,
         fontWeight: 500,
-        color: getColor('foreground'),
+        color: getColor("foreground"),
     },
     sessionLinkFont: {
         fontSize: FontSizes.Body,
         fontWeight: 500,
-        color: getColor('foreground'),
+        color: getColor("foreground"),
     },
     sessionLink: {
         display: "flex",
@@ -44,7 +44,7 @@ const seasonEventStyleSheet = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
-        justifyContent: 'center',
+        justifyContent: "center",
         gap: 16,
         paddingInline: 16,
     },
@@ -59,11 +59,7 @@ export function SeasonEvent({ event }: { event: TMappedSeasonEvent }) {
                     <Text style={seasonEventStyleSheet.headerText}>{event.name}</Text>
                 </View>
             </ListItemTitle>
-            <ListItemContent
-                style={seasonEventStyleSheet.contentWrapper}
-                expandedHeight={290}
-                expandedPadding={16}
-            >
+            <ListItemContent style={seasonEventStyleSheet.contentWrapper}>
                 {Object.values(event.sessions).map((s: ISession | null) =>
                     s ? (
                         <Link

@@ -7,6 +7,7 @@ import { LegendItem } from "@/src/components/Plots/LegendItem"
 import { useAppSelector } from "@/src/store"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { useGetAverageTelemetriesQuery, type TSession } from "@/src/store/slices/api"
+import { getAlternativePlotColor } from "@/src/core/helpers"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -49,7 +50,7 @@ export default function AverageTelemetry() {
     })
 
     const distance = useMemo(
-        () => data?.telemetries[0].lap.telemetry.map(({ distance }) => distance) || [],
+        () => data?.telemetries[0].telemetry.map(({ distance }) => distance) || [],
         [data?.telemetries],
     )
 
@@ -59,8 +60,8 @@ export default function AverageTelemetry() {
         }))
 
         chartData.forEach((dataInstance: Record<string, number | null>, i) => {
-            data?.telemetries.forEach(({ lap, driver }) => {
-                dataInstance[driver] = lap.telemetry[i]?.speed || null
+            data?.telemetries.forEach(({ driver, telemetry }) => {
+                dataInstance[driver] = telemetry[i]?.speed || null
             })
         })
 
@@ -73,8 +74,8 @@ export default function AverageTelemetry() {
         }))
 
         chartData.forEach((dataInstance: Record<string, number | null>, i) => {
-            data?.telemetries.forEach(({ lap, driver }) => {
-                dataInstance[driver] = lap.telemetry[i]?.throttle || null
+            data?.telemetries.forEach(({ driver, telemetry }) => {
+                dataInstance[driver] = telemetry[i]?.throttle || null
             })
         })
 
@@ -87,8 +88,8 @@ export default function AverageTelemetry() {
         }))
 
         chartData.forEach((dataInstance: Record<string, number | null>, i) => {
-            data?.telemetries.forEach(({ lap, driver }) => {
-                dataInstance[driver] = lap.telemetry[i]?.brake ?? 0
+            data?.telemetries.forEach(({ driver, telemetry }) => {
+                dataInstance[driver] = telemetry[i]?.brake ?? 0
             })
         })
 
@@ -101,8 +102,8 @@ export default function AverageTelemetry() {
         }))
 
         chartData.forEach((dataInstance: Record<string, number | null>, i) => {
-            data?.telemetries.forEach(({ lap, driver }) => {
-                dataInstance[driver] = lap.telemetry[i]?.rpm || null
+            data?.telemetries.forEach(({ driver, telemetry }) => {
+                dataInstance[driver] = telemetry[i]?.rpm || null
             })
         })
 
@@ -110,7 +111,14 @@ export default function AverageTelemetry() {
     }, [data?.telemetries, distance])
 
     const yAxes = data?.telemetries.map((telemetry) => telemetry.driver) || []
-    const colorMap = data?.color_map ?? {}
+    const colorMap = Object.fromEntries(
+        yAxes.map((driver) => [
+            driver,
+            data?.color_map[driver].style === "default"
+                ? data?.color_map[driver].color
+                : getAlternativePlotColor(data?.color_map[driver].color || ""),
+        ]),
+    )
 
     return (
         <SafeAreaView style={styleSheet.wrapper}>
