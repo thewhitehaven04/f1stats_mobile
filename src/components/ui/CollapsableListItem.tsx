@@ -5,17 +5,14 @@ import {
     type ComponentProps,
     createContext,
     useContext,
-    useEffect,
     useMemo,
-    useRef,
     useState,
 } from "react"
 import { Pressable, StyleSheet, View } from "react-native"
 import Animated, {
     Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
+    FadeOut,
+    LinearTransition,
 } from "react-native-reanimated"
 
 const styles = StyleSheet.create({
@@ -24,6 +21,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         width: "100%",
         minHeight: 0,
+        overflow: 'hidden',
     },
     titleContainer: {
         display: "flex",
@@ -35,6 +33,7 @@ const styles = StyleSheet.create({
     content: {
         overflow: "hidden",
         width: "100%",
+        padding: 16
     },
     icon: {
         color: getColor("primary"),
@@ -42,8 +41,6 @@ const styles = StyleSheet.create({
 })
 
 const noop = () => {}
-
-const COLLAPSE_TIMEOUT = 400
 
 const CollapsableItemContext = createContext<{
     setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>
@@ -67,7 +64,7 @@ export const CollapsableListItem = (
 
     return (
         <CollapsableItemContext.Provider value={ctxValue}>
-            <View
+            <Animated.View
                 {...rest}
                 style={StyleSheet.compose(
                     {
@@ -76,9 +73,10 @@ export const CollapsableListItem = (
                     },
                     rest.style,
                 )}
+                layout={LinearTransition.duration(300).easing(Easing.inOut(Easing.quad))}
             >
                 {children}
-            </View>
+            </Animated.View>
         </CollapsableItemContext.Provider>
     )
 }
@@ -113,32 +111,15 @@ export const ListItemTitle = (
     )
 }
 
-const animationProps = {
-    duration: COLLAPSE_TIMEOUT,
-    easing: Easing.out(Easing.cubic),
-}
-
 export const ListItemContent = (
-    props: ComponentProps<typeof View> & { expandedHeight: number; expandedPadding: number },
+    props: ComponentProps<typeof View>,
 ) => {
-    const { children, style, expandedHeight, expandedPadding, ...rest } = props
+    const { children, style, ...rest } = props
 
     const { isCollapsed } = useContext(CollapsableItemContext)
 
-    const svHeight = useSharedValue(isCollapsed ? 0 : expandedHeight)
-    const svPadding = useSharedValue(isCollapsed ? 0 : expandedPadding)
-
-    const heightStyle = useAnimatedStyle(() => ({
-        height: withTiming(svHeight.value, animationProps),
-        paddingBlock: withTiming(svPadding.value, animationProps),
-    }))
-
-    useEffect(() => {
-        svHeight.value = isCollapsed ? 0 : expandedHeight
-    }, [isCollapsed, expandedHeight, svHeight])
-
     return !isCollapsed ? (
-        <Animated.View {...rest} style={[heightStyle, styles.content, style]}>
+        <Animated.View {...rest} exiting={FadeOut} style={[styles.content, style]}>
             {children}
         </Animated.View>
     ) : null
