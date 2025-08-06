@@ -15,9 +15,10 @@ const style = StyleSheet.create({
     viewContent: {
         display: "flex",
         flexDirection: "column",
-        gap: 8,
+        gap: 16,
         paddingTop: 8,
         paddingInline: 16,
+        flex: 0,
     },
     scrollContainer: {
         gap: 16,
@@ -73,24 +74,24 @@ export default function SeasonScreen() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <GestureDetector gesture={scrollUp}>
-                <ScrollView contentContainerStyle={style.wrapperContent}>
-                    <View style={style.viewContent}>
-                        <View style={style.buttonWrapper}>
-                            <Link href={`/season/${season}/selectorModal`} asChild>
-                                <Button label={season} size='large'/>
-                            </Link>
-                        </View>
-                        <View style={style.collectionWrapper}>
-                            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={<LoadingSpinner />}>
+                <GestureDetector gesture={scrollUp}>
+                    <ScrollView contentContainerStyle={style.wrapperContent}>
+                        <View style={style.viewContent}>
+                            <View style={style.buttonWrapper}>
+                                <Link href={`/season/${season}/selectorModal`} asChild>
+                                    <Button label={season} />
+                                </Link>
+                            </View>
+                            <View style={style.collectionWrapper}>
                                 <ScrollView contentContainerStyle={style.scrollContainer}>
                                     {seasonEvents}
                                 </ScrollView>
-                            </Suspense>
+                            </View>
                         </View>
-                    </View>
-                </ScrollView>
-            </GestureDetector>
+                    </ScrollView>
+                </GestureDetector>
+            </Suspense>
         </SafeAreaView>
     )
 }

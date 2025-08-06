@@ -1,18 +1,22 @@
+"use client"
 import { getColor } from "@/src/colorScheme"
-import { Button } from "@/src/components/ui/Button"
-import { Background } from "@react-navigation/elements"
 import {
     createContext,
     useCallback,
     useContext,
-    useEffect,
     useMemo,
     useRef,
     useState,
     type ComponentProps,
     type ReactNode,
 } from "react"
-import { StyleSheet, View, Text } from "react-native"
+import { StyleSheet, Text, useAnimatedValue, View } from "react-native"
+import Animated, {
+    interpolateColor,
+    useAnimatedStyle,
+    useSharedValue,
+} from "react-native-reanimated"
+import { Pressable } from "react-native-gesture-handler"
 
 const SegmentedControlContext = createContext<string>("")
 const SegmentedControlDispatch = createContext({
@@ -23,15 +27,26 @@ const styleSheet = StyleSheet.create({
     wrapper: {
         display: "flex",
         flexDirection: "row",
-        gap: 8,
-        paddingInline: 4,
-        paddingBlock: 4,
+        padding: 4,
         borderRadius: 12,
         backgroundColor: getColor("muted"),
+        gap: 8,
     },
     selectorText: {
         textAlign: "center",
         color: getColor("foreground"),
+        fontWeight: 500,
+    },
+    selector: {
+        borderRadius: 8,
+        color: getColor("foreground"),
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 8,
+        paddingBlock: 4,
+        paddingInline: 8,
     },
 })
 
@@ -46,17 +61,6 @@ export const Root = ({
 
     const setTab = useCallback((tab: string) => {
         setActiveSegment(tab)
-    }, [])
-    const activeElementRef = useRef<View>(null)
-
-    useEffect(() => {
-        const activeTab = activeElementRef.current
-        if (activeTab) {
-            activeTab.measure((x, y, width) => {
-                const left = x
-                const right = left + width
-            })
-        }
     }, [])
 
     const dispatchCtxValue = useMemo(
@@ -75,18 +79,8 @@ export const Root = ({
     )
 }
 
-// x -- top-left horizontal
-// y -- top-left vertical
-// x + width -- top-right horizontal
-// y + height -- bottom-left vertical
-
 export const Wrapper = (props: ComponentProps<typeof View>) => {
     const wrapperRef = useRef<View>(null)
-
-    useEffect(() => {
-        if (wrapperRef.current) {
-        }
-    }, [])
 
     return (
         <View
@@ -101,52 +95,35 @@ export const Wrapper = (props: ComponentProps<typeof View>) => {
 }
 
 export const SegmentSelector = ({ name, icon }: { name: string; icon?: ReactNode }) => {
-    const setSegment = useContext(SegmentedControlDispatch)
+    const { setTab } = useContext(SegmentedControlDispatch)
     const activeSegment = useContext(SegmentedControlContext)
 
+    const animationProgress = useSharedValue(0)
+
+    /** without memoization outside of useanimated style the app crashes */
+    const fromColor = useMemo(
+        () => (activeSegment === name ? getColor("background") : getColor("muted")),
+        [activeSegment, name],
+    )
+    const toColor = useMemo(
+        () => (activeSegment === name ? getColor("muted") : getColor("background")),
+        [activeSegment, name],
+    )
+    const style = useAnimatedStyle(() => ({
+        backgroundColor: interpolateColor(animationProgress.value, [0, 1], [fromColor, toColor]),
+    }))
+
     return (
-        <View style={{ position: "relative" }}>
-            <Button
-                variant="solid"
-                onPress={() => setSegment.setTab(name)}
-                contentStyle={{
-                    backgroundColor:
-                        activeSegment === name ? getColor("background") : "transparent",
-                    gap: 8,
-                    zIndex: 10,
-                }}
-                label={!icon ? name : undefined}
-            >
+        <Pressable onPress={() => setTab(name)}>
+            <Animated.View style={[styleSheet.selector, style]}>
                 {icon ? (
                     <>
                         {icon}
-                        <Text>{name}</Text>
+                        <Text style={styleSheet.selectorText}>{name}</Text>
                     </>
                 ) : null}
-            </Button>
-            <Button
-                variant="solid"
-                onPress={() => setSegment.setTab(name)}
-                style={{ position: "absolute", zIndex: 0, top: 0 }}
-                contentStyle={{
-                    backgroundColor:
-                        activeSegment === name ? getColor("background") : "transparent",
-                    gap: 8,
-                }}
-                textStyle={{
-                    color: getColor("background"),
-                    backgroundColor: getColor("foreground"),
-                }}
-                label={!icon ? name : undefined}
-            >
-                {icon ? (
-                    <>
-                        {icon}
-                        <Text>{name}</Text>
-                    </>
-                ) : null}
-            </Button>
-        </View>
+            </Animated.View>
+        </Pressable>
     )
 }
 

@@ -74,6 +74,7 @@ export const Button = ({
                             {
                                 color: getColor("foreground"),
                                 fontSize: size === "large" ? FontSizes.Title.sm : FontSizes.Body,
+                                fontWeight: '500',
                             },
                             textStyle,
                         ]}
