@@ -10,7 +10,7 @@ import {
     type ComponentProps,
     type ReactNode,
 } from "react"
-import { StyleSheet, Text, useAnimatedValue, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import Animated, {
     interpolateColor,
     useAnimatedStyle,

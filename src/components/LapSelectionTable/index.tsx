@@ -12,12 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/src/store"
 import { toggleDriverLapSelection } from "@/src/store/slices/lapSelection"
 import { useLocalSearchParams } from "expo-router"
 import { useTelemetryPrefetch } from "@/src/components/Plots/hooks/usePrefetchTelemetryPlotData"
-import Animated, {
-    SlideInLeft,
-    SlideInRight,
-    SlideOutLeft,
-    SlideOutRight,
-} from "react-native-reanimated"
+import Animated from "react-native-reanimated"
 import { Directions, Gesture, GestureDetector } from "react-native-gesture-handler"
 
 const styleSheet = StyleSheet.create({
@@ -30,9 +25,6 @@ const styleSheet = StyleSheet.create({
         paddingTop: 8,
         paddingBottom: 4,
         paddingInline: 8,
-        borderBottomWidth: 1,
-        boxShadow: "0 3px 9px rgba(0, 0, 0, 0.08)",
-        marginBottom: 8,
     },
     lapList: {
         display: "flex",
@@ -132,172 +124,172 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
             ([existingDriver, existingLap]) => existingDriver === driver && existingLap === lap,
         )
     }
-    const [flingDirection, setFlingDirection] = useState<"left" | "right">()
 
     const leftFling = Gesture.Fling()
         .direction(Directions.LEFT)
         .onEnd(() => {
-            if (hasLeft) {
-                setFlingDirection("left")
-                setDriverIndex(selectedDriverIndex - 1)
+            if (hasRight) {
+                setDriverIndex(selectedDriverIndex + 1)
             }
         })
         .runOnJS(true)
     const rightFling = Gesture.Fling()
         .direction(Directions.RIGHT)
         .onEnd(() => {
-            if (hasRight) {
-                setFlingDirection("right")
-                setDriverIndex(selectedDriverIndex + 1)
+            if (hasLeft) {
+                setDriverIndex(selectedDriverIndex - 1)
             }
         })
         .runOnJS(true)
 
     return (
-        <>
-            <View style={styleSheet.wrapper}>
-                {hasLeft && (
-                    <Button onPress={() => setDriverIndex(selectedDriverIndex - 1)}>
-                        <Ionicons name="chevron-back-outline" size={16} />
-                        <Text>
-                            {mapDriverToAbbreviation(
-                                data.driver_lap_data[selectedDriverIndex - 1].driver,
-                            )}
-                        </Text>
-                    </Button>
-                )}
-                <View style={{ padding: 8 }}>
-                    <Text>{mapDriverToAbbreviation(currentDriver)}</Text>
-                </View>
-                {hasRight && (
-                    <Button onPress={() => setDriverIndex(selectedDriverIndex + 1)}>
-                        <Text>
-                            {mapDriverToAbbreviation(
-                                data.driver_lap_data[selectedDriverIndex + 1].driver,
-                            )}
-                        </Text>
-                        <Ionicons name="chevron-forward-outline" size={16} />
-                    </Button>
-                )}
-            </View>
-            <GestureDetector gesture={Gesture.Exclusive(leftFling, rightFling)}>
-                <Animated.FlatList
-                    data={selectedDriverData.map((item, index) => ({ ...item, lap: index + 1 }))}
-                    contentContainerStyle={styleSheet.lapList}
-                    ItemSeparatorComponent={Separator}
-                    initialNumToRender={7}
-                    key={selectedDriverIndex}
-                    entering={(flingDirection === "left" ? SlideInRight : SlideInLeft)}
-                    exiting={(flingDirection === "left" ? SlideOutLeft : SlideOutRight)}
-                    renderItem={({ item }) => {
-                        const Compound = COLOR_MAP[item.compound_id as TCompound]
-                        return (
-                            <Pressable
-                                onPress={() => {
-                                    dispatch(
-                                        toggleDriverLapSelection([
-                                            {
-                                                lap: item.lap,
-                                                driver: currentDriver,
-                                            },
-                                        ]),
-                                    )
+        <GestureDetector gesture={Gesture.Exclusive(leftFling, rightFling)}>
+            <Animated.FlatList
+                data={selectedDriverData.map((item, index) => ({ ...item, lap: index + 1 }))}
+                contentContainerStyle={styleSheet.lapList}
+                ItemSeparatorComponent={Separator}
+                initialNumToRender={7}
+                stickyHeaderIndices={[0]}
+                stickyHeaderHiddenOnScroll
+                ListHeaderComponentStyle={{
+                    backgroundColor: getColor("background"),
+                    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
+                }}
+                ListHeaderComponent={
+                    <View style={styleSheet.wrapper}>
+                        {hasLeft && (
+                            <Button onPress={() => setDriverIndex(selectedDriverIndex - 1)}>
+                                <Ionicons name="chevron-back-outline" size={16} />
+                                <Text>
+                                    {mapDriverToAbbreviation(
+                                        data.driver_lap_data[selectedDriverIndex - 1].driver,
+                                    )}
+                                </Text>
+                            </Button>
+                        )}
+                        <View style={{ padding: 8 }}>
+                            <Text>{mapDriverToAbbreviation(currentDriver)}</Text>
+                        </View>
+                        {hasRight && (
+                            <Button onPress={() => setDriverIndex(selectedDriverIndex + 1)}>
+                                <Text>
+                                    {mapDriverToAbbreviation(
+                                        data.driver_lap_data[selectedDriverIndex + 1].driver,
+                                    )}
+                                </Text>
+                                <Ionicons name="chevron-forward-outline" size={16} />
+                            </Button>
+                        )}
+                    </View>
+                }
+                renderItem={({ item }) => {
+                    const Compound = COLOR_MAP[item.compound_id as TCompound]
+                    return (
+                        <Pressable
+                            onPress={() => {
+                                dispatch(
+                                    toggleDriverLapSelection([
+                                        {
+                                            lap: item.lap,
+                                            driver: currentDriver,
+                                        },
+                                    ]),
+                                )
+                            }}
+                        >
+                            <View
+                                key={item.id}
+                                style={{
+                                    ...styleSheet.cardWrapper,
+                                    borderColor: getColor("border"),
                                 }}
                             >
-                                <View
-                                    key={item.id}
-                                    style={{
-                                        ...styleSheet.cardWrapper,
-                                        borderColor: getColor("border"),
-                                    }}
-                                >
-                                    <View style={styleSheet.s1Column}>
-                                        <View
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "row",
-                                                alignItems: "center",
-                                                gap: 8,
-                                            }}
-                                        >
-                                            <Text style={styleSheet.timeText}>Lap {item.lap}</Text>
-                                            {isLapSelectedForDriver(currentDriver, item.lap) && (
-                                                <Ionicons
-                                                    name="checkmark-outline"
-                                                    color={getColor("foreground")}
-                                                    size={20}
-                                                />
-                                            )}
-                                        </View>
-                                        <View>
-                                            <Text style={styleSheet.timeText}>S1</Text>
-                                        </View>
-                                        <View>
-                                            <TrackMetric
-                                                value={formatTime(item.sector_1_time)}
-                                                isPersonalBest={item.is_personal_best_s1}
-                                                isSessionBest={item.is_best_s1}
+                                <View style={styleSheet.s1Column}>
+                                    <View
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            gap: 8,
+                                        }}
+                                    >
+                                        <Text style={styleSheet.timeText}>Lap {item.lap}</Text>
+                                        {isLapSelectedForDriver(currentDriver, item.lap) && (
+                                            <Ionicons
+                                                name="checkmark-outline"
+                                                color={getColor("foreground")}
+                                                size={20}
                                             />
-                                        </View>
-                                        <View>
-                                            <TrackMetric
-                                                value={item.speedtrap_1}
-                                                isSessionBest={item.is_best_st1}
-                                            />
-                                        </View>
+                                        )}
                                     </View>
-                                    <View style={styleSheet.s2Column}>
-                                        <View>
-                                            <TrackMetric
-                                                value={formatTime(item.laptime)}
-                                                isPersonalBest={item.is_pb}
-                                                style={styleSheet.timeText}
-                                            />
-                                        </View>
-                                        <View>
-                                            <Text style={styleSheet.timeText}>S2</Text>
-                                        </View>
-                                        <View>
-                                            <TrackMetric
-                                                value={formatTime(item.sector_2_time)}
-                                                isPersonalBest={item.is_personal_best_s2}
-                                                isSessionBest={item.is_best_s2}
-                                            />
-                                        </View>
-                                        <View>
-                                            <TrackMetric
-                                                value={item.speedtrap_2}
-                                                isSessionBest={item.is_best_st2}
-                                            />
-                                        </View>
+                                    <View>
+                                        <Text style={styleSheet.timeText}>S1</Text>
                                     </View>
-                                    <View style={styleSheet.s3Column}>
-                                        <View>
-                                            <Compound width={24} height={24} />
-                                        </View>
-                                        <View>
-                                            <Text style={styleSheet.timeText}>S3</Text>
-                                        </View>
-                                        <View>
-                                            <TrackMetric
-                                                value={formatTime(item.sector_3_time)}
-                                                isPersonalBest={item.is_personal_best_s3}
-                                                isSessionBest={item.is_best_s3}
-                                            />
-                                        </View>
-                                        <View>
-                                            <TrackMetric
-                                                value={item.speedtrap_fl}
-                                                isSessionBest={item.is_best_stfl}
-                                            />
-                                        </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={formatTime(item.sector_1_time)}
+                                            isPersonalBest={item.is_personal_best_s1}
+                                            isSessionBest={item.is_best_s1}
+                                        />
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={item.speedtrap_1}
+                                            isSessionBest={item.is_best_st1}
+                                        />
                                     </View>
                                 </View>
-                            </Pressable>
-                        )
-                    }}
-                />
-            </GestureDetector>
-        </>
+                                <View style={styleSheet.s2Column}>
+                                    <View>
+                                        <TrackMetric
+                                            value={formatTime(item.laptime)}
+                                            isPersonalBest={item.is_pb}
+                                            style={styleSheet.timeText}
+                                        />
+                                    </View>
+                                    <View>
+                                        <Text style={styleSheet.timeText}>S2</Text>
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={formatTime(item.sector_2_time)}
+                                            isPersonalBest={item.is_personal_best_s2}
+                                            isSessionBest={item.is_best_s2}
+                                        />
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={item.speedtrap_2}
+                                            isSessionBest={item.is_best_st2}
+                                        />
+                                    </View>
+                                </View>
+                                <View style={styleSheet.s3Column}>
+                                    <View>
+                                        <Compound width={24} height={24} />
+                                    </View>
+                                    <View>
+                                        <Text style={styleSheet.timeText}>S3</Text>
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={formatTime(item.sector_3_time)}
+                                            isPersonalBest={item.is_personal_best_s3}
+                                            isSessionBest={item.is_best_s3}
+                                        />
+                                    </View>
+                                    <View>
+                                        <TrackMetric
+                                            value={item.speedtrap_fl}
+                                            isSessionBest={item.is_best_stfl}
+                                        />
+                                    </View>
+                                </View>
+                            </View>
+                        </Pressable>
+                    )
+                }}
+            />
+        </GestureDetector>
     )
 }

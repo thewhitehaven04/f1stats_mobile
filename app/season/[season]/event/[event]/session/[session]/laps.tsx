@@ -114,7 +114,7 @@ export default function LapsScreen() {
         <SafeAreaView edges={["top", "left", "right"]} style={{ marginBottom: 90 }}>
             <SegmentedControl.Root defaultSegment="Table">
                 <View style={styleSheet.segmentWrapper}>
-                    <SegmentedControl.Wrapper style={{ justifyContent: "center", alignItems: 'center'  }}>
+                    <SegmentedControl.Wrapper style={{ justifyContent: "center", alignItems: 'center', marginBottom: 8  }}>
                         <SegmentedControl.SegmentSelector
                             name="Table"
                             icon={<Ionicons name="menu-outline" size={24}/>}

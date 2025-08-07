@@ -1,18 +1,16 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
 import Ionicons from "@expo/vector-icons/Ionicons"
-import {
-    type ComponentProps,
-    createContext,
-    useContext,
-    useMemo,
-    useState,
-} from "react"
+import { type ComponentProps, createContext, useContext, useMemo, useState } from "react"
 import { Pressable, StyleSheet, View } from "react-native"
 import Animated, {
     Easing,
     FadeOut,
     LinearTransition,
+    useAnimatedProps,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
 } from "react-native-reanimated"
 
 const styles = StyleSheet.create({
@@ -21,7 +19,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         width: "100%",
         minHeight: 0,
-        overflow: 'hidden',
+        overflow: "hidden",
     },
     titleContainer: {
         display: "flex",
@@ -33,10 +31,7 @@ const styles = StyleSheet.create({
     content: {
         overflow: "hidden",
         width: "100%",
-        padding: 16
-    },
-    icon: {
-        color: getColor("primary"),
+        padding: 16,
     },
 })
 
@@ -47,7 +42,11 @@ const CollapsableItemContext = createContext<{
     isCollapsed: boolean
 }>({ setIsCollapsed: noop, isCollapsed: false })
 
-const bezierInOutBase = [0.25, 0.1, 0.25, 1] as const
+const BEZIER_IN_OUT_BASE = [0.25, 0.1, 0.25, 1] as const
+
+const getChevronStyle = (isCollapsed: boolean) => {
+    return isCollapsed ? "chevron-down" : "chevron-up"
+}
 
 export const CollapsableListItem = (
     props: ComponentProps<typeof View> & { isCollapsedDefault?: boolean },
@@ -75,19 +74,14 @@ export const CollapsableListItem = (
                     },
                     rest.style,
                 )}
-                layout={LinearTransition.duration(350).easing(Easing.bezierFn(...bezierInOutBase))}
+                layout={LinearTransition.duration(350).easing(
+                    Easing.bezierFn(...BEZIER_IN_OUT_BASE),
+                )}
             >
                 {children}
             </Animated.View>
         </CollapsableItemContext.Provider>
     )
-}
-
-const getChevronStyle = (isCollapsed: boolean, isFocused: boolean) => {
-    if (!isFocused) {
-        return isCollapsed ? "chevron-down" : "chevron-up"
-    }
-    return isCollapsed ? "chevron-down-circle" : "chevron-up-circle"
 }
 
 export const ListItemTitle = (
@@ -96,26 +90,43 @@ export const ListItemTitle = (
     const { children, style, ...rest } = props
 
     const { isCollapsed, setIsCollapsed } = useContext(CollapsableItemContext)
-    const [isPressed, setIsPressed] = useState(false)
+
+    const svIconScale = useSharedValue(1)
+
+    const iconStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: svIconScale.value }],
+    }))
+
+    const handlePress = () => {
+        svIconScale.value = withTiming(0.97, { duration: 75 })
+
+        setTimeout(() => {
+            svIconScale.value = withTiming(1, { duration: 75 })
+        }, 75)
+    }
 
     return (
         <View {...rest} style={StyleSheet.compose(styles.titleContainer, style)}>
             <View style={{ flexShrink: 1, flexGrow: 1, flexBasis: "100%" }}>{children}</View>
             <Pressable
-                onPressIn={() => setIsPressed(true)}
-                onPressOut={() => setIsPressed(false)}
-                onPress={() => setIsCollapsed(!isCollapsed)}
-                style={{ flexShrink: 0, flexGrow: 1 }}
+                onPress={() => {
+                    handlePress()
+                    setIsCollapsed(!isCollapsed)
+                }}
+                style={{
+                    flexShrink: 0,
+                    flexGrow: 1,
+                }}
             >
-                <Ionicons name={getChevronStyle(isCollapsed, isPressed)} style={styles.icon} size={24} />
+                <View style={iconStyle}>
+                    <Ionicons name={getChevronStyle(isCollapsed)} size={24} />
+                </View>
             </Pressable>
         </View>
     )
 }
 
-export const ListItemContent = (
-    props: ComponentProps<typeof View>,
-) => {
+export const ListItemContent = (props: ComponentProps<typeof View>) => {
     const { children, style, ...rest } = props
 
     const { isCollapsed } = useContext(CollapsableItemContext)
