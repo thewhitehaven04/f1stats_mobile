@@ -41,7 +41,7 @@ const CollapsableItemContext = createContext<{
     isCollapsed: boolean
 }>({ setIsCollapsed: noop, isCollapsed: false })
 
-const BEZIER_IN_OUT_BASE = [0.25, 0.1, 0.25, 1] as const
+export const BEZIER_IN_OUT_BASE = [0.25, 0.1, 0.25, 1] as const
 
 const getChevronStyle = (isCollapsed: boolean) => {
     return isCollapsed ? "chevron-down" : "chevron-up"

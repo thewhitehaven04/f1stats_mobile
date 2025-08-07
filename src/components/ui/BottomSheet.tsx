@@ -1,6 +1,6 @@
 import { ComponentProps } from "react"
 import { StyleSheet, ViewStyle, type View } from "react-native"
-import Animated, { SlideInDown, SlideOutDown } from "react-native-reanimated"
+import Animated, { Easing, SlideInDown, SlideOutDown } from "react-native-reanimated"
 import { getColor } from "@/src/colorScheme"
 
 const styleSheet = StyleSheet.create({
@@ -34,8 +34,8 @@ export const BottomSheet = (
 ) => {
     return (
         <Animated.View
-            entering={SlideInDown.duration(300)}
-            exiting={SlideOutDown.duration(300)}
+            entering={SlideInDown.duration(300).easing(Easing.inOut(Easing.quad))}
+            exiting={SlideOutDown.duration(300).easing(Easing.inOut(Easing.quad))}
             {...props}
             style={StyleSheet.compose<any, any, ViewStyle>(styleSheet.wrapper, props.style)}
         />

@@ -13,11 +13,11 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 import { Fragment, useMemo } from "react"
-import { Pressable, StyleSheet } from "react-native"
+import { FlatList, Pressable, StyleSheet } from "react-native"
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated"
 import * as Haptics from "expo-haptics"
-import { useAppDispatch } from '@/src/store'
-import { updateSelection } from '@/src/store/slices/driverSelection'
+import { useAppDispatch } from "@/src/store"
+import { updateSelection } from "@/src/store/slices/driverSelection"
 
 type TResultsData =
     | {
@@ -92,7 +92,7 @@ export const ResultsTable = (props: TResultsData) => {
         getRowCanExpand: () => props.sessionType !== SessionType.PRACTICE,
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
-        onRowSelectionChange:  (onChangeFn) => {
+        onRowSelectionChange: (onChangeFn) => {
             dispatch(updateSelection(onChangeFn))
         },
         getRowId: (row) => row.driver.id,
@@ -102,21 +102,28 @@ export const ResultsTable = (props: TResultsData) => {
     const { rows } = getRowModel()
 
     return (
-        <Table style={{ overflow: 'hidden' }}>
-            <TableHeader>
-                {headers.map((header) => (
-                    <TextCell key={header.column.id} style={{ flexBasis: header.getSize() }}>
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                    </TextCell>
-                ))}
-            </TableHeader>
-            <TableBody>
-                {rows.map((row) => (
+        <Table style={{ overflow: "hidden", flexShrink: 1 }}>
+            <FlatList
+                ListHeaderComponent={
+                    <TableHeader>
+                        {headers.map((header) => (
+                            <TextCell
+                                key={header.column.id}
+                                style={{ flexBasis: header.getSize() }}
+                            >
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                            </TextCell>
+                        ))}
+                    </TableHeader>
+                }
+                data={rows}
+                stickyHeaderIndices={[0]}
+                renderItem={({ item: row }) => (
                     <Fragment key={row.id}>
                         <TableRow
-                            onPress={() => { 
+                            onPress={() => {
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid)
-                                return row.getToggleExpandedHandler() 
+                                return row.getToggleExpandedHandler()
                             }}
                             onLongPress={row.getToggleSelectedHandler()}
                             style={{
@@ -138,8 +145,8 @@ export const ResultsTable = (props: TResultsData) => {
                             />
                         )}
                     </Fragment>
-                ))}
-            </TableBody>
+                )}
+            ></FlatList>
         </Table>
     )
 }
