@@ -1,5 +1,4 @@
 import { ResultsTable } from "@/src/components/Tables/presets/results"
-import type { IBaseResultsData } from "@/src/components/Tables/presets/results/common"
 import {
     SessionType,
     sessionResultsToTableRows,
@@ -15,7 +14,6 @@ import {
 import { RACE_RESULTS_COLUMNS, type IRaceData } from "@/src/components/Tables/presets/results/race"
 import { fetchSessionResults } from "@/src/fetchers/results"
 import type { ColumnDef } from "@tanstack/react-table"
-import { ScrollView } from "react-native"
 
 const SESSION_TYPE_COLUMN_MAP = Object.freeze({
     [SessionType.PRACTICE]: PRACTICE_RESULTS_COLUMNS,

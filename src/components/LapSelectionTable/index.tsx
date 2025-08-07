@@ -31,6 +31,7 @@ const styleSheet = StyleSheet.create({
         flexDirection: "column",
         alignItems: "stretch",
         gap: 8,
+        paddingBottom: 128
     },
     cardWrapper: {
         paddingBlock: 8,

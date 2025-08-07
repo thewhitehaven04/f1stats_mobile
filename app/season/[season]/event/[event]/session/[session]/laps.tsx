@@ -15,12 +15,13 @@ import Ionicons from "@expo/vector-icons/Ionicons"
 
 const styleSheet = StyleSheet.create({
     bottomSheet: {
-        width: "85%",
+        width: "90%",
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-evenly",
         paddingBlock: 8,
+        bottom: 40
     },
     bottomSheetButton: {
         width: "100%",
@@ -111,10 +112,10 @@ export default function LapsScreen() {
         useLocalSearchParams()
 
     return (
-        <SafeAreaView edges={["top", "left", "right"]} style={{ marginBottom: 90 }}>
+        <SafeAreaView edges={["top", "left", "right"]}>
             <SegmentedControl.Root defaultSegment="Table">
                 <View style={styleSheet.segmentWrapper}>
-                    <SegmentedControl.Wrapper style={{ justifyContent: "center", alignItems: 'center', marginBottom: 8  }}>
+                    <SegmentedControl.Wrapper style={{ justifyContent: "center", alignItems: 'center', marginBottom: 8 }}>
                         <SegmentedControl.SegmentSelector
                             name="Table"
                             icon={<Ionicons name="menu-outline" size={24}/>}

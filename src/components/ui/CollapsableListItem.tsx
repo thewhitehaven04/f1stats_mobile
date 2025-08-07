@@ -7,7 +7,6 @@ import Animated, {
     Easing,
     FadeOut,
     LinearTransition,
-    useAnimatedProps,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
