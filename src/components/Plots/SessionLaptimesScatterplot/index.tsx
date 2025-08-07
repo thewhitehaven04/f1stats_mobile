@@ -41,7 +41,8 @@ const styleSheet = StyleSheet.create({
 export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData }) => {
     const { driver_lap_data: drivers, color_map: colors } = data
 
-    const indices = drivers[0].laps.map((_, index) => index + 1)
+    const lapCount = Math.max(...drivers.map(({ laps }) => laps.length))
+    const xAxis = Array.from({ length: lapCount }).map((_, index) => index + 1)
 
     const driverNames = data.driver_lap_data.map((driver) => driver.driver)
 
@@ -54,20 +55,24 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
 
     const [showOutliers, setShowOutliers] = useState(true)
 
-    const plotData = indices.map((index) => {
-        const entries = drivers.map((driver) => {
-            const isFlyingLap =
-                !driver.laps[index - 1]?.is_inlap && !driver.laps[index - 1]?.is_outlap
-            return [
-                driver.driver,
-                showOutliers
-                    ? (driver.laps[index - 1].laptime ?? null)
-                    : isFlyingLap
-                      ? (driver.laps[index - 1].laptime ?? null)
-                      : null,
-            ]
+    const plotData = xAxis.map((lap) => {
+        const index = lap - 1
+        const entries = drivers.map(({ driver, laps }) => {
+            const hasDataForLap = !!laps[index]
+            if (hasDataForLap) {
+                const isFlyingLap = !laps[index].is_inlap && !laps[index].is_outlap
+                return [
+                    driver,
+                    showOutliers
+                        ? (laps[index].laptime ?? null)
+                        : isFlyingLap
+                          ? (laps[index].laptime ?? null)
+                          : null,
+                ]
+            }
+            return [driver, null]
         })
-        entries.push(["lap", index])
+        entries.push(["lap", lap])
         return Object.fromEntries(entries)
     })
 
@@ -130,7 +135,7 @@ export const SessionLaptimesScatterplot = ({ data }: { data: LapSelectionData })
             </CartesianChart>
             <View style={styleSheet.legend}>
                 {driverNames.map((name) => (
-                    <LegendItem key={name} label={name} plotColor={colors[name]} />
+                    <LegendItem key={name} label={name} plotColor={colors[name].color} />
                 ))}
             </View>
             <View style={styleSheet.footer}>
