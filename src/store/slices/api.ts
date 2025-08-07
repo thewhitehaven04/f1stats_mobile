@@ -1,6 +1,7 @@
 import { ApiClient, BASE_URL, buildQueriesFromSelection } from "@/src/client"
 import {
     getAverageLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetryAveragePost,
+    getCircuitGeojsonApiSeasonYearEventEventCircuitGeojsonGet,
     getLapTelemetriesApiSeasonYearEventEventSessionSessionTelemetriesPost,
     getSessionLaptimesFilteredApiSeasonYearEventEventSessionSessionLapsPost,
 } from "@/src/client/generated"
@@ -83,6 +84,19 @@ export const ApiSlice = createApi({
                 }
             },
         }),
+        getCircuitGeometry: query({
+            queryFn: async ({ year, event }: { year: string; event: string }) => {
+                return {
+                    data: (
+                        await getCircuitGeojsonApiSeasonYearEventEventCircuitGeojsonGet({
+                            client: ApiClient,
+                            path: { year, event },
+                            throwOnError: true,
+                        })
+                    ).data,
+                }
+            },
+        }),
     }),
 })
 
@@ -91,4 +105,5 @@ export const {
     usePrefetch,
     useGetAverageTelemetriesQuery,
     useGetLapsQuery,
+    useGetCircuitGeometryQuery
 } = ApiSlice

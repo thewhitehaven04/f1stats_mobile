@@ -6,16 +6,13 @@ import { COLOR_MAP, type TCompound } from "@/src/components/ui/TyreCompounds"
 import { formatTime, mapDriverToAbbreviation } from "@/src/core/helpers"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { useState } from "react"
-import { FlatList, StyleSheet, Pressable, View, Text } from "react-native"
+import { StyleSheet, Pressable, View, Text } from "react-native"
 import * as FontSizes from "@/src/fontSizes"
 import { useAppDispatch, useAppSelector } from "@/src/store"
 import { toggleDriverLapSelection } from "@/src/store/slices/lapSelection"
 import { useLocalSearchParams } from "expo-router"
 import { useTelemetryPrefetch } from "@/src/components/Plots/hooks/usePrefetchTelemetryPlotData"
 import Animated, {
-    FadeIn,
-    FadeInDown,
-    FadeOut,
     SlideInLeft,
     SlideInRight,
     SlideOutLeft,
@@ -139,19 +136,19 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
 
     const leftFling = Gesture.Fling()
         .direction(Directions.LEFT)
-        .onStart(() => {
+        .onEnd(() => {
             if (hasLeft) {
-                setDriverIndex(selectedDriverIndex - 1)
                 setFlingDirection("left")
+                setDriverIndex(selectedDriverIndex - 1)
             }
         })
         .runOnJS(true)
     const rightFling = Gesture.Fling()
         .direction(Directions.RIGHT)
-        .onStart(() => {
+        .onEnd(() => {
             if (hasRight) {
-                setDriverIndex(selectedDriverIndex + 1)
                 setFlingDirection("right")
+                setDriverIndex(selectedDriverIndex + 1)
             }
         })
         .runOnJS(true)
@@ -190,6 +187,8 @@ export const LapSelectionTable = ({ data }: { data: LapSelectionData }) => {
                     ItemSeparatorComponent={Separator}
                     initialNumToRender={7}
                     key={selectedDriverIndex}
+                    entering={(flingDirection === "left" ? SlideInRight : SlideInLeft)}
+                    exiting={(flingDirection === "left" ? SlideOutLeft : SlideOutRight)}
                     renderItem={({ item }) => {
                         const Compound = COLOR_MAP[item.compound_id as TCompound]
                         return (

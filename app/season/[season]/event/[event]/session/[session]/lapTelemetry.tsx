@@ -6,9 +6,14 @@ import { useMemo } from "react"
 import { LegendItem } from "@/src/components/Plots/LegendItem"
 import { useAppSelector } from "@/src/store"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
-import { useGetLapTelemetriesQuery, type TSession } from "@/src/store/slices/api"
+import {
+    useGetCircuitGeometryQuery,
+    useGetLapTelemetriesQuery,
+    type TSession,
+} from "@/src/store/slices/api"
 import { getAlternativePlotColor } from "@/src/core/helpers"
-import { BrakePlot } from '@/src/components/Plots/BrakePlot'
+import { BrakePlot } from "@/src/components/Plots/BrakePlot"
+import { DeltaCircuitMap } from "@/src/components/CircuitMap"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -19,14 +24,17 @@ const styleSheet = StyleSheet.create({
     speedtrace: {
         height: 350,
     },
+    deltaData: {
+        height: 200,
+    },
     brake: {
-        height: 110,
+        height: 80,
     },
     throttle: {
-        height: 110,
+        height: 80,
     },
     rpm: {
-        height: 110,
+        height: 120,
     },
     legend: {
         display: "flex",
@@ -50,6 +58,11 @@ export default function Telemetry() {
         event,
         year: season,
         selection,
+    })
+
+    const { data: geometry } = useGetCircuitGeometryQuery({
+        year: season,
+        event,
     })
 
     const distance = useMemo(
@@ -113,6 +126,20 @@ export default function Telemetry() {
         return chartData
     }, [data?.telemetries, distance])
 
+    const deltaData: Record<string, number>[] = useMemo(() => {
+        const chartData = distance.map((d) => ({
+            distance: d,
+        }))
+
+        chartData.forEach((dataInstance: Record<string, number | null>, i) => {
+            data?.telemetries.forEach(({ delta, driver, lap }) => {
+                dataInstance[`${driver}-${lap.lap_number}`] = delta?.delta[i].gap || null
+            })
+        })
+
+        return chartData
+    }, [data?.telemetries, distance])
+
     const yAxes: string[] = []
     const colorMap: Record<string, string> = {}
     data?.telemetries.forEach(({ lap, driver }) => {
@@ -124,13 +151,25 @@ export default function Telemetry() {
                 ? driverData.color
                 : getAlternativePlotColor(driverData.color)
     })
-    console.log(colorMap)
-    console.log(yAxes)
 
     return (
         <SafeAreaView style={styleSheet.wrapper}>
             {!isLoading && data ? (
                 <ScrollView>
+                    <View style={{ padding: 8 }}>
+                        {geometry ? (
+                            <DeltaCircuitMap
+                                geometry={geometry}
+                                driverDeltas={data.delta}
+                                colorMap={colorMap}
+                            />
+                        ) : (
+                            <LoadingSpinner />
+                        )}
+                    </View>
+                    <View style={styleSheet.deltaData}>
+                        <TelemetryPlot chartData={deltaData} yAxes={yAxes} colorMap={colorMap} />
+                    </View>
                     <View style={styleSheet.speedtrace}>
                         <TelemetryPlot
                             chartData={speedtraceData}

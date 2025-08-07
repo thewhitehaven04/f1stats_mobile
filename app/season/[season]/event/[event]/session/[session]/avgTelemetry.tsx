@@ -6,8 +6,13 @@ import { useMemo } from "react"
 import { LegendItem } from "@/src/components/Plots/LegendItem"
 import { useAppSelector } from "@/src/store"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
-import { useGetAverageTelemetriesQuery, type TSession } from "@/src/store/slices/api"
+import {
+    useGetAverageTelemetriesQuery,
+    useGetCircuitGeometryQuery,
+    type TSession,
+} from "@/src/store/slices/api"
 import { getAlternativePlotColor } from "@/src/core/helpers"
+import { DeltaCircuitMap } from "@/src/components/CircuitMap"
 
 const styleSheet = StyleSheet.create({
     wrapper: {
@@ -18,14 +23,17 @@ const styleSheet = StyleSheet.create({
     speedtrace: {
         height: 350,
     },
+    deltaData: {
+        height: 200,
+    },
     brake: {
-        height: 150,
+        height: 80,
     },
     throttle: {
-        height: 150,
+        height: 80,
     },
     rpm: {
-        height: 150,
+        height: 120,
     },
     legend: {
         display: "flex",
@@ -47,6 +55,11 @@ export default function AverageTelemetry() {
         event,
         year: season,
         selection,
+    })
+
+    const { data: geometry } = useGetCircuitGeometryQuery({
+        year: season,
+        event,
     })
 
     const distance = useMemo(
@@ -120,10 +133,38 @@ export default function AverageTelemetry() {
         ]),
     )
 
+    const deltaData: Record<string, number>[] = useMemo(() => {
+        const chartData = distance.map((d) => ({
+            distance: d,
+        }))
+
+        chartData.forEach((dataInstance: Record<string, number | null>, i) => {
+            data?.telemetries.forEach(({ delta, driver }) => {
+                dataInstance[`${driver}`] = delta?.delta[i].gap || null
+            })
+        })
+
+        return chartData
+    }, [data?.telemetries, distance])
+
     return (
         <SafeAreaView style={styleSheet.wrapper}>
             {!isLoading && data ? (
                 <ScrollView>
+                    <View>
+                        {geometry ? (
+                            <DeltaCircuitMap
+                                geometry={geometry}
+                                driverDeltas={data.delta}
+                                colorMap={colorMap}
+                            />
+                        ) : (
+                            <LoadingSpinner />
+                        )}
+                    </View>
+                    <View style={styleSheet.deltaData}>
+                        <TelemetryPlot chartData={deltaData} yAxes={yAxes} colorMap={colorMap} />
+                    </View>
                     <View style={styleSheet.speedtrace}>
                         <TelemetryPlot
                             chartData={speedtraceData}
