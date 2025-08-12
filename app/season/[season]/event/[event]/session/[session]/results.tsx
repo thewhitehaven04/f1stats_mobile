@@ -3,19 +3,14 @@ import renderSeasonMetrics from "@/src/actions/render/sessionMetrics"
 import renderSessionResults from "@/src/actions/render/sessionResults"
 import { getColor } from "@/src/colorScheme"
 import { DriverSelectionBar } from "@/src/components/DriverSelectionBar"
-import { BEZIER_IN_OUT_BASE } from "@/src/components/ui/CollapsableListItem"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import { useAppSelector } from "@/src/store"
 import { useLocalSearchParams } from "expo-router"
 import { Suspense, useEffect, useMemo } from "react"
 import { StyleSheet, useColorScheme, View } from "react-native"
 import Animated, {
-    Easing,
-    FadingTransition,
-    LinearTransition,
     useAnimatedStyle,
     useSharedValue,
-    withSpring,
     withTiming,
 } from "react-native-reanimated"
 import { SafeAreaView } from "react-native-safe-area-context"

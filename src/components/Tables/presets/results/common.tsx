@@ -17,7 +17,7 @@ export const BASE_COLUMNS = [
             </TextCell>
         ),
         header: "Pos",
-        size: 72,
+        size: 48,
     }),
     helper.accessor("driver.abbreviation", {
         cell: (info) => (
@@ -26,6 +26,6 @@ export const BASE_COLUMNS = [
             </TextCell>
         ),
         header: "Driver",
-        size: 72,
+        size: 64,
     }),
 ]
