@@ -19,20 +19,20 @@ export const PRACTICE_RESULTS_COLUMNS = [
     ...BASE_COLUMNS,
     helper.accessor("time", {
         cell: (info) => (
-            <TextCell key="time" style={{ flexBasis: 120 }}>
+            <TextCell key={info.column.id}>
                 {formatTime(info.getValue() as number)}
             </TextCell>
         ),
-        header: () => <Text key="laptime">Laptime</Text>,
+        header: () => "Laptime",
         size: 120,
     }),
     helper.accessor("gap", {
         cell: (info) => (
-            <TextCell key="gap" style={{ flexBasis: 84 }}>
+            <TextCell key={info.column.id}>
                 {info.getValue()}
             </TextCell>
         ),
-        header: () => <Text key="gap">Gap</Text>,
+        header: () => "Gap",
         size: 84,
     }),
 ]

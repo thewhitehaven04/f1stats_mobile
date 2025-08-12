@@ -12,7 +12,7 @@ import {
     type TSession,
 } from "@/src/store/slices/api"
 import { getAlternativePlotColor } from "@/src/core/helpers"
-import { BrakePlot } from "@/src/components/Plots/BrakePlot"
+import { BrakePlot } from "@/src/components/Plots/Brake"
 import { DeltaCircuitMap } from "@/src/components/CircuitMap"
 
 const styleSheet = StyleSheet.create({

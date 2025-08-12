@@ -1,6 +1,6 @@
 "use client"
 import { getColor } from "@/src/colorScheme"
-import { Table, TableBody, TableHeader, TableRow, TextCell } from "@/src/components/Tables"
+import { Table, TableHeader, TableRow, TextCell } from "@/src/components/Tables"
 import { SessionType } from "@/src/components/Tables/presets/results/mapper"
 import type { IPracticeData } from "@/src/components/Tables/presets/results/practice"
 import { type IQualifyingData } from "@/src/components/Tables/presets/results/qualifying"
@@ -13,7 +13,7 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 import { Fragment, useMemo } from "react"
-import { FlatList, Pressable, StyleSheet } from "react-native"
+import { FlatList, Pressable, StyleSheet, View } from "react-native"
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated"
 import * as Haptics from "expo-haptics"
 import { useAppDispatch } from "@/src/store"
@@ -131,11 +131,11 @@ export const ResultsTable = (props: TResultsData) => {
                                 filter: row.getIsSelected() ? "brightness(0.95)" : "none",
                             }}
                         >
-                            {row
-                                .getVisibleCells()
-                                .map((cell) =>
-                                    flexRender(cell.column.columnDef.cell, cell.getContext()),
-                                )}
+                            {row.getVisibleCells().map((cell) => (
+                                <View key={cell.column.id} style={{ flexBasis: cell.column.getSize(), flexGrow: 1 }}>
+                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </View>
+                            ))}
                         </TableRow>
                         {row.getIsExpanded() && (
                             <DetailsRow

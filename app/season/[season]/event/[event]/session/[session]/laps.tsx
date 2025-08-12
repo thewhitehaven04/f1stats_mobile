@@ -1,9 +1,9 @@
 "use client"
 import { Link, useLocalSearchParams } from "expo-router"
-import { StyleSheet, View } from "react-native"
+import { StyleSheet, View, Text } from "react-native"
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner"
 import * as SegmentedControl from "@/src/components/ui/SegmentedControl"
-import { SessionLaptimesScatterplot } from "@/src/components/Plots/SessionLaptimesScatterplot"
+import { SessionLaptimesScatterplot } from "@/src/components/Plots/SessionLaptimesScatter"
 import { LapSelectionTable } from "@/src/components/LapSelectionTable"
 import { Button } from "@/src/components/ui/Button"
 import { BottomSheet } from "@/src/components/ui/BottomSheet"
@@ -21,7 +21,7 @@ const styleSheet = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-evenly",
         paddingBlock: 8,
-        bottom: 40
+        bottom: 40,
     },
     bottomSheetButton: {
         width: "100%",
@@ -115,10 +115,12 @@ export default function LapsScreen() {
         <SafeAreaView edges={["top", "left", "right"]}>
             <SegmentedControl.Root defaultSegment="Table">
                 <View style={styleSheet.segmentWrapper}>
-                    <SegmentedControl.Wrapper style={{ justifyContent: "center", alignItems: 'center', marginBottom: 8 }}>
+                    <SegmentedControl.Wrapper
+                        style={{ justifyContent: "center", alignItems: "center", marginBottom: 8 }}
+                    >
                         <SegmentedControl.SegmentSelector
                             name="Table"
-                            icon={<Ionicons name="menu-outline" size={24}/>}
+                            icon={<Ionicons name="menu-outline" size={24} />}
                         />
                         <SegmentedControl.SegmentSelector
                             name="Chart"

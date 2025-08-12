@@ -1,4 +1,3 @@
-import type { PlotColor } from "@/src/client/generated"
 import { getColor } from "@/src/colorScheme"
 import { useZoomReset } from "@/src/components/Plots/hooks/useZoomReset"
 import { useChartPressState, CartesianChart, useLinePath, type PointsArray } from "victory-native"

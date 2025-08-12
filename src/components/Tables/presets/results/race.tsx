@@ -25,18 +25,18 @@ const raceHelper = createColumnHelper<IRaceData>()
 export const RACE_RESULTS_COLUMNS = [
     ...BASE_COLUMNS,
     raceHelper.accessor("time", {
-        header: () => <Text>Total time</Text>,
+        header: () => "Total time",
         cell: (info) => (
-            <TextCell key="totalTime" style={{ flexBasis: 132 }}>
+            <TextCell>
                 {formatTime(info.getValue() as number)}
             </TextCell>
         ),
         size: 132,
     }),
     raceHelper.accessor("gap", {
-        header: () => <Text>Gap</Text>,
+        header: () => "Gap",
         cell: (info) => (
-            <TextCell key="gap" style={{ flexBasis: 96 }}>
+            <TextCell>
                 {formatTime(info.getValue() as number)}
             </TextCell>
         ),
