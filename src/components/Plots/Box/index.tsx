@@ -263,7 +263,6 @@ export const LaptimeBoxPlot = ({ data }: { data: LapSelectionData }) => {
                     ({ statistics: { q1, q3, min, max, median }, color, driver, laps }) => (
                         <Fragment key={driver}>
                             <Box
-                                key={driver}
                                 label={driver}
                                 q1={q1}
                                 q3={q3}
@@ -273,7 +272,6 @@ export const LaptimeBoxPlot = ({ data }: { data: LapSelectionData }) => {
                                 color={color}
                             />
                             <JitteredPoints
-                                key={driver}
                                 data={laps
                                     .filter((lap) => !lap.is_inlap && !lap.is_outlap)
                                     .map((data) => data.laptime)
@@ -308,9 +306,9 @@ const JitteredPoints = ({
             key={index}
             x={x + Math.random() * 2/3 * width + 1/6 * width}
             y={yAxis(value)}
-            strokeWidth={1.5}
+            strokeWidth={1}
             r={4}
-            fillOpacity={0.1}
+            fillOpacity={0.2}
             stroke={color}
         />
     ))
