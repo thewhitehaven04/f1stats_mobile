@@ -12,6 +12,7 @@ import { useAppSelector } from "@/src/store"
 import { useGetLapsQuery, type TSession } from "@/src/store/slices/api"
 import { selectDriverList } from "@/src/store/slices/driverSelection"
 import Ionicons from "@expo/vector-icons/Ionicons"
+import { LaptimeBoxPlot } from "@/src/components/Plots/Box"
 
 const styleSheet = StyleSheet.create({
     bottomSheet: {
@@ -103,6 +104,9 @@ export const LapsView = (props: { season: string; event: string; session: string
                     <SessionLaptimesScatterplot data={data} />
                 )}
             </SegmentedControl.Segment>
+            <SegmentedControl.Segment name="Box plot">
+                {isLoading || !data ? <LoadingSpinner /> : <LaptimeBoxPlot data={data} />}
+            </SegmentedControl.Segment>
         </>
     )
 }
@@ -125,6 +129,10 @@ export default function LapsScreen() {
                         <SegmentedControl.SegmentSelector
                             name="Chart"
                             icon={<Ionicons name="trending-up-outline" size={24} />}
+                        />
+                        <SegmentedControl.SegmentSelector
+                            name="Box plot"
+                            icon={<Ionicons name="cube-outline" size={24} />}
                         />
                     </SegmentedControl.Wrapper>
                 </View>
