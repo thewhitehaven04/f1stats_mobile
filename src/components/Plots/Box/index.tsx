@@ -1,7 +1,7 @@
 import type { LapSelectionData } from "@/src/client/generated"
 import { getColor } from "@/src/colorScheme"
 import { createContext, Fragment, useContext, useMemo } from "react"
-import Svg, { G, Line, Rect, Text } from "react-native-svg"
+import Svg, { Circle, G, Line, Rect, Text } from "react-native-svg"
 import * as d3 from "d3"
 import { formatTime, getAlternativePlotColor, mapDriverToAbbreviation } from "@/src/core/helpers"
 import { useWindowDimensions } from "react-native"
@@ -107,7 +107,12 @@ const XAxis = ({
                             strokeWidth={1.5}
                             stroke={getColor("foreground")}
                         />
-                        <Text fontSize={14} x={x} y={svgHeight} translateX={xAxis.bandwidth() / 2 - 8}>
+                        <Text
+                            fontSize={14}
+                            x={x}
+                            y={svgHeight}
+                            translateX={xAxis.bandwidth() / 2 - 8}
+                        >
                             {mapDriverToAbbreviation(label)}
                         </Text>
                     </Fragment>
@@ -219,6 +224,7 @@ export const LaptimeBoxPlot = ({ data }: { data: LapSelectionData }) => {
                         ? getAlternativePlotColor(data.color_map[driver].color)
                         : data.color_map[driver].color,
                 driver,
+                laps,
             })),
         [data.color_map, data.driver_lap_data],
     )
@@ -254,20 +260,58 @@ export const LaptimeBoxPlot = ({ data }: { data: LapSelectionData }) => {
                 <YAxis min={data.min_time || 0} max={data.max_time || 0} tickSize={8} />
                 <XAxis tickSize={8} groupLabels={drivers} />
                 {driverLaptimeStatistics.map(
-                    ({ statistics: { q1, q3, min, max, median }, color, driver }) => (
-                        <Box
-                            key={driver}
-                            label={driver}
-                            q1={q1}
-                            q3={q3}
-                            min={min}
-                            max={max}
-                            median={median}
-                            color={color}
-                        />
+                    ({ statistics: { q1, q3, min, max, median }, color, driver, laps }) => (
+                        <Fragment key={driver}>
+                            <Box
+                                key={driver}
+                                label={driver}
+                                q1={q1}
+                                q3={q3}
+                                min={min}
+                                max={max}
+                                median={median}
+                                color={color}
+                            />
+                            <JitteredPoints
+                                key={driver}
+                                data={laps
+                                    .filter((lap) => !lap.is_inlap && !lap.is_outlap)
+                                    .map((data) => data.laptime)
+                                    .filter((lap) => lap !== null)}
+                                group={driver}
+                                color={color}
+                            />
+                        </Fragment>
                     ),
                 )}
             </Svg>
         </BoxChartContext.Provider>
     )
+}
+
+const JitteredPoints = ({
+    data,
+    group,
+    color,
+}: {
+    data: number[]
+    group: string
+    color: string
+}) => {
+    const { yAxis, xAxis } = useContext(BoxChartContext)
+
+    const x = xAxis(group) || 0
+    const width = xAxis.bandwidth()
+
+    return data.map((value, index) => (
+        <Circle
+            key={index}
+            x={x + Math.random() * 2/3 * width + 1/6 * width}
+            y={yAxis(value)}
+            strokeWidth={1.5}
+            r={4}
+            fillOpacity={0.1}
+            stroke={color}
+        />
+    ))
 }
